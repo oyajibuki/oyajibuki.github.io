@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>断酒クエスト — サポートページ</title>
+  <link rel="stylesheet" href="/common.css">
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+  <div class="app-header">
+    <div class="app-icon" id="app-icon"></div>
+    <div>
+      <h1>断酒クエスト</h1>
+      <p class="app-tagline">禁酒・断酒の習慣化RPG</p>
+    </div>
+  </div>
+  <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E6%96%AD%E9%85%92%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6764613044" target="_blank">App Store で開く</a>
+  <hr>
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p>ご不明な点・バグ報告・ご要望は以下よりお送りください。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+  </div>
+  <hr>
+  <h2>よくある質問</h2>
+  <div class="faq-item">
+    <h2>Q. 記録が消えてしまった</h2>
+    <p>アプリを削除すると記録も削除されます。大切なデータはご注意ください。</p>
+  </div>
+  <div class="faq-item">
+    <h2>Q. お酒を飲んでしまった場合は？</h2>
+    <p>記録画面から「リセット」を選ぶと、カウントを0から再スタートできます。諦めずに続けましょう。</p>
+  </div>
+  <hr>
+  <footer><p>断酒クエスト &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
+  <script>
+    fetch('https://itunes.apple.com/jp/lookup?id=6764613044').then(r=>r.json()).then(d=>{const r=d.results&&d.results[0];if(r)document.getElementById('app-icon').innerHTML=`<img src="${r.artworkUrl100}" alt="">`;}).catch(()=>{});
+  </script>
+</body>
+</html>

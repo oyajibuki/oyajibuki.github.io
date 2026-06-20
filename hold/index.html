@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HOLD — サポートページ</title>
+  <link rel="stylesheet" href="/common.css">
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+  <div class="app-header">
+    <div class="app-icon" id="app-icon"></div>
+    <div>
+      <h1>HOLD</h1>
+      <p class="app-tagline">Plank Tracker</p>
+    </div>
+  </div>
+  <a class="btn-appstore" href="https://apps.apple.com/jp/app/hold-plunktimer/id6769427890" target="_blank">App Store で開く</a>
+  <hr>
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p>ご不明な点・バグ報告・ご要望は以下よりお送りください。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+  </div>
+  <hr>
+  <h2>よくある質問</h2>
+  <div class="faq-item">
+    <h2>Q. 記録が消えてしまった</h2>
+    <p>アプリを削除すると記録も削除されます。バックアップ機能は現在準備中です。</p>
+  </div>
+  <div class="faq-item">
+    <h2>Q. タイマーが止まってしまう</h2>
+    <p>iPhoneの「低電力モード」がオンの場合、バックグラウンド動作に影響が出ることがあります。設定 → バッテリー から低電力モードをオフにしてお試しください。</p>
+  </div>
+  <div class="faq-item">
+    <h2>Q. 目標時間の仕組みを教えてください</h2>
+    <p>HOLDでは、これまでの <strong>最長1セット時間</strong> が次回の目標として表示されます。新記録を更新するたびに目標が更新されます。</p>
+  </div>
+  <div class="faq-item">
+    <h2>Q. インターバル（休憩）の仕組みは？</h2>
+    <p>プランク中に <strong>BREAK</strong> ボタンを押すと、実施した時間と同じ時間だけ休憩できます。休憩時間を超えると自動的にセッションが終了します。</p>
+  </div>
+  <div class="faq-item">
+    <h2>Q. カレンダーの記録を削除したい</h2>
+    <p>記録画面でカレンダーの日付をタップ → セッション一覧で左スワイプ → 削除。全記録を消す場合は右上のゴミ箱アイコンをタップしてください。</p>
+  </div>
+  <hr>
+  <footer><p>HOLD — Plank Tracker &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
+  <script>
+    fetch('https://itunes.apple.com/jp/lookup?id=6769427890').then(r=>r.json()).then(d=>{const r=d.results&&d.results[0];if(r)document.getElementById('app-icon').innerHTML=`<img src="${r.artworkUrl100}" alt="">`;}).catch(()=>{});
+  </script>
+</body>
+</html>

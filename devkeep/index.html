@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevKeep — サポートページ</title>
+  <link rel="stylesheet" href="/common.css">
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+  <div class="app-header">
+    <div class="app-icon" id="app-icon"></div>
+    <div>
+      <h1>DevKeep</h1>
+      <p class="app-tagline">開発者向けコードスニペット管理</p>
+    </div>
+  </div>
+  <a class="btn-appstore" href="https://apps.apple.com/jp/app/devkeep/id6777493725" target="_blank">App Store で開く</a>
+  <hr>
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p>ご不明な点・バグ報告・ご要望は以下よりお送りください。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+  </div>
+  <hr>
+  <h2>よくある質問</h2>
+  <div class="faq-item">
+    <h2>Q. スニペットが消えてしまった</h2>
+    <p>アプリを削除するとデータも削除されます。エクスポート機能をご活用ください。</p>
+  </div>
+  <div class="faq-item">
+    <h2>Q. 検索で見つからない</h2>
+    <p>タイトルと本文が検索対象です。タグを活用すると整理しやすくなります。</p>
+  </div>
+  <hr>
+  <footer><p>DevKeep &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
+  <script>
+    fetch('https://itunes.apple.com/jp/lookup?id=6777493725').then(r=>r.json()).then(d=>{const r=d.results&&d.results[0];if(r)document.getElementById('app-icon').innerHTML=`<img src="${r.artworkUrl100}" alt="">`;}).catch(()=>{});
+  </script>
+</body>
+</html>

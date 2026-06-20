@@ -3,88 +3,264 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HOLD — サポートページ</title>
+  <title>oyajibuki — iOSアプリ一覧</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
-      max-width: 680px;
+      max-width: 720px;
       margin: 0 auto;
-      padding: 40px 24px 80px;
+      padding: 48px 24px 80px;
       color: #1a1a1a;
-      line-height: 1.7;
+      line-height: 1.6;
+      background: #fff;
     }
-    h1 { font-size: 2rem; margin-bottom: 0.2em; }
-    h2 { font-size: 1.1rem; margin-top: 2em; color: #333; }
-    hr { border: none; border-top: 1px solid #e0e0e0; margin: 40px 0; }
-    a { color: #007aff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .contact-box {
-      background: #f5f5f7;
-      border-radius: 12px;
-      padding: 24px;
-      margin: 16px 0;
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
     }
-    .contact-box p { margin: 0 0 12px; }
-    .contact-link {
-      display: inline-block;
-      background: #007aff;
+    .profile-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .profile-name { font-size: 1.3rem; font-weight: 700; margin: 0; }
+    .profile-sub { font-size: 0.9rem; color: #666; margin: 2px 0 0; }
+    h2.section-label { font-size: 0.85rem; color: #999; font-weight: 600; margin: 0 0 20px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .app-card {
+      border: 1px solid #e8e8e8;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #fafafa;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .app-card:hover { border-color: #bbb; background: #fff; }
+    .app-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .app-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: #e8e8e8;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .app-icon-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .app-name { font-size: 1rem; font-weight: 700; margin: 0; }
+    .app-category { font-size: 0.8rem; color: #888; margin: 2px 0 0; }
+    .app-desc { font-size: 0.85rem; color: #555; margin: 0; line-height: 1.55; }
+    .app-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+      align-items: center;
+    }
+    .btn-appstore {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1a1a1a;
       color: #fff !important;
-      padding: 10px 24px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 7px 14px;
       border-radius: 8px;
+      text-decoration: none;
+    }
+    .btn-appstore:hover { background: #333; text-decoration: none; }
+    .btn-support {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0f0f0;
+      color: #333 !important;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .btn-support:hover { background: #e0e0e0; text-decoration: none; }
+    .badge-review {
+      display: inline-block;
+      font-size: 0.72rem;
+      background: #fff3cd;
+      color: #856404;
+      padding: 3px 10px;
+      border-radius: 6px;
       font-weight: 600;
     }
-    .reply-note { font-size: 0.9rem; color: #555; margin-top: 12px; }
-    .faq-item { margin-bottom: 2em; }
-    footer { font-size: 0.85rem; color: #999; text-align: center; margin-top: 60px; }
+    hr { border: none; border-top: 1px solid #e8e8e8; margin: 48px 0; }
+    footer { font-size: 0.82rem; color: #aaa; text-align: center; }
+    footer a { color: #aaa; }
+    @media (max-width: 500px) {
+      .apps-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <h1>HOLD</h1>
-  <p>サポートページ</p>
+  <div class="profile">
+    <div class="profile-avatar">M</div>
+    <div>
+      <p class="profile-name">Motoki Seki</p>
+      <p class="profile-sub">iOS App Developer</p>
+    </div>
+  </div>
 
-  <hr>
+  <h2 class="section-label">Apps</h2>
 
-  <h1>お問い合わせ</h1>
-  <div class="contact-box">
-    <p>ご不明な点・バグ報告・ご要望は以下よりお送りください。</p>
-    <a class="contact-link" href="https://oyajibuki.github.io/form/" target="_blank">お問い合わせフォーム</a>
-    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+  <div class="apps-grid">
+
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-icon" id="icon-hold"></div>
+        <div>
+          <p class="app-name">HOLD — PlunkTimer</p>
+          <p class="app-category">フィットネス</p>
+        </div>
+      </div>
+      <p class="app-desc">プランクの記録をシンプルに管理。タイマーで計測し、カレンダーで履歴を確認できます。</p>
+      <div class="app-links">
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/hold-plunktimer/id6769427890" target="_blank">App Store</a>
+        <a class="btn-support" href="/hold/">サポート</a>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-icon" id="icon-danshu"></div>
+        <div>
+          <p class="app-name">断酒クエスト</p>
+          <p class="app-category">ヘルスケア</p>
+        </div>
+      </div>
+      <p class="app-desc">断酒の継続をRPGで楽しく。禁酒日数を積み重ねてキャラクターを成長させましょう。</p>
+      <div class="app-links">
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E6%96%AD%E9%85%92%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6764613044" target="_blank">App Store</a>
+        <a class="btn-support" href="/danshuquest/">サポート</a>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-icon" id="icon-undo"></div>
+        <div>
+          <p class="app-name">運動クエスト</p>
+          <p class="app-category">フィットネス</p>
+        </div>
+      </div>
+      <p class="app-desc">毎日15分の運動をRPGゲームで習慣化。スタミナ・筋力HPがリアルタイムで成長します。</p>
+      <div class="app-links">
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E9%81%8B%E5%8B%95%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6765534901" target="_blank">App Store</a>
+        <a class="btn-support" href="/undoquest/">サポート</a>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-icon" id="icon-benkyo"></div>
+        <div>
+          <p class="app-name">勉強クエスト</p>
+          <p class="app-category">教育</p>
+        </div>
+      </div>
+      <p class="app-desc">毎日の勉強をRPGゲームで習慣化。科目を選んで学習時間を記録し、伝説の学習者を目指せ。</p>
+      <div class="app-links">
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E5%8B%89%E5%BC%B7%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6765785966" target="_blank">App Store</a>
+        <a class="btn-support" href="/benkyoquest/">サポート</a>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-icon" id="icon-devkeep"></div>
+        <div>
+          <p class="app-name">DevKeep</p>
+          <p class="app-category">仕事効率化</p>
+        </div>
+      </div>
+      <p class="app-desc">開発者向けのコードスニペット管理アプリ。よく使うコードをすばやく保存・検索できます。</p>
+      <div class="app-links">
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/devkeep/id6777493725" target="_blank">App Store</a>
+        <a class="btn-support" href="/devkeep/">サポート</a>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-icon">
+          <div class="app-icon-placeholder">📍</div>
+        </div>
+        <div>
+          <p class="app-name">GEOAlame</p>
+          <p class="app-category">ナビゲーション</p>
+        </div>
+      </div>
+      <p class="app-desc">目的地に近づくと自動でアラームが鳴る位置情報アラームアプリ。乗り過ごしを防ぎます。</p>
+      <div class="app-links">
+        <span class="badge-review">審査中</span>
+      </div>
+    </div>
+
   </div>
 
   <hr>
 
-  <h1>よくある質問</h1>
+  <footer>
+    <p>© Motoki Seki &nbsp;·&nbsp; <a href="https://apps.apple.com/jp/developer/motoki-seki/id1895850085" target="_blank">App Store Developer Page</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p>
+  </footer>
 
-  <div class="faq-item">
-    <h2>Q. 記録が消えてしまった</h2>
-    <p>アプリを削除すると記録も削除されます。バックアップ機能は現在準備中です。</p>
-  </div>
-
-  <div class="faq-item">
-    <h2>Q. タイマーが止まってしまう</h2>
-    <p>iPhoneの「低電力モード」がオンの場合、バックグラウンド動作に影響が出ることがあります。設定 → バッテリー から低電力モードをオフにしてお試しください。</p>
-  </div>
-
-  <div class="faq-item">
-    <h2>Q. 目標時間の仕組みを教えてください</h2>
-    <p>HOLDでは、これまでの <strong>最長1セット時間</strong> が次回の目標として表示されます。新記録を更新するたびに目標が更新されます。</p>
-  </div>
-
-  <div class="faq-item">
-    <h2>Q. インターバル（休憩）の仕組みは？</h2>
-    <p>プランク中に <strong>BREAK</strong> ボタンを押すと、実施した時間と同じ時間だけ休憩できます。休憩時間を超えると自動的にセッションが終了します。</p>
-  </div>
-
-  <div class="faq-item">
-    <h2>Q. カレンダーの記録を削除したい</h2>
-    <p>記録画面でカレンダーの日付をタップ → セッション一覧で左スワイプ → 削除。</p>
-    <p>全記録を消す場合は右上のゴミ箱アイコンをタップしてください。</p>
-  </div>
-
-  <hr>
-
-  <footer>HOLD — Plank Tracker</footer>
+  <script>
+    const apps = [
+      { id: 'hold',    appId: '6769427890' },
+      { id: 'danshu',  appId: '6764613044' },
+      { id: 'undo',    appId: '6765534901' },
+      { id: 'benkyo',  appId: '6765785966' },
+      { id: 'devkeep', appId: '6777493725' },
+    ];
+    apps.forEach(({ id, appId }) => {
+      fetch(`https://itunes.apple.com/jp/lookup?id=${appId}`)
+        .then(r => r.json())
+        .then(data => {
+          const result = data.results && data.results[0];
+          if (!result) return;
+          const el = document.getElementById(`icon-${id}`);
+          if (el) el.innerHTML = `<img src="${result.artworkUrl100}" alt="">`;
+        })
+        .catch(() => {});
+    });
+  </script>
 
 </body>
 </html>
