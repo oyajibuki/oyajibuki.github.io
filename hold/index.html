@@ -48,7 +48,7 @@
   <hr>
   <footer><p>HOLD — Plank Tracker &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
   <script>
-    fetch('https://itunes.apple.com/jp/lookup?id=6769427890').then(r=>r.json()).then(d=>{const r=d.results&&d.results[0];if(r)document.getElementById('app-icon').innerHTML=`<img src="${r.artworkUrl100}" alt="">`;}).catch(()=>{});
+    document.getElementById('app-icon').innerHTML = '<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg" alt="">';
   </script>
 </body>
 </html>

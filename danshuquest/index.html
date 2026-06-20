@@ -36,7 +36,7 @@
   <hr>
   <footer><p>断酒クエスト &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
   <script>
-    fetch('https://itunes.apple.com/jp/lookup?id=6764613044').then(r=>r.json()).then(d=>{const r=d.results&&d.results[0];if(r)document.getElementById('app-icon').innerHTML=`<img src="${r.artworkUrl100}" alt="">`;}).catch(()=>{});
+    document.getElementById('app-icon').innerHTML = '<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/36/2d/48362da3-7ddb-e886-2481-30d43497f5e2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg" alt="">';
   </script>
 </body>
 </html>

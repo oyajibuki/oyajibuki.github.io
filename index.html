@@ -242,23 +242,16 @@
   </footer>
 
   <script>
-    const apps = [
-      { id: 'hold',    appId: '6769427890' },
-      { id: 'danshu',  appId: '6764613044' },
-      { id: 'undo',    appId: '6765534901' },
-      { id: 'benkyo',  appId: '6765785966' },
-      { id: 'devkeep', appId: '6777493725' },
-    ];
-    apps.forEach(({ id, appId }) => {
-      fetch(`https://itunes.apple.com/jp/lookup?id=${appId}`)
-        .then(r => r.json())
-        .then(data => {
-          const result = data.results && data.results[0];
-          if (!result) return;
-          const el = document.getElementById(`icon-${id}`);
-          if (el) el.innerHTML = `<img src="${result.artworkUrl100}" alt="">`;
-        })
-        .catch(() => {});
+    const icons = {
+      'hold':    'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg',
+      'danshu':  'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/36/2d/48362da3-7ddb-e886-2481-30d43497f5e2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'undo':    'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/86/32/0d/86320df4-befd-58a0-80f9-d994eff510c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'benkyo':  'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1c/b5/62/1cb5629e-4e58-3a30-ab93-a9c475b8d954/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'devkeep': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f2/d5/4d/f2d54de0-7b21-4c3c-d750-099c05693496/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    };
+    Object.entries(icons).forEach(([id, src]) => {
+      const el = document.getElementById(`icon-${id}`);
+      if (el) el.innerHTML = `<img src="${src}" alt="">`;
     });
   </script>
 
