@@ -111,15 +111,6 @@
       text-decoration: none;
     }
     .btn-support:hover { background: #e0e0e0; text-decoration: none; }
-    .badge-review {
-      display: inline-block;
-      font-size: 0.72rem;
-      background: #fff3cd;
-      color: #856404;
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
     hr { border: none; border-top: 1px solid #e8e8e8; margin: 48px 0; }
     footer { font-size: 0.82rem; color: #aaa; text-align: center; }
     footer a { color: #aaa; }
@@ -144,7 +135,7 @@
 
     <div class="app-card">
       <div class="app-card-header">
-        <div class="app-icon"><div class="app-icon-placeholder" style="background:linear-gradient(160deg,#0071e3,#34c759);">🛡️</div></div>
+        <div class="app-icon" id="icon-appguard"></div>
         <div>
           <p class="app-name">AppGuard</p>
           <p class="app-category">仕事効率化</p>
@@ -152,8 +143,8 @@
       </div>
       <p class="app-desc">使いたくないアプリをワンタップでロック。パスコードとFace IDでスマホ依存を断ち、集中できる毎日へ。</p>
       <div class="app-links">
-        <span class="badge-review">近日公開</span>
-        <a class="btn-support" href="/appguard/">詳細・サポート</a>
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/appguard-%E3%82%B9%E3%83%9E%E3%83%9B%E5%88%B6%E9%99%90%E3%83%AD%E3%83%83%E3%82%AF/id6785254908" target="_blank">App Store</a>
+        <a class="btn-support" href="/appguard/">サポート</a>
       </div>
     </div>
 
@@ -256,7 +247,8 @@
 
   <script>
     const icons = {
-      'hold':    'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg',
+      'appguard': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b0/dd/a9/b0dda90a-2114-3467-38e3-db3147984f12/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'hold':'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg',
       'danshu':  'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/36/2d/48362da3-7ddb-e886-2481-30d43497f5e2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
       'undo':    'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/86/32/0d/86320df4-befd-58a0-80f9-d994eff510c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
       'benkyo':  'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1c/b5/62/1cb5629e-4e58-3a30-ab93-a9c475b8d954/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
