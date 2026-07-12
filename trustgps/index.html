@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrustGPS — 必要な時だけ、安心を共有。</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .privacy-banner { background:#e6f9f6; border:1px solid #b8ede6; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/trustgps/icon.png" alt="TrustGPS"></div>
+    <div>
+      <h1>TrustGPS</h1>
+      <p class="app-tagline">必要な時だけ、安心を共有。</p>
+    </div>
+  </div>
+
+  <!-- リリース後にApp Storeリンクを追加
+  <a class="btn-appstore" href="https://apps.apple.com/jp/app/idXXXXXXXXXX" target="_blank">App Store で開く</a>
+  -->
+
+  <p style="margin-top:20px;">
+    旅行・出張・飲み会・登山・子どもの帰り道。「今どこにいるか」を知りたい場面は、いつもじゃなく一時的なもの。
+    TrustGPSは<strong>必要な期間だけ</strong>現在地をリアルタイム共有できるアプリです。
+    期限が来たら自動で共有終了。位置情報の履歴はどこにも残りません。
+  </p>
+
+  <div class="privacy-banner">
+    🔒 <strong>位置情報はサーバーに保存されません。</strong>
+    サーバーは現在地を相手へ「中継」するだけで、受信 → 送信 → 破棄。移動履歴のデータベースは存在しません。
+  </div>
+
+  <div class="sub-links">
+    <a href="/trustgps/support.html">サポート / FAQ</a>
+    <a href="/trustgps/privacy.html">プライバシーポリシー</a>
+  </div>
+
+  <hr>
+
+  <h2>主な機能</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">⏱️</span><div><b>期間を選ぶだけ</b><span>3時間・24時間・72時間・1週間・2週間・1ヶ月から選択。期限が来たらGPSも通信も自動で停止します。</span></div></li>
+    <li><span class="feature-emoji">📱</span><div><b>QRコードで簡単共有</b><span>相手にQRコードを見せる（またはコードを送る）だけ。アカウント登録は不要です。</span></div></li>
+    <li><span class="feature-emoji">🗺️</span><div><b>リアルタイムの現在地</b><span>見守る側は地図で「今」の場所と更新時刻、残り時間を確認できます。</span></div></li>
+    <li><span class="feature-emoji">🔕</span><div><b>いつでも停止できる</b><span>共有する側はワンタップでいつでも停止。監視ではなく、合意にもとづく共有です。</span></div></li>
+    <li><span class="feature-emoji">✅</span><div><b>信頼ログ</b><span>残るのは「共有開始・終了・期限満了」などのイベントだけ。位置情報は一切記録されません。</span></div></li>
+    <li><span class="feature-emoji">🔔</span><div><b>通知でお知らせ</b><span>共有開始・終了30分前・終了を通知します。</span></div></li>
+  </ul>
+
+  <hr>
+
+  <h2>料金（買い切り・サブスクなし）</h2>
+  <p style="font-size:0.9rem; color:#666;">アプリのダウンロードは無料。共有を開始するときに期間ぶんだけお支払いいただく買い切り型です。月額課金はありません。</p>
+  <table class="price-table">
+    <tr><td>3時間</td><td>無料</td></tr>
+    <tr><td>24時間</td><td>¥100</td></tr>
+    <tr><td>72時間</td><td>¥300</td></tr>
+    <tr><td>1週間</td><td>¥500</td></tr>
+    <tr><td>2週間</td><td>¥800</td></tr>
+    <tr><td>1ヶ月</td><td>¥1,500</td></tr>
+  </table>
+
+  <hr>
+
+  <h2>こんな場面に</h2>
+  <p style="font-size:0.92rem;">
+    夫婦・カップルの出張や飲み会 ／ 子どもの通学・修学旅行 ／ 海外旅行中の家族 ／
+    登山・ソロキャンプ ／ 夜道の帰宅 ／ イベント・フェスでの待ち合わせ
+  </p>
+
+  <p style="margin-top:24px; font-weight:600; color:#0fa091;">信用は、期間限定で共有できる。</p>
+</body>
+</html>

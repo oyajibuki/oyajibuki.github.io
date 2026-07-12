@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrustGPS — サポートページ</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/trustgps/">TrustGPS に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/trustgps/icon.png" alt="TrustGPS"></div>
+    <div>
+      <h1>TrustGPS サポート</h1>
+      <p class="app-tagline">必要な時だけ、安心を共有。</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p>ご不明な点・バグ報告・ご要望は以下よりお送りください。端末名（例: iPhone 15, iOS 18）を添えていただくとスムーズです。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+  </div>
+
+  <hr>
+
+  <h2>使い方</h2>
+
+  <div class="faq-item">
+    <h3>共有する側（自分の現在地を見せる）</h3>
+    <p>1. ホームの「共有する」をタップ<br>
+       2. 期間を選ぶ（3時間は無料。24時間〜1ヶ月は買い切りで購入）<br>
+       3. 表示されたQRコードを相手に見せる、または「コードを送る」でメッセージ送信<br>
+       4. あとは自動。期限が来るとGPSも通信も自動で停止します。途中でやめたい時は「今すぐ共有を停止」</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>見守る側（相手の現在地を見る）</h3>
+    <p>1. ホームの「見守る」をタップ<br>
+       2. 相手のQRコードを読み取る、または共有コード（6文字）を入力<br>
+       3. 地図に相手の現在地・更新時刻・残り時間が表示されます</p>
+  </div>
+
+  <hr>
+
+  <h2>よくある質問</h2>
+
+  <div class="faq-item">
+    <h3>Q. アプリを閉じても共有され続けますか？</h3>
+    <p>A. はい。共有する側は、ホーム画面に戻っても・画面をロックしても、期限まで現在地を届け続けます（画面上部にiOSの位置情報インジケータが表示されます）。ただし<strong>アプリスイッチャーから上にスワイプして強制終了すると共有が止まります</strong>のでご注意ください。見守る側はアプリを開いた時だけ地図が表示され、開き直すと自動で再接続します。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 位置情報はどこかに保存されますか？</h3>
+    <p>A. いいえ。サーバーは現在地を相手へ中継するだけで、受信後すぐに破棄します。移動履歴のデータベースは存在しません。アプリに残る「信頼ログ」は共有開始・終了などのイベントだけで、座標は一切含まれません。詳しくは<a href="/trustgps/privacy.html">プライバシーポリシー</a>をご覧ください。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 料金はサブスク（月額）ですか？</h3>
+    <p>A. いいえ、<strong>すべて買い切り</strong>です。共有を開始するときに選んだ期間のぶんだけお支払いいただきます（3時間は無料、24時間¥100〜1ヶ月¥1,500）。自動更新や月額請求はありません。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 購入の「復元」はできますか？</h3>
+    <p>A. 共有期間の購入は使い切り型（消費型）のため、復元の対象外です。購入直後に通信エラー等で共有が開始できなかった場合は、お問い合わせフォームからご連絡ください。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 途中でやめたくなったら？</h3>
+    <p>A. 共有する側は「今すぐ共有を停止」でいつでも終了できます。停止すると相手の地図から即座に消え、信頼ログに「手動で停止」と記録されます。見守る側も「退出」でいつでも見守りをやめられます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 相手が圏外・電波が悪い時は？</h3>
+    <p>A. 電波が回復すると自動的に更新が再開されます。地図の「更新 ○秒前」で、最後に位置が届いてからの経過時間を確認できます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 知らない人に見られる心配はありませんか？</h3>
+    <p>A. 現在地を見られるのは、あなたがQRコードまたは共有コードを渡した相手だけです。コードは推測が困難なランダムな6文字で、期限が切れると無効になります。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 対応環境は？</h3>
+    <p>A. iOS 17.0以降のiPhone・iPadに対応しています。</p>
+  </div>
+
+  <hr>
+
+  <div class="sub-links" style="display:flex; gap:10px; margin-top:16px;">
+    <a href="/trustgps/privacy.html" style="background:#f0f0f0; color:#333; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none;">プライバシーポリシー</a>
+  </div>
+</body>
+</html>
