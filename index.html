@@ -135,7 +135,7 @@
 
     <div class="app-card">
       <div class="app-card-header">
-        <div class="app-icon"><img src="/trustgps/icon.png" alt="TrustGPS" style="width:100%;height:100%;border-radius:14px;"></div>
+        <div class="app-icon" id="icon-trustgps"></div>
         <div>
           <p class="app-name">TrustGPS</p>
           <p class="app-category">ナビゲーション</p>
@@ -143,14 +143,14 @@
       </div>
       <p class="app-desc">必要な期間だけ現在地をリアルタイム共有。期限が来たら自動終了、位置情報はサーバーに保存しません。</p>
       <div class="app-links">
-        <!-- 審査完了後にApp Storeリンクを追加 -->
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/trustgps-%E6%9C%9F%E9%99%90%E4%BB%98%E3%81%8D%E4%BD%8D%E7%BD%AE%E6%83%85%E5%A0%B1%E5%85%B1%E6%9C%89/id6790150188" target="_blank">App Store</a>
         <a class="btn-support" href="/trustgps/">サポート</a>
       </div>
     </div>
 
     <div class="app-card">
       <div class="app-card-header">
-        <div class="app-icon"><div class="app-icon-placeholder" style="background:linear-gradient(160deg,#ffb25c,#ff7a1a);">📦</div></div>
+        <div class="app-icon" id="icon-simpleunzip"></div>
         <div>
           <p class="app-name">シンプル解凍</p>
           <p class="app-category">ユーティリティ</p>
@@ -158,14 +158,14 @@
       </div>
       <p class="app-desc">zip・7z・tar・gzip・bzip2・xzをタップひとつで解凍。広告なし・買い切りでまとめて解凍や保存先指定もできます。</p>
       <div class="app-links">
-        <!-- 審査完了後にApp Storeリンクを追加 -->
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/simpleunzip-%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E8%A7%A3%E5%87%8D/id6788384543" target="_blank">App Store</a>
         <a class="btn-support" href="/simpleunzip/">サポート</a>
       </div>
     </div>
 
     <div class="app-card">
       <div class="app-card-header">
-        <div class="app-icon"><div class="app-icon-placeholder" style="background:linear-gradient(160deg,#f76b70,#fda4a7);">👛</div></div>
+        <div class="app-icon" id="icon-simplesubsc"></div>
         <div>
           <p class="app-name">シンプルサブスク管理</p>
           <p class="app-category">ファイナンス</p>
@@ -173,7 +173,7 @@
       </div>
       <p class="app-desc">サブスクを日額換算して固定費のムダに気づく。解約シミュレーションで節約効果もひと目でわかります。</p>
       <div class="app-links">
-        <!-- リリース後にApp Storeリンクを追加 -->
+        <a class="btn-appstore" href="https://apps.apple.com/jp/app/simplesubsc-%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E3%82%B5%E3%83%96%E3%82%B9%E3%82%AF%E7%AE%A1%E7%90%86/id6789902889" target="_blank">App Store</a>
         <a class="btn-support" href="/Subsc/">サポート</a>
       </div>
     </div>
@@ -292,7 +292,10 @@
 
   <script>
     const icons = {
-      'appguard': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b0/dd/a9/b0dda90a-2114-3467-38e3-db3147984f12/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'trustgps': 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/c7/df/4b/c7df4baf-02dd-8415-f444-8f8c78d15e9e/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'simpleunzip': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/6a/e8/d1/6ae8d171-a64d-72e0-e807-8ac4f391bfd8/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'simplesubsc': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/7b/19/c8/7b19c87d-c36f-1aa4-2bad-12daa96890de/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+      'appguard':'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b0/dd/a9/b0dda90a-2114-3467-38e3-db3147984f12/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
       'hold':'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg',
       'danshu':  'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/36/2d/48362da3-7ddb-e886-2481-30d43497f5e2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
       'undo':    'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/86/32/0d/86320df4-befd-58a0-80f9-d994eff510c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
