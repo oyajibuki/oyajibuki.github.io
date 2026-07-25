@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NonStop — サポートページ</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .faq-item h3 { font-size:1rem; color:#1a1a1a; margin-bottom:4px; }
+    .mailto { font-size:0.85rem; color:#555; margin-top:12px !important; }
+    .mailto a { color:#007aff; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/nonstop/">NonStop に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/nonstop/icon.png" alt="NonStop"></div>
+    <div>
+      <h1>NonStop サポート</h1>
+      <p class="app-tagline">曲間で、途切れない。</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p>ご不明な点・バグ報告・ご要望は以下よりお送りください。端末名とiOSバージョン（例: iPhone 15, iOS 18）、
+       うまくいかない曲のファイル形式（mp3 / m4a など）を添えていただくとスムーズです。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+    <p class="mailto">フォームが開けない場合は <a href="mailto:oyajibuki@gmail.com?subject=NonStop%20%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">oyajibuki@gmail.com</a> まで直接どうぞ。</p>
+  </div>
+
+  <hr>
+
+  <h2>使い方</h2>
+
+  <div class="faq-item">
+    <h3>1. 曲を取り込む</h3>
+    <p>「取り込み」タブから取り込み元を選びます。パソコンにある曲なら「パソコンから転送」がいちばん速いです。
+       同じWi-Fiにつないだ状態でアプリに表示されるQRコード（またはアドレス）をパソコンのブラウザで開き、
+       曲をドラッグ＆ドロップ。転送が終わったらアプリで「ライブラリに追加」を押します。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>2. 繋ぎ方を決める</h3>
+    <p>プレイヤー画面の下、または「設定」タブの「曲間の繋ぎ」で切り替えます。
+       <strong>ギャップレス</strong>（無音ゼロで直結）か <strong>クロスフェード</strong>（0.5〜12秒重ねる）を選び、
+       繋ぎが不要なときはトグルをOFFにすれば通常再生に戻ります。再生中に変えても音は途切れません。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>3. 再生する</h3>
+    <p>ライブラリで曲をタップすると、その曲から順に再生します。
+       曲順を決めたいときは「プレイリスト」タブでMIXの並びを作ってください。</p>
+  </div>
+
+  <hr>
+
+  <h2>よくある質問</h2>
+
+  <div class="faq-item">
+    <h3>Q. ギャップレスにしたのに、まだ曲間に無音が入ります</h3>
+    <p>A. ファイル自体の先頭・末尾に無音が焼き込まれている可能性が高いです。
+       「設定」→「無音の自動カット」をONにしてください（初期状態でON）。
+       それでも残る場合は、同じ画面の「無音とみなす音量」を -60dBFS から -50dBFS 程度に上げて
+       「全曲を再解析」を押してみてください。逆に曲の出だしが削れてしまう場合は -70dBFS 側へ下げます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. Apple Musicの曲が取り込めません</h3>
+    <p>A. Apple Musicのストリーミング楽曲はDRMで保護されており、<strong>iOSの仕様上ほかのアプリが音声データを扱えません</strong>。
+       そのため取り込みも、ギャップレス処理やイコライザーを掛けることもできません。これはアプリ側の不具合ではなく、
+       回避する手段が存在しないものです。CDから取り込んだ曲やiTunes Storeで購入した曲（DRMなし）は取り込めます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. パソコンから転送できません</h3>
+    <p>A. 以下をご確認ください。<br>
+       ・iPhoneとパソコンが<strong>同じWi-Fi</strong>につながっているか（モバイル通信では転送できません）<br>
+       ・転送画面を開いたままにしているか（他の画面に移るとサーバーが止まります）<br>
+       ・初回に表示される「ローカルネットワーク上のデバイスの検索」を「許可」したか<br>
+       　（拒否した場合は iOS の「設定」→「NonStop」→「ローカルネットワーク」をONにしてください）<br>
+       ・会社や学校のWi-Fiでは、端末間の通信が遮断されている場合があります</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. Dropbox / Google Drive / OneDrive / Box から取り込みたい</h3>
+    <p>A. アイコンをタップするとiOSの「ファイル」アプリが開きます。左上の「ブラウズ」から該当のサービスを選び、
+       曲を選択してください。各サービスの公式アプリがインストールされ、ファイルアプリで有効になっている必要があります。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 対応しているファイル形式は？</h3>
+    <p>A. MP3 / M4A / AAC / ALAC / WAV / AIFF / CAF / FLAC に対応しています。
+       DRMで保護されたファイルは再生できません。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 無料版だと何が制限されますか？</h3>
+    <p>A. 制限は「広告が表示される」「ライブラリに保存できる曲が50曲まで」の2点です。
+       <strong>ギャップレス・クロスフェード・無音カットといった繋ぎ機能は無料版でもすべて使えます。</strong>
+       プレミアムにすると、広告が消え、ライブラリが無制限になり、フルイコライザーが開放されます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. プレミアムのプランはどれを選べばいいですか？</h3>
+    <p>A. まず試したい方は7日間（¥100）、続けて使う方は年額（¥3,000）がお得です。
+       更新の管理が面倒な方は買い切り（¥4,800）を選べば、以後の請求はありません。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 機種変更しました。購入は引き継げますか？</h3>
+    <p>A. 同じApple IDであれば引き継げます。ペイウォール画面の右上「復元」をタップしてください。
+       なお<strong>取り込んだ曲そのものは端末内に保存されている</strong>ため、機種変更後にもう一度取り込む必要があります。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. サブスクリプションを解約したい</h3>
+    <p>A. iOSの「設定」→ 一番上のご自身の名前 →「サブスクリプション」→「NonStop」から解約できます。
+       アプリ内では解約できません（Appleの仕組み上のものです）。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. バックグラウンドや画面ロック中も再生されますか？</h3>
+    <p>A. はい。ホーム画面に戻っても画面をロックしても再生は続きます。
+       ロック画面やコントロールセンターから再生・停止・曲送りも操作できます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. イコライザーをかけると音が割れます</h3>
+    <p>A. 各バンドを大きく持ち上げると音量が上がって歪むことがあります。
+       イコライザ画面の一番下にある「リミッター（音割れ防止）」をONにしたまま使うか、
+       「プリアンプ」をマイナス側（-3dB 程度）に下げてみてください。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 曲を削除したい / 容量が気になる</h3>
+    <p>A. ライブラリ画面の右上「選択」から複数選んで削除できます。
+       1曲だけなら曲を長押しして「削除」でも消せます。使用容量は「設定」タブで確認できます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Q. 対応環境は？</h3>
+    <p>A. iOS 17.0以降のiPhone・iPadに対応しています。</p>
+  </div>
+
+  <hr>
+
+  <div style="display:flex; gap:10px; margin-top:16px;">
+    <a href="/nonstop/privacy.html" style="background:#f0f0f0; color:#333; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none;">プライバシーポリシー</a>
+  </div>
+</body>
+</html>

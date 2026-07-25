@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NonStop — 曲間で、途切れない。</title>
+  <meta name="description" content="DJミックスやMIXテープの「繋ぎ」を途切れさせない音楽プレイヤー。ギャップレス再生とクロスフェードを設定ひとつで切り替えられます。">
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .lede { background:#f4ecff; border:1px solid #e0cdfa; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.9rem; }
+    .note { background:#fff7e6; border:1px solid #f2dfb4; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.88rem; }
+    .sources { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; padding:0; list-style:none; }
+    .sources li { background:#f5f5f7; border-radius:8px; padding:6px 12px; font-size:0.83rem; color:#444; }
+    .mode-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .mode-table th, .mode-table td { text-align:left; padding:10px 4px; border-bottom:1px solid #eee; font-size:0.88rem; vertical-align:top; }
+    .mode-table th { width:34%; color:#333; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/nonstop/icon.png" alt="NonStop"></div>
+    <div>
+      <h1>NonStop</h1>
+      <p class="app-tagline">曲間で、途切れない。</p>
+    </div>
+  </div>
+
+  <!-- リリース後にApp Storeリンクを追加
+  <a class="btn-appstore" href="https://apps.apple.com/jp/app/idXXXXXXXXXX" target="_blank">App Store で開く</a>
+  -->
+
+  <p style="margin-top:20px;">
+    DJミックス、MIXテープ、ライブ盤。本来ひと続きで鳴るはずの音源なのに、
+    CDやファイルではトラックが分かれているせいで、いいところで「プツッ」と切れる。
+    NonStopは、その<strong>繋ぎ目をなくすためだけに作った音楽プレイヤー</strong>です。
+  </p>
+
+  <div class="lede">
+    ∞ <strong>曲が変わっても、再生を止めません。</strong>
+    複数の曲をあらかじめ1本の連続した音声として組み立ててから鳴らすので、
+    曲の切れ目に無音が入る余地がありません。
+  </div>
+
+  <div class="sub-links">
+    <a href="/nonstop/support.html">サポート / FAQ</a>
+    <a href="/nonstop/privacy.html">プライバシーポリシー</a>
+  </div>
+
+  <hr>
+
+  <h2>繋ぎ方は3つから選べます</h2>
+  <table class="mode-table">
+    <tr>
+      <th>ギャップレス</th>
+      <td>無音を一切挟まず次の曲へ直結。CDから取り込んだMIXやライブ盤、クラシックの楽章間に。</td>
+    </tr>
+    <tr>
+      <th>クロスフェード</th>
+      <td>前の曲と次の曲を0.5〜12秒重ねて溶かします。カーブは等パワー／リニアから選択。</td>
+    </tr>
+    <tr>
+      <th>OFF（通常再生）</th>
+      <td>ふつうの音楽プレイヤーと同じ挙動。曲間の間も0〜3秒で調整できます。</td>
+    </tr>
+  </table>
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+    設定の切り替えは再生中でもOK。音を止めずにその場で変わります。
+  </p>
+
+  <hr>
+
+  <h2>主な機能</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">∞</span><div><b>完全ギャップレス再生</b><span>曲の切れ目で再生を止めない設計。1曲目の最後のサンプルと2曲目の最初のサンプルが直接つながります。</span></div></li>
+    <li><span class="feature-emoji">🎚️</span><div><b>クロスフェード</b><span>0.5〜12秒。DJミックスのように前後の曲を重ねて繋ぎます。</span></div></li>
+    <li><span class="feature-emoji">✂️</span><div><b>無音の自動カット</b><span>ファイル自体に焼き込まれた曲頭・曲尻の無音を自動で検出して詰めます。ここを処理しないと、再生を繋いでも無音は消えません。</span></div></li>
+    <li><span class="feature-emoji">🔊</span><div><b>音量をそろえる</b><span>曲ごとの録音レベルの差をならして、繋ぎ目で音量が飛ばないようにします。</span></div></li>
+    <li><span class="feature-emoji">📥</span><div><b>8つの取り込み方法</b><span>パソコンからWi-Fi転送（QRコード）、端末内のミュージック、ファイルApp、主要クラウドに対応。</span></div></li>
+    <li><span class="feature-emoji">🎛️</span><div><b>フルイコライザー（プレミアム）</b><span>10バンドEQ・プリセット22種・残響・ディレイ・再生速度/キー・ステレオ幅・リミッター。</span></div></li>
+    <li><span class="feature-emoji">🔒</span><div><b>音源は端末の中だけ</b><span>取り込んだ曲をどこかへアップロードすることはありません。</span></div></li>
+  </ul>
+
+  <hr>
+
+  <h2>曲の取り込み方</h2>
+  <ul class="sources">
+    <li>パソコンからWi-Fi転送（QR / IP）</li>
+    <li>iPhone / iPad / iPod のミュージック</li>
+    <li>ファイルApp</li>
+    <li>Apple Music</li>
+    <li>Dropbox</li>
+    <li>Google Drive</li>
+    <li>OneDrive</li>
+    <li>Box</li>
+  </ul>
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+    パソコンからの転送は、同じWi-Fiにつないでブラウザに表示されたQRコードのアドレスを開き、
+    曲をドラッグ＆ドロップするだけ。ケーブルもiTunesも不要です。
+  </p>
+
+  <div class="note">
+    ⚠️ <strong>Apple Musicのストリーミング楽曲は取り込めません。</strong>
+    配信楽曲はDRMで保護されており、iOSの仕様上ほかのアプリが音声データを扱えないためです。
+    そのためギャップレス処理もイコライザーも掛けられません（これはアプリ側で回避できるものではありません）。
+    CDから取り込んだ曲やiTunes Storeで購入した曲など、DRMのない楽曲は取り込めます。
+  </div>
+
+  <hr>
+
+  <h2>料金</h2>
+  <p style="font-size:0.9rem; color:#666;">
+    <strong>繋ぎ機能（ギャップレス・クロスフェード・無音カット）は無料版でもすべて使えます。</strong>
+    このアプリの本体機能に制限はかけていません。
+  </p>
+  <table class="price-table">
+    <tr><td>無料版</td><td>広告あり / ライブラリ50曲まで</td></tr>
+    <tr><td>プレミアム 7日間</td><td>¥100</td></tr>
+    <tr><td>プレミアム 月額</td><td>¥300</td></tr>
+    <tr><td>プレミアム 年額</td><td>¥3,000</td></tr>
+    <tr><td>プレミアム 買い切り</td><td>¥4,800</td></tr>
+  </table>
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+    プレミアムの特典は「広告なし」「フルイコライザー」「ライブラリ無制限」の3つです。
+    買い切りを選べば以後の請求はありません。
+  </p>
+
+  <hr>
+
+  <h2>こんな人に</h2>
+  <p style="font-size:0.92rem;">
+    CDのDJミックスをiPhoneで聴きたい ／ MIXテープの繋ぎが切れるのが我慢ならない ／
+    ライブ盤・フェス音源のMCと曲の間で切れてほしくない ／
+    クラシックの楽章間に無音が入るのが気になる ／ 自作のDJセットを持ち歩きたい
+  </p>
+
+  <p style="margin-top:24px; font-weight:600; color:#8b2fd6;">繋ぎ目のない音楽を、そのまま。</p>
+</body>
+</html>
