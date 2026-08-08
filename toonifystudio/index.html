@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toonify Studio — 写真から8枚まとめてスタンプを作る</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon-emoji { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; background:linear-gradient(160deg,#ff5f9e,#8a6cff); }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.92rem; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .flow { counter-reset:step; list-style:none; padding:0; margin:8px 0 0; }
+    .flow li { counter-increment:step; padding:10px 0 10px 34px; position:relative; font-size:0.92rem; border-bottom:1px solid #f0f0f0; }
+    .flow li:last-child { border-bottom:none; }
+    .flow li::before { content:counter(step); position:absolute; left:0; top:9px; width:22px; height:22px; border-radius:50%; background:linear-gradient(160deg,#ff5f9e,#8a6cff); color:#fff; font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .note { background:#fafafa; border-radius:10px; padding:12px 14px; font-size:0.82rem; color:#666; margin-top:14px; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><div class="app-icon-emoji">🎨</div></div>
+    <div>
+      <h1>Toonify Studio</h1>
+      <p class="app-tagline">写真から8枚まとめてスタンプを作る</p>
+    </div>
+  </div>
+
+  <p>お気に入りの写真から、スタンプ用の画像素材を<strong>8枚まとめて</strong>作るアプリです。背景の切り抜きも、文字入れも、表情のバリエーションも自動。<strong>写真は端末の外に出ません。</strong></p>
+
+  <p class="links">
+    <a href="/toonifystudio/support.html">サポート / FAQ</a> &nbsp;·&nbsp;
+    <a href="/toonifystudio/privacy.html">プライバシーポリシー</a> &nbsp;·&nbsp;
+    <a href="/toonifystudio/terms.html">利用規約（EULA）</a>
+  </p>
+
+  <hr>
+
+  <h2>作る流れ</h2>
+  <ol class="flow">
+    <li>写真を選ぶ（最大8枚。1枚でもOK）</li>
+    <li>AIが背景を自動で切り抜く（ブラシで手直しも可）</li>
+    <li>文言セットを選ぶと8枚ぶんの文字がまとめて入る</li>
+    <li>ZIPで書き出す or カメラロールに8枚保存</li>
+  </ol>
+
+  <hr>
+
+  <h2>主な機能</h2>
+  <ul class="feature-list">
+    <li>
+      <span class="feature-emoji">✂️</span>
+      <div><b>背景を全自動で切り抜き</b>
+      <span>人物・お子さん・ペットを自動認識。消しゴムと復元ブラシで細かい手直しもできます。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">😊</span>
+      <div><b>1枚の写真から8種類の表情</b>
+      <span>顔の位置を検出して、にっこり・ウインク・赤面・汗・キラキラなどを合成。同じ写真でも8枚がちゃんと描き分けられます。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">💬</span>
+      <div><b>文言セットで文字入れが一瞬</b>
+      <span>定番・家族・推し活・ビジネス・関西弁・ペット代弁など8セット。書体6種、改行、ドラッグ移動・ピンチ拡大・ひねり回転に対応。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">✨</span>
+      <div><b>画風の変換</b>
+      <span>そのまま／アニメ／やわらか／こってり／なめらか。端末内で動くAIモデルで、写真を絵として描き直します。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">🎞️</span>
+      <div><b>動くスタンプ（APNG）</b>
+      <span>ぴょんぴょん・ぽよん・ゆらゆらなど8種の動き。LINEのアニメーションスタンプ規定に合わせて書き出します。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">📹</span>
+      <div><b>プロモーション動画とBGM</b>
+      <span>縦9:16の紹介動画を自動生成。BGMも端末内で合成するので著作権の心配がありません。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">✅</span>
+      <div><b>審査の事前チェック</b>
+      <span>サイズ・容量・余白・透過漏れなど、よくある差し戻し理由を書き出す前に確認できます。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">📝</span>
+      <div><b>申請用テキストの下書き</b>
+      <span>タイトル・説明文・コピーライトを自動生成。文字数もその場でカウントします。</span></div>
+    </li>
+    <li>
+      <span class="feature-emoji">🔒</span>
+      <div><b>通信ゼロ・完全オフライン</b>
+      <span>すべての処理が端末内で完結します。写真が外部に送られることは一切ありません。</span></div>
+    </li>
+  </ul>
+
+  <hr>
+
+  <h2>料金</h2>
+  <table class="price-table">
+    <tr><td>無料<br><span style="font-size:0.82rem;color:#666;">全機能を利用可能。書き出し物に透かしが入ります</span></td><td>¥0</td></tr>
+    <tr><td>アンロック（買い切り）<br><span style="font-size:0.82rem;color:#666;">透かしが消えます。サブスクではありません</span></td><td>¥980</td></tr>
+  </table>
+
+  <div class="note">
+    <p>本アプリはスタンプ用の画像素材を作成するツールです。LINE Creators Market への申請・審査・販売は、利用者ご自身で行っていただく必要があります。</p>
+    <p style="margin-bottom:0;">「LINE」およびLINEに関する商標は、LINEヤフー株式会社の商標または登録商標です。本アプリは同社とは一切関係のない個人開発のアプリであり、公式に承認・提携・後援されたものではありません。</p>
+  </div>
+
+  <hr>
+
+  <footer><p>Toonify Studio &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/toonifystudio/support.html">サポート</a> &nbsp;·&nbsp; <a href="/toonifystudio/privacy.html">プライバシーポリシー</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
+</body>
+</html>
