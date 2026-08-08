@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- 背景グラデーション（空〜夕焼け） -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8ec5fc"/>
+      <stop offset="50%" stop-color="#a8c8f0"/>
+      <stop offset="100%" stop-color="#f0c4a0"/>
+    </linearGradient>
+
+    <!-- オーブ外側グロー -->
+    <radialGradient id="outerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.0"/>
+      <stop offset="60%" stop-color="#c8e8ff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#8ec5fc" stop-opacity="0.35"/>
+    </radialGradient>
+
+    <!-- オーブ本体グラデーション -->
+    <radialGradient id="orbGrad" cx="42%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#e8f4ff" stop-opacity="0.95"/>
+      <stop offset="75%" stop-color="#c0daf5" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#90bde8" stop-opacity="0.4"/>
+    </radialGradient>
+
+    <!-- オーブリムのグロー -->
+    <radialGradient id="rimGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="transparent"/>
+      <stop offset="85%" stop-color="#d0eaff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#a8d4f8" stop-opacity="0.0"/>
+    </radialGradient>
+
+    <!-- テキストグロー用フィルター -->
+    <filter id="textGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- オーブ全体のソフトグロー -->
+    <filter id="orbGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- スパークル用フィルター -->
+    <filter id="sparkleGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- 角丸マスク -->
+    <clipPath id="roundedCorner">
+      <rect width="1024" height="1024" rx="230" ry="230"/>
+    </clipPath>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1024" height="1024" rx="230" ry="230" fill="url(#bgGrad)"/>
+
+  <g clip-path="url(#roundedCorner)">
+
+    <!-- 雲（下部・左） -->
+    <ellipse cx="120" cy="870" rx="180" ry="80" fill="white" opacity="0.55"/>
+    <ellipse cx="60" cy="900" rx="130" ry="65" fill="white" opacity="0.45"/>
+    <ellipse cx="220" cy="910" rx="150" ry="60" fill="white" opacity="0.40"/>
+
+    <!-- 雲（下部・右） -->
+    <ellipse cx="880" cy="870" rx="200" ry="85" fill="white" opacity="0.50"/>
+    <ellipse cx="980" cy="895" rx="140" ry="65" fill="white" opacity="0.40"/>
+    <ellipse cx="750" cy="920" rx="170" ry="60" fill="white" opacity="0.38"/>
+
+    <!-- 雲（中央下） -->
+    <ellipse cx="512" cy="960" rx="280" ry="90" fill="white" opacity="0.45"/>
+
+    <!-- オーブ外側グロー（大） -->
+    <circle cx="512" cy="460" r="320" fill="url(#outerGlow)" filter="url(#orbGlowFilter)"/>
+
+    <!-- オーブリム光輪 -->
+    <circle cx="512" cy="460" r="268" fill="none" stroke="#d8eeff" stroke-width="22" opacity="0.55"/>
+    <circle cx="512" cy="460" r="278" fill="none" stroke="#c0deff" stroke-width="8" opacity="0.35"/>
+
+    <!-- オーブ本体 -->
+    <circle cx="512" cy="460" r="255" fill="url(#orbGrad)" filter="url(#orbGlowFilter)"/>
+
+    <!-- オーブ内の光沢ハイライト -->
+    <ellipse cx="455" cy="360" rx="90" ry="55" fill="white" opacity="0.45"/>
+    <ellipse cx="440" cy="348" rx="50" ry="30" fill="white" opacity="0.30"/>
+
+    <!-- スパークル（右上） -->
+    <g filter="url(#sparkleGlow)" opacity="0.9">
+      <line x1="820" y1="155" x2="820" y2="195" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="800" y1="175" x2="840" y2="175" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="807" y1="162" x2="833" y2="188" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="833" y1="162" x2="807" y2="188" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- スパークル（左中） -->
+    <g filter="url(#sparkleGlow)" opacity="0.75" transform="translate(155, 310) scale(0.7)">
+      <line x1="0" y1="-22" x2="0" y2="22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="-22" y1="0" x2="22" y2="0" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="-14" y1="-14" x2="14" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="14" y1="-14" x2="-14" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- スパークル（右下） -->
+    <g filter="url(#sparkleGlow)" opacity="0.7" transform="translate(880, 640) scale(0.55)">
+      <line x1="0" y1="-22" x2="0" y2="22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="-22" y1="0" x2="22" y2="0" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="-14" y1="-14" x2="14" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="14" y1="-14" x2="-14" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- TuneDrop テキスト -->
+    <text
+      x="512"
+      y="490"
+      text-anchor="middle"
+      font-family="'Helvetica Neue', 'Arial', sans-serif"
+      font-size="108"
+      font-weight="700"
+      letter-spacing="-2"
+      fill="#3a6ea8"
+      filter="url(#textGlow)"
+    >TuneDrop</text>
+
+  </g>
+</svg>
