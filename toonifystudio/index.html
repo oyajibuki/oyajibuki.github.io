@@ -27,7 +27,7 @@
   <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
 
   <div class="app-header">
-    <div class="app-icon"><div class="app-icon-emoji">🎨</div></div>
+    <div class="app-icon" id="app-icon"><div class="app-icon-emoji">🎨</div></div>
     <div>
       <h1>Toonify Studio</h1>
       <p class="app-tagline">写真から8枚まとめてスタンプを作る</p>
@@ -35,6 +35,8 @@
   </div>
 
   <p>お気に入りの写真から、スタンプ用の画像素材を<strong>8枚まとめて</strong>作るアプリです。背景の切り抜きも、文字入れも、表情のバリエーションも自動。<strong>写真は端末の外に出ません。</strong></p>
+
+  <p><a class="btn-appstore" href="https://apps.apple.com/jp/app/toonify-studio/id6799540460" target="_blank">App Store で開く</a></p>
 
   <p class="links">
     <a href="/toonifystudio/support.html">サポート / FAQ</a> &nbsp;·&nbsp;
@@ -119,5 +121,9 @@
   <hr>
 
   <footer><p>Toonify Studio &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="/toonifystudio/support.html">サポート</a> &nbsp;·&nbsp; <a href="/toonifystudio/privacy.html">プライバシーポリシー</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
+  <script>
+    document.getElementById('app-icon').innerHTML = '<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b6/c3/de/b6c3de86-cace-6ae8-719b-7a3399ff230c/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/100x100bb.jpg" alt="">';
+  </script>
+
 </body>
 </html>
