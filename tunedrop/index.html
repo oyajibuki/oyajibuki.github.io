@@ -97,6 +97,22 @@
     .bottom-cta .cta small { color: rgba(255,255,255,0.82); }
     .bottom-cta .cta.is-waiting { background: #0ea5e9; border: none; }
 
+    .way-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+    .way {
+      display: block; text-decoration: none; color: inherit;
+      background: #fff; border: 1px solid #e3edf3; border-radius: 20px;
+      padding: 22px 22px 20px; transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .way:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(2,60,95,0.10); }
+    .way-label {
+      display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+      color: #0284c7; background: #e8f6fd; border-radius: 999px; padding: 4px 11px; margin-bottom: 10px;
+    }
+    .way strong { display: block; font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+    .way small { display: block; font-size: 0.82rem; color: #6b8899; line-height: 1.7; }
+    .way.is-old { background: #f7fafc; border-style: dashed; }
+    .way.is-old .way-label { color: #7a8d96; background: #eef2f5; }
+
     footer { text-align: center; font-size: 0.82rem; color: #98a8b0; padding: 40px 24px 56px; }
     footer a { color: #7a8d96; margin: 0 10px; }
   </style>
@@ -171,6 +187,28 @@
     <div class="shots">
       <img src="shot_a.jpg" alt="あなたの分身が、空を漂う">
       <img src="shot_b.jpg" alt="眠っているあいだの話を、朝に持って帰る">
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">遊びかたは3つ</h2>
+    <p class="section-lead">アプリでも、ブラウザでも。むかしの TuneDrop もそのまま残してあります。</p>
+    <div class="way-list">
+      <a class="way" href="https://apps.apple.com/jp/app/tunedrop-%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%8C%E6%BC%82%E3%81%86%E7%A9%BA/id6797012799" target="_blank">
+        <span class="way-label">iPhone / iPad</span>
+        <strong>App Store</strong>
+        <small>通知も日記も揃っています。いちばんおすすめ</small>
+      </a>
+      <a class="way" href="https://oyajibuki.github.io/TuneDrop-app/">
+        <span class="way-label">Web版</span>
+        <strong>ブラウザで遊ぶ</strong>
+        <small>インストール不要。精霊も日記も、アプリと同じ空です</small>
+      </a>
+      <a class="way is-old" href="https://oyajibuki.github.io/TuneDrop/">
+        <span class="way-label">旧バージョン</span>
+        <strong>むかしの TuneDrop</strong>
+        <small>精霊が来る前の、言葉だけが漂っていたころの空</small>
+      </a>
     </div>
   </section>
 
