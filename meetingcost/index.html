@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>会議分給メーター — その会議、いくら溶けてる？</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .lead-figure { background:#f5f5f7; border-radius:12px; padding:20px 24px; margin:20px 0; }
+    .lead-figure p { margin:0 0 8px; font-size:0.9rem; }
+    .lead-figure p:last-child { margin-bottom:0; }
+    .lead-figure b { color:#d92c2c; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/meetingcost/icon.jpg" alt=""></div>
+    <div>
+      <h1>会議分給メーター</h1>
+      <p class="app-tagline">その会議、いくら溶けてる？</p>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;">
+    会議室に10人集まれば、話している間ずっと人件費が発生し続けています。それでも会議は「時間」でしか語られません。
+    会議分給メーターは、その金額をタクシーメーターのようにリアルタイムで可視化するアプリです。
+  </p>
+
+  <div class="lead-figure">
+    <p>年収1,200万円の部長がひとり座っているだけで <b>1分あたり約104円</b></p>
+    <p>10人で1時間の会議なら <b>およそ45,000円</b></p>
+  </div>
+
+  <hr>
+
+  <h2>できること</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">💸</span><div><b>リアルタイムのコスト表示</b><span>0.1秒きざみで金額が動きます。数字が止まらないことが、いちばんの説得力になります。</span></div></li>
+    <li><span class="feature-emoji">🖥</span><div><b>集中画面</b><span>金額と経過時間だけの全画面表示。会議室のプロジェクターやiPadでの投影にも向いています。金額と時間、どちらを大きく出すかも選べます。</span></div></li>
+    <li><span class="feature-emoji">🔔</span><div><b>1時間ごとのチャイム</b><span>時間が過ぎたことを音で知らせます。間隔（10分〜2時間）と音の種類はプレミアムで変更できます。</span></div></li>
+    <li><span class="feature-emoji">🍱</span><div><b>「このコストがあれば◯◯が買えます」</b><span>いま溶けた金額で何が買えるかを表示します。牛丼、飲み会、国内旅行、MacBook——数字だけより効きます。</span></div></li>
+    <li><span class="feature-emoji">📤</span><div><b>結果の共有</b><span>日付・会議時間・参加人数・コストをまとめて、Xやメッセージ、LINEなどに送れます。</span></div></li>
+    <li><span class="feature-emoji">⚙️</span><div><b>自社に合わせた設定</b><span>役職名・想定年収・年間労働時間を編集でき、役職の追加もできます。</span></div></li>
+  </ul>
+
+  <hr>
+
+  <h2>料金</h2>
+  <table class="price-table">
+    <tr><td>無料版<br><span style="font-size:0.8rem;color:#888;">参加人数の設定・メーター作動・集中画面・1時間ごとのチャイム・結果の共有</span></td><td>¥0<br><span style="font-size:0.8rem;color:#888;font-weight:400;">広告あり</span></td></tr>
+    <tr><td>プレミアム<br><span style="font-size:0.8rem;color:#888;">役職と年収の編集・チャイムのカスタマイズ・広告なし</span></td><td>買い切り</td></tr>
+  </table>
+  <p style="font-size:0.85rem;color:#666;margin-top:12px;">プレミアムは買い切りです。自動更新はありません。</p>
+
+  <hr>
+
+  <h2>対応環境</h2>
+  <p style="font-size:0.9rem;">iOS 16.0 以降 / iPhone・iPad 対応 / 縦画面・横画面 対応 / 日本語</p>
+
+  <hr>
+
+  <div class="sub-links">
+    <a href="/meetingcost/support.html">サポート</a>
+    <a href="/meetingcost/privacy.html">プライバシーポリシー</a>
+    <a href="/form/">お問い合わせ</a>
+  </div>
+
+  <footer><p>会議分給メーター &nbsp;·&nbsp; <a href="/">アプリ一覧</a></p></footer>
+</body>
+</html>
