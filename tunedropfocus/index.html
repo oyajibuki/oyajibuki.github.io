@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TuneDrop Focus — 空へ登る集中タイマー</title>
+  <meta name="description" content="集中しているあいだ、あなたの精霊が空を登っていく。青空から夕焼け、星空、そして宇宙へ。25分の集中が、TuneDropの精霊のお金と経験値に変わります。">
+  <meta property="og:title" content="TuneDrop Focus — 空へ登る集中タイマー">
+  <meta property="og:description" content="集中しているあいだ、精霊が空を登る。到達した高度が、そのままごほうびになる。">
+  <meta property="og:image" content="https://oyajibuki.github.io/tunedropfocus/icon.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; object-fit:cover; }
+    .coming { display:inline-block; background:#f0f0f0; color:#666; font-size:0.85rem; font-weight:600; padding:9px 20px; border-radius:10px; margin:16px 0 0; }
+    .sky-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin:20px 0 6px; border-radius:10px; overflow:hidden; }
+    .sky-strip div { height:56px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px; font-size:0.72rem; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.5); }
+    .sky-note { font-size:0.82rem; color:#888; margin-top:0; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .note { background:#fff7e6; border:1px solid #f2dfb4; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.88rem; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/tunedropfocus/icon.png" alt="TuneDrop Focus"></div>
+    <div>
+      <h1>TuneDrop Focus</h1>
+      <p class="app-tagline">空へ登る集中タイマー</p>
+    </div>
+  </div>
+
+  <span class="coming">App Store 公開準備中</span>
+
+  <p style="margin-top:20px;">
+    決めた時間だけ、集中する。ただそれだけのタイマーです。<br>
+    「はじめる」を押すと、あなたの精霊が空を登りはじめます。
+  </p>
+
+  <div class="sky-strip">
+    <div style="background:linear-gradient(to bottom,#38bdf8,#bae6fd)">青空 0m</div>
+    <div style="background:linear-gradient(to bottom,#344aa8,#ffb46e)">成層圏</div>
+    <div style="background:linear-gradient(to bottom,#0d1236,#a43a71)">星空</div>
+    <div style="background:linear-gradient(to bottom,#040412,#122e68)">宇宙 100,000m</div>
+  </div>
+  <p class="sky-note">境目はありません。色そのものが少しずつ移り変わるので、気づいたら空が変わっています。</p>
+
+  <hr>
+
+  <h2>集中を切らせない画面</h2>
+  <p>メイン画面にあるのは、残り時間・到達高度・所持金・時間の切り替え・はじめる／やめる、それだけです。
+     お知らせもバッジも、ショップへの導線も置いていません。</p>
+
+  <hr>
+
+  <h2>途中でやめても、ゼロにはならない</h2>
+  <p>登ったところまでの高度に応じて、お金と経験値が入ります。
+     最後まで登りきったときだけ、経験値に1.5倍のボーナスが付きます。
+     「やめたら全部消える」という作りにはしていません。</p>
+
+  <hr>
+
+  <h2>できること</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">🕊️</span><div><b>16種類の精霊から選ぶ</b><span>ログインなしでも、すぐにはじめられます</span></div></li>
+    <li><span class="feature-emoji">⏱️</span><div><b>5分〜240分、自由な長さ</b><span>25分・60分・120分のほか、5分きざみで手動設定できます</span></div></li>
+    <li><span class="feature-emoji">🎵</span><div><b>集中中の音楽</b><span>3曲から選べます。曲名は出しません。画面を消しても鳴り続けます</span></div></li>
+    <li><span class="feature-emoji">🔔</span><div><b>終了時の通知</b><span>アプリを閉じているときだけ届きます。開いていれば画面にそのまま結果が出ます</span></div></li>
+    <li><span class="feature-emoji">📱</span><div><b>閉じても止まらない</b><span>タイマーは開始・終了時刻で動いているので、画面を消しても正しく進みます</span></div></li>
+  </ul>
+
+  <hr>
+
+  <h2>TuneDropの精霊と、そのままつながる</h2>
+  <p>ログインすると、TuneDrop（SNS版）の診断で決まったあなたの精霊が出てきます。
+     集中して得たお金と経験値は、SNS版の同じ精霊にそのまま入ります。
+     Focusで貯めたお金で、SNS版のショップの帽子やマフラーを買えます。</p>
+  <p>ログインしなくても使えます。その場合は16種類の精霊から好きな1体を選び、
+     記録はその端末のなかにだけ残ります。</p>
+
+  <div class="note">
+    広告もトラッキングSDKも入れていません。App内課金もありません。
+  </div>
+
+  <div class="sub-links">
+    <a href="/tunedropfocus/support.html">サポート</a>
+    <a href="/tunedropfocus/privacy.html">プライバシーポリシー</a>
+    <a href="/tunedropfocus/terms.html">利用規約</a>
+  </div>
+
+  <footer>© oyajibuki</footer>
+</body>
+</html>
