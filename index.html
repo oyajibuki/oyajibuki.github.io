@@ -1,423 +1,491 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>oyajibuki — iOSアプリ一覧</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
-      color: #1a1a1a;
-      line-height: 1.6;
-      background: #fff;
-    }
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 48px;
-    }
-    .profile-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .profile-name { font-size: 1.3rem; font-weight: 700; margin: 0; }
-    .profile-sub { font-size: 0.9rem; color: #666; margin: 2px 0 0; }
-    h2.section-label { font-size: 0.85rem; color: #999; font-weight: 600; margin: 0 0 20px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
-    .app-card {
-      border: 1px solid #e8e8e8;
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #fafafa;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .app-card:hover { border-color: #bbb; background: #fff; }
-    .app-card-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .app-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 14px;
-      background: #e8e8e8;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-    .app-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .app-icon-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-    }
-    .app-name { font-size: 1rem; font-weight: 700; margin: 0; }
-    .app-category { font-size: 0.8rem; color: #888; margin: 2px 0 0; }
-    .app-desc { font-size: 0.85rem; color: #555; margin: 0; line-height: 1.55; }
-    .app-links {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: auto;
-      align-items: center;
-    }
-    .btn-appstore {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #1a1a1a;
-      color: #fff !important;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-    .btn-appstore:hover { background: #333; text-decoration: none; }
-    .btn-support {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #f0f0f0;
-      color: #333 !important;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-    .btn-support:hover { background: #e0e0e0; text-decoration: none; }
-    .badge-wip {
-      display: inline-flex;
-      align-items: center;
-      background: #eef6ff;
-      color: #0369a1;
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 7px 14px;
-      border-radius: 8px;
-    }
-    hr { border: none; border-top: 1px solid #e8e8e8; margin: 48px 0; }
-    footer { font-size: 0.82rem; color: #aaa; text-align: center; }
-    footer a { color: #aaa; }
-    @media (max-width: 500px) {
-      .apps-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oyajibuki — iOSアプリ 100本チャレンジ</title>
+<meta name="description" content="個人開発者 Asagiri（oyajibuki）が公開したiOSアプリの一覧と審査状況、ダウンロード実績。">
+<meta property="og:title" content="oyajibuki — iOSアプリ 100本チャレンジ">
+<meta property="og:description" content="ひとりで作って、ひとりで出す。iOSアプリ100本チャレンジの進捗ログ。">
+<meta property="og:type" content="website">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --bg:#ffffff; --bg2:#f6f7fb; --text:#14151a; --sub:#6b6f7a; --line:#e6e8ee;
+    --card:#fbfbfd; --accent:#3b6cf6; --accent2:#7b3bf6;
+    --ok:#0f9d58; --wait:#c77700; --idea:#8b5cf6;
+    --okbg:#e8f7ee; --waitbg:#fdf3e0; --ideabg:#f3eeff;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0d0f16; --bg2:#12151f; --text:#f2f3f7; --sub:#9aa0ad; --line:#252a37;
+      --card:#141824; --okbg:rgba(15,157,88,.16); --waitbg:rgba(199,119,0,.18); --ideabg:rgba(139,92,246,.16);
+      --ok:#4ade80; --wait:#fbbf24; --idea:#c4b5fd;}
+  }
+  body{margin:0;background:var(--bg);color:var(--text);line-height:1.6;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;color:#fff;
+    background:#0b1122;
+    background-image:
+      radial-gradient(1100px 460px at 82% -12%, rgba(56,214,200,.42), transparent 62%),
+      radial-gradient(900px 520px at 6% 108%, rgba(88,110,255,.42), transparent 60%),
+      linear-gradient(150deg, #0b1122 0%, #14224a 46%, #1d3f74 100%);
+    border-radius:0 0 28px 28px;padding:44px 20px 34px;margin-bottom:26px}
+  .hero::after{content:"";position:absolute;inset:auto 0 0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(120,220,215,.55),transparent)}
+  .hero-in{max-width:960px;margin:0 auto}
+  .hero-top{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .avatar{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0}
+  .hero-name{font-size:1.15rem;font-weight:800;margin:0;letter-spacing:.02em}
+  .hero-role{font-size:.82rem;margin:1px 0 0;opacity:.82}
+  .hero-title{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:800;margin:0 0 6px;letter-spacing:-.01em}
+  .hero-lead{font-size:.9rem;opacity:.88;margin:0 0 22px;max-width:34em}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 10px;text-align:center;backdrop-filter:blur(4px)}
+  .stat-v{font-size:1.6rem;font-weight:800;line-height:1.1}
+  .stat-l{font-size:.68rem;opacity:.85;margin-top:3px;letter-spacing:.03em}
+  .gauge{margin-top:16px}
+  .gauge-bar{height:8px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden}
+  .gauge-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#7dd3fc,#38d6c8)}
+  .gauge-lbl{font-size:.72rem;opacity:.85;margin-top:6px;display:flex;justify-content:space-between}
+  @media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+  /* Tabs */
+  .tabs{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);
+    display:flex;gap:4px;overflow-x:auto;padding:8px 0;margin-bottom:22px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--sub);
+    font:inherit;font-size:.83rem;font-weight:700;padding:8px 15px;border-radius:99px;cursor:pointer;white-space:nowrap}
+  .tab:hover{color:var(--text)}
+  .tab[aria-selected="true"]{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .tab .n{font-weight:600;opacity:.75;margin-left:5px}
+
+  .sec-note{font-size:.83rem;color:var(--sub);margin:0 0 18px}
+  h2.label{font-size:.78rem;color:var(--sub);font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin:34px 0 14px}
+
+  /* App grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .app{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--card);
+    display:flex;flex-direction:column;gap:11px;transition:border-color .15s,transform .15s}
+  .app:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .app-hd{display:flex;align-items:center;gap:13px}
+  .icon{width:58px;height:58px;border-radius:14px;background:var(--bg2);flex-shrink:0;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;font-size:26px}
+  .icon img{width:100%;height:100%;object-fit:cover;display:block}
+  .app-name{font-size:.98rem;font-weight:800;margin:0}
+  .app-cat{font-size:.75rem;color:var(--sub);margin:2px 0 0}
+  .no{font-size:.68rem;font-weight:800;color:var(--sub);background:var(--bg2);border:1px solid var(--line);
+    border-radius:6px;padding:1px 6px;margin-right:6px}
+  .desc{font-size:.84rem;color:var(--sub);margin:0}
+  .rows{display:flex;flex-direction:column;gap:5px;border-top:1px dashed var(--line);padding-top:10px;margin-top:2px}
+  .row{display:flex;gap:8px;font-size:.75rem;align-items:baseline}
+  .row-k{color:var(--sub);flex:0 0 6.6em}
+  .row-v{color:var(--text);flex:1;word-break:break-word}
+  .row-v a{color:var(--accent);text-decoration:none}
+  .row-v a:hover{text-decoration:underline}
+  .pill{display:inline-block;font-size:.7rem;font-weight:800;padding:2px 9px;border-radius:99px}
+  .p-ok{background:var(--okbg);color:var(--ok)}
+  .p-wait{background:var(--waitbg);color:var(--wait)}
+  .p-idea{background:var(--ideabg);color:var(--idea)}
+  .links{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+  .b{display:inline-flex;align-items:center;font-size:.78rem;font-weight:700;padding:7px 13px;border-radius:9px;text-decoration:none}
+  .b1{background:var(--text);color:var(--bg)}
+  .b2{background:var(--bg2);color:var(--text);border:1px solid var(--line)}
+  .b:hover{opacity:.85}
+
+  /* Log tab */
+  .chart{display:flex;align-items:flex-end;gap:8px;height:170px;padding:10px 4px 0;
+    border-bottom:1px solid var(--line);overflow-x:auto}
+  .bar-w{flex:1 0 42px;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+  .bar{width:100%;border-radius:7px 7px 0 0;background:linear-gradient(180deg,#4c8dff,#2fbfae);min-height:4px}
+  .bar.w{background:linear-gradient(180deg,#f0a23a,#e5654a);opacity:.85}
+  .bar-n{font-size:.72rem;font-weight:800}
+  .bar-m{font-size:.68rem;color:var(--sub);white-space:nowrap}
+  .tl{list-style:none;margin:0;padding:0 0 0 18px;border-left:2px solid var(--line)}
+  .tl li{position:relative;padding:0 0 16px 14px}
+  .tl li::before{content:"";position:absolute;left:-23px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:var(--accent);border:2px solid var(--bg)}
+  .tl-d{font-size:.72rem;color:var(--sub);font-weight:700}
+  .tl-t{font-size:.9rem;font-weight:700}
+  .share{margin-top:26px;border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--card)}
+  .share h3{margin:0 0 8px;font-size:.9rem}
+  .share pre{white-space:pre-wrap;font-size:.8rem;color:var(--sub);background:var(--bg2);border-radius:10px;padding:12px;margin:0 0 10px;font-family:inherit}
+  .copy{font:inherit;font-size:.78rem;font-weight:700;padding:8px 15px;border-radius:9px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+
+  /* Money */
+  .money-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:8px}
+  .m{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card)}
+  .m-l{font-size:.72rem;color:var(--sub);font-weight:700;letter-spacing:.04em}
+  .m-v{font-size:1.45rem;font-weight:800;margin-top:3px;letter-spacing:-.02em}
+  .m-s{font-size:.7rem;color:var(--sub);margin-top:2px}
+  .m.hero-m{background:linear-gradient(135deg,#14224a,#1d3f74);border-color:transparent;color:#fff}
+  .m.hero-m .m-l,.m.hero-m .m-s{color:rgba(255,255,255,.75)}
+  .m-neg{color:#e5654a}
+  .tbl-w{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:.82rem;min-width:520px}
+  th,td{padding:10px 13px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{font-size:.72rem;color:var(--sub);font-weight:700;letter-spacing:.04em}
+  th:first-child,td:first-child{text-align:left}
+  tbody tr:last-child td{border-bottom:none}
+  tfoot td{font-weight:800;background:var(--bg2)}
+  .num{font-variant-numeric:tabular-nums}
+  .notice{border:1px dashed var(--line);border-radius:14px;padding:14px 16px;font-size:.8rem;color:var(--sub);
+    background:var(--bg2);margin-bottom:18px}
+  .notice b{color:var(--text)}
+  footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);font-size:.8rem;color:var(--sub);text-align:center}
+  footer a{color:var(--sub)}
+  [hidden]{display:none!important}
+</style>
 </head>
 <body>
 
-  <div class="profile">
-    <div class="profile-avatar">A</div>
-    <div>
-      <p class="profile-name">Asagiri</p>
-      <p class="profile-sub">iOS App Developer</p>
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-top">
+      <div class="avatar">A</div>
+      <div>
+        <p class="hero-name">Asagiri</p>
+        <p class="hero-role">個人開発者 / iOS App Developer</p>
+      </div>
+    </div>
+    <h1 class="hero-title">iOSアプリ 100本チャレンジ</h1>
+    <p class="hero-lead">ひとりで作って、ひとりで出す。公開したアプリと、いま審査に出しているアプリを、リリース順にぜんぶ並べています。</p>
+    <div class="stats" id="stats"></div>
+    <div class="gauge">
+      <div class="gauge-bar"><div class="gauge-fill" id="gaugeFill"></div></div>
+      <div class="gauge-lbl"><span id="gaugeL"></span><span>目標 100本</span></div>
     </div>
   </div>
+</header>
 
-  <h2 class="section-label">Apps</h2>
-
-  <div class="apps-grid">
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon"><img src="/meetingcost/icon.jpg" alt=""></div>
-        <div>
-          <p class="app-name">会議分給メーター</p>
-          <p class="app-category">ビジネス</p>
-        </div>
-      </div>
-      <p class="app-desc">会議中に消えていく人件費をタクシーメーターのように表示。参加者の役職と人数を入れるだけ。1時間ごとのチャイムで長引く会議に気づけます。</p>
-      <div class="app-links">
-        <!-- 公開後にここを差し替え:
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/idXXXXXXXXXX" target="_blank">App Store</a>
-        -->
-        <span class="badge-wip">審査申請中</span>
-        <a class="btn-support" href="/meetingcost/">紹介ページ</a>
-        <a class="btn-support" href="/meetingcost/support.html">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-toonify"></div>
-        <div>
-          <p class="app-name">Toonify Studio</p>
-          <p class="app-category">写真/ビデオ</p>
-        </div>
-      </div>
-      <p class="app-desc">写真を選ぶだけで背景を切り抜き、文字入れまで自動。1枚の写真から表情違いの8枚がそろう、LINEスタンプ用の素材メーカー。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/toonify-studio/id6799540460" target="_blank">App Store</a>
-        <a class="btn-support" href="/toonifystudio/">紹介ページ</a>
-        <a class="btn-support" href="/toonifystudio/support.html">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-tunedrop"></div>
-        <div>
-          <p class="app-name">TuneDrop</p>
-          <p class="app-category">ソーシャルネットワーキング</p>
-        </div>
-      </div>
-      <p class="app-desc">診断でうまれたあなたの分身が空を漂い、寝ているあいだに人の気持ちに触れて、朝に日記を持って帰ってきます。放った言葉は24時間で消えます。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/tunedrop-%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%8C%E6%BC%82%E3%81%86%E7%A9%BA/id6797012799" target="_blank">App Store</a>
-        <a class="btn-support" href="/tunedrop/">紹介ページ</a>
-        <a class="btn-support" href="/tunedrop/support.html">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon"><img src="/tunedropfocus/icon.png" alt="TuneDrop Focus"></div>
-        <div>
-          <p class="app-name">TuneDrop Focus</p>
-          <p class="app-category">仕事効率化</p>
-        </div>
-      </div>
-      <p class="app-desc">集中しているあいだ、あなたの精霊が空を登っていく。青空から夕焼け、星空、そして宇宙へ。到達した高度が、そのままTuneDropの精霊のお金と経験値になります。</p>
-      <div class="app-links">
-        <a class="btn-support" href="/tunedropfocus/">紹介ページ</a>
-        <a class="btn-support" href="/tunedropfocus/support.html">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon"><img src="/angerbox/icon.png" alt="怒り箱 AngerBOX"></div>
-        <div>
-          <p class="app-name">怒り箱 AngerBOX</p>
-          <p class="app-category">ヘルスケア/フィットネス</p>
-        </div>
-      </div>
-      <p class="app-desc">マジでブチギレ5秒前に開くアプリ。叩く・爆破する・破く・溶かす・混ぜる・消す。6通りのやり方で怒りをぶつけ、その記録をあとから振り返れます。</p>
-      <div class="app-links">
-        <a class="btn-support" href="/angerbox/">紹介ページ</a>
-        <a class="btn-support" href="/angerbox/support.html">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon"><img src="/nonstop/icon.png" alt="NonStop"></div>
-        <div>
-          <p class="app-name">NonStop</p>
-          <p class="app-category">ミュージック</p>
-        </div>
-      </div>
-      <p class="app-desc">DJミックスやMIXテープの繋ぎ目をなくす音楽プレイヤー。ギャップレス再生とクロスフェードを設定ひとつで切り替えられます。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/nonstop-%E7%B9%8B%E3%81%8E%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC/id6794858698" target="_blank">App Store</a>
-        <a class="btn-support" href="/nonstop/">紹介ページ</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-trustgps"></div>
-        <div>
-          <p class="app-name">TrustGPS</p>
-          <p class="app-category">ナビゲーション</p>
-        </div>
-      </div>
-      <p class="app-desc">必要な期間だけ現在地をリアルタイム共有。期限が来たら自動終了、位置情報はサーバーに保存しません。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/trustgps-%E6%9C%9F%E9%99%90%E4%BB%98%E3%81%8D%E4%BD%8D%E7%BD%AE%E6%83%85%E5%A0%B1%E5%85%B1%E6%9C%89/id6790150188" target="_blank">App Store</a>
-        <a class="btn-support" href="/trustgps/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-simpleunzip"></div>
-        <div>
-          <p class="app-name">シンプル解凍</p>
-          <p class="app-category">ユーティリティ</p>
-        </div>
-      </div>
-      <p class="app-desc">zip・7z・tar・gzip・bzip2・xzをタップひとつで解凍。広告なし・買い切りでまとめて解凍や保存先指定もできます。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/simpleunzip-%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E8%A7%A3%E5%87%8D/id6788384543" target="_blank">App Store</a>
-        <a class="btn-support" href="/simpleunzip/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-simplesubsc"></div>
-        <div>
-          <p class="app-name">シンプルサブスク管理</p>
-          <p class="app-category">ファイナンス</p>
-        </div>
-      </div>
-      <p class="app-desc">サブスクを日額換算して固定費のムダに気づく。解約シミュレーションで節約効果もひと目でわかります。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/simplesubsc-%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E3%82%B5%E3%83%96%E3%82%B9%E3%82%AF%E7%AE%A1%E7%90%86/id6789902889" target="_blank">App Store</a>
-        <a class="btn-support" href="/Subsc/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-appguard"></div>
-        <div>
-          <p class="app-name">AppGuard</p>
-          <p class="app-category">仕事効率化</p>
-        </div>
-      </div>
-      <p class="app-desc">使いたくないアプリをワンタップでロック。パスコードとFace IDでスマホ依存を断ち、集中できる毎日へ。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/appguard-%E3%82%B9%E3%83%9E%E3%83%9B%E5%88%B6%E9%99%90%E3%83%AD%E3%83%83%E3%82%AF/id6785254908" target="_blank">App Store</a>
-        <a class="btn-support" href="/appguard/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-hold"></div>
-        <div>
-          <p class="app-name">HOLD — PlunkTimer</p>
-          <p class="app-category">フィットネス</p>
-        </div>
-      </div>
-      <p class="app-desc">プランクの記録をシンプルに管理。タイマーで計測し、カレンダーで履歴を確認できます。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/hold-plunktimer/id6769427890" target="_blank">App Store</a>
-        <a class="btn-support" href="/hold/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-danshu"></div>
-        <div>
-          <p class="app-name">断酒クエスト</p>
-          <p class="app-category">ヘルスケア</p>
-        </div>
-      </div>
-      <p class="app-desc">断酒の継続をRPGで楽しく。禁酒日数を積み重ねてキャラクターを成長させましょう。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E6%96%AD%E9%85%92%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6764613044" target="_blank">App Store</a>
-        <a class="btn-support" href="/danshuquest/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-undo"></div>
-        <div>
-          <p class="app-name">運動クエスト</p>
-          <p class="app-category">フィットネス</p>
-        </div>
-      </div>
-      <p class="app-desc">毎日15分の運動をRPGゲームで習慣化。スタミナ・筋力HPがリアルタイムで成長します。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E9%81%8B%E5%8B%95%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6765534901" target="_blank">App Store</a>
-        <a class="btn-support" href="/undoquest/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-benkyo"></div>
-        <div>
-          <p class="app-name">勉強クエスト</p>
-          <p class="app-category">教育</p>
-        </div>
-      </div>
-      <p class="app-desc">毎日の勉強をRPGゲームで習慣化。科目を選んで学習時間を記録し、伝説の学習者を目指せ。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E5%8B%89%E5%BC%B7%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6765785966" target="_blank">App Store</a>
-        <a class="btn-support" href="/benkyoquest/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-devkeep"></div>
-        <div>
-          <p class="app-name">DevKeep</p>
-          <p class="app-category">仕事効率化</p>
-        </div>
-      </div>
-      <p class="app-desc">開発者向けのコードスニペット管理アプリ。よく使うコードをすばやく保存・検索できます。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/devkeep/id6777493725" target="_blank">App Store</a>
-        <a class="btn-support" href="/devkeep/">サポート</a>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="app-card-header">
-        <div class="app-icon" id="icon-geoalame"></div>
-        <div>
-          <p class="app-name">GEOAlame</p>
-          <p class="app-category">ナビゲーション</p>
-        </div>
-      </div>
-      <p class="app-desc">目的地に近づくと自動でアラームが鳴る位置情報アラームアプリ。乗り過ごしを防ぎます。</p>
-      <div class="app-links">
-        <a class="btn-appstore" href="https://apps.apple.com/jp/app/%E3%82%B8%E3%82%AA%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0geoalame-%E5%A0%B4%E6%89%80%E3%81%A7%E8%B5%B7%E3%81%93%E3%81%99%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0/id6781700974" target="_blank">App Store</a>
-        <a class="btn-support" href="/geoalame/">紹介ページ</a>
-        <a class="btn-support" href="https://vaulted-brisket-501.notion.site/GEO-Alame-3834f322121880379de9fcca21609c88" target="_blank">サポート</a>
-      </div>
-    </div>
-
-  </div>
-
-  <hr>
+<div class="wrap">
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+  <main id="view"></main>
 
   <footer>
-    <p>© Asagiri &nbsp;·&nbsp; <a href="https://apps.apple.com/jp/developer/motoki-seki/id1895850085" target="_blank">App Store Developer Page</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p>
+    <p>© Asagiri &nbsp;·&nbsp;
+      <a href="https://apps.apple.com/jp/developer/motoki-seki/id1895850085" target="_blank">App Store Developer Page</a> &nbsp;·&nbsp;
+      <a href="https://x.com/Oyajibuki" target="_blank">X @Oyajibuki</a> &nbsp;·&nbsp;
+      <a href="/form/">お問い合わせ</a></p>
+    <p id="upd"></p>
   </footer>
+</div>
 
-  <script>
-    const icons = {
-      'toonify': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b6/c3/de/b6c3de86-cace-6ae8-719b-7a3399ff230c/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/100x100bb.jpg',
-      'tunedrop': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/5d/41/06/5d4106b8-1d75-6802-ad5e-75429453deac/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'trustgps': 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/c7/df/4b/c7df4baf-02dd-8415-f444-8f8c78d15e9e/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'simpleunzip': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/6a/e8/d1/6ae8d171-a64d-72e0-e807-8ac4f391bfd8/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'simplesubsc': 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/7b/19/c8/7b19c87d-c36f-1aa4-2bad-12daa96890de/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'appguard':'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b0/dd/a9/b0dda90a-2114-3467-38e3-db3147984f12/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'hold':'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg',
-      'danshu':  'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/36/2d/48362da3-7ddb-e886-2481-30d43497f5e2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'undo':    'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/86/32/0d/86320df4-befd-58a0-80f9-d994eff510c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'benkyo':  'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/1c/b5/62/1cb5629e-4e58-3a30-ab93-a9c475b8d954/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'devkeep':  'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f2/d5/4d/f2d54de0-7b21-4c3c-d750-099c05693496/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
-      'geoalame': 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/d3/12/9c/d3129c87-bbca-6da6-5f45-03287aa58a3e/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/100x100bb.jpg',
-    };
-    Object.entries(icons).forEach(([id, src]) => {
-      const el = document.getElementById(`icon-${id}`);
-      if (el) el.innerHTML = `<img src="${src}" alt="">`;
-    });
-  </script>
+<script>
+/* ============================================================
+   データ — 更新はここだけ触ればOK
+   status: 'released'（公開済み） / 'review'（審査・申請中）
+   account: アプリ内アカウント登録の要否
+   dev:     配信元のApple Developerアカウント
+   ============================================================ */
+/* ── ダウンロード実績 ──────────────────────────────────────
+   出典: App Store Connect の売上レポート（2026/4/1〜9/4）
+   dl   = 新規ダウンロード数
+   redl = 更新・再ダウンロード数
+   ※ 金額はこのサイトには載せません。
+   ------------------------------------------------------- */
+const SHOW_STATS = true;
 
+const STATS = {
+  updated: '2026-09-04',
+  period : '2026年4月1日〜9月4日',
+  apps: {
+    1 : { dl: 63, redl: 81 },
+    2 : { dl: 12, redl:  4 },
+    3 : { dl:  6, redl:  2 },
+    4 : { dl: 15, redl: 33 },
+    5 : { dl: 16, redl:  3 },
+    6 : { dl: 64, redl:139 },
+    7 : { dl: 13, redl:  7 },
+    8 : { dl:  9, redl:  4 },
+    9 : { dl:  6, redl:  1 },
+    10: { dl:  9, redl:  0 },
+    11: { dl: 14, redl:  8 },
+    12: { dl:  6, redl:  0 },
+    13: { dl:  6, redl:  4 },
+  },
+  monthly: [
+    { m:'2026-04', dl:  1 },
+    { m:'2026-05', dl: 22 },
+    { m:'2026-06', dl: 70 },
+    { m:'2026-07', dl: 59 },
+    { m:'2026-08', dl: 69 },
+    { m:'2026-09', dl: 18, partial:true },
+  ],
+};
+
+const ICON = 'https://is1-ssl.mzstatic.com/image/thumb/';
+
+const APPS = [
+  { no:1, name:'断酒クエスト', cat:'ヘルスケア', date:'2026-04-30', status:'released',
+    desc:'断酒の継続をRPGで楽しく。禁酒日数を積み重ねてキャラクターを成長させましょう。',
+    icon:ICON+'Purple211/v4/48/36/2d/48362da3-7ddb-e886-2481-30d43497f5e2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/%E6%96%AD%E9%85%92%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6764613044',
+    links:[{t:'サポート',u:'/danshuquest/'}], account:'不要（端末内で完結）' },
+
+  { no:2, name:'運動クエスト', cat:'フィットネス', date:'2026-05-04', status:'released',
+    desc:'毎日15分の運動をRPGゲームで習慣化。スタミナ・筋力HPがリアルタイムで成長します。',
+    icon:ICON+'Purple211/v4/86/32/0d/86320df4-befd-58a0-80f9-d994eff510c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/%E9%81%8B%E5%8B%95%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6765534901',
+    links:[{t:'サポート',u:'/undoquest/'}], account:'不要（端末内で完結）' },
+
+  { no:3, name:'勉強クエスト', cat:'教育', date:'2026-05-05', status:'released',
+    desc:'毎日の勉強をRPGゲームで習慣化。科目を選んで学習時間を記録し、伝説の学習者を目指せ。',
+    icon:ICON+'Purple221/v4/1c/b5/62/1cb5629e-4e58-3a30-ab93-a9c475b8d954/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/%E5%8B%89%E5%BC%B7%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6765785966',
+    links:[{t:'サポート',u:'/benkyoquest/'}], account:'不要（端末内で完結）' },
+
+  { no:4, name:'HOLD — PlunkTimer', cat:'フィットネス', date:'2026-06-08', status:'released',
+    desc:'プランクの記録をシンプルに管理。タイマーで計測し、カレンダーで履歴を確認できます。',
+    icon:ICON+'Purple221/v4/8d/d8/c5/8dd8c5f2-2391-d515-21bb-c58810695360/AppIcon-0-0-1x_U007ephone-0-1-85-220.jpeg/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/hold-plunktimer/id6769427890',
+    links:[{t:'サポート',u:'/hold/'}], account:'不要（端末内で完結）' },
+
+  { no:5, name:'DevKeep', cat:'仕事効率化', date:'2026-06-10', status:'released',
+    desc:'開発者向けのコードスニペット管理アプリ。よく使うコードをすばやく保存・検索できます。',
+    icon:ICON+'Purple211/v4/f2/d5/4d/f2d54de0-7b21-4c3c-d750-099c05693496/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/devkeep/id6777493725',
+    links:[{t:'サポート',u:'/devkeep/'}], account:'不要（端末内で完結）' },
+
+  { no:6, name:'ジオアラーム（GEOAlame）', cat:'ナビゲーション', date:'2026-06-23', status:'released',
+    desc:'目的地に近づくと自動でアラームが鳴る位置情報アラームアプリ。乗り過ごしを防ぎます。',
+    icon:ICON+'Purple221/v4/d3/12/9c/d3129c87-bbca-6da6-5f45-03287aa58a3e/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/%E3%82%B8%E3%82%AA%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0geoalame-%E5%A0%B4%E6%89%80%E3%81%A7%E8%B5%B7%E3%81%93%E3%81%99%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0/id6781700974',
+    links:[{t:'紹介ページ',u:'/geoalame/'},{t:'サポート',u:'https://vaulted-brisket-501.notion.site/GEO-Alame-3834f322121880379de9fcca21609c88'}],
+    account:'不要（端末内で完結）' },
+
+  { no:7, name:'AppGuard', cat:'仕事効率化', date:'2026-07-02', status:'released',
+    desc:'使いたくないアプリをワンタップでロック。パスコードとFace IDでスマホ依存を断ち、集中できる毎日へ。',
+    icon:ICON+'Purple211/v4/b0/dd/a9/b0dda90a-2114-3467-38e3-db3147984f12/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/appguard-%E3%82%B9%E3%83%9E%E3%83%9B%E5%88%B6%E9%99%90%E3%83%AD%E3%83%83%E3%82%AF/id6785254908',
+    links:[{t:'サポート',u:'/appguard/'}], account:'不要（端末内で完結）' },
+
+  { no:8, name:'TrustGPS', cat:'ナビゲーション', date:'2026-07-14', status:'released',
+    desc:'必要な期間だけ現在地をリアルタイム共有。期限が来たら自動終了、位置情報はサーバーに保存しません。',
+    icon:ICON+'Purple221/v4/c7/df/4b/c7df4baf-02dd-8415-f444-8f8c78d15e9e/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/trustgps-%E6%9C%9F%E9%99%90%E4%BB%98%E3%81%8D%E4%BD%8D%E7%BD%AE%E6%83%85%E5%A0%B1%E5%85%B1%E6%9C%89/id6790150188',
+    links:[{t:'サポート',u:'/trustgps/'}], account:'不要（アカウント登録なしで利用可）' },
+
+  { no:9, name:'シンプルサブスク管理', cat:'ファイナンス', date:'2026-07-15', status:'released',
+    desc:'サブスクを日額換算して固定費のムダに気づく。解約シミュレーションで節約効果もひと目でわかります。',
+    icon:ICON+'Purple211/v4/7b/19/c8/7b19c87d-c36f-1aa4-2bad-12daa96890de/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/simplesubsc-%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E3%82%B5%E3%83%96%E3%82%B9%E3%82%AF%E7%AE%A1%E7%90%86/id6789902889',
+    links:[{t:'サポート',u:'/Subsc/'}], account:'不要（端末内で完結）' },
+
+  { no:10, name:'シンプル解凍', cat:'ユーティリティ', date:'2026-07-15', status:'released',
+    desc:'zip・7z・tar・gzip・bzip2・xzをタップひとつで解凍。広告なし・買い切りでまとめて解凍や保存先指定もできます。',
+    icon:ICON+'Purple211/v4/6a/e8/d1/6ae8d171-a64d-72e0-e807-8ac4f391bfd8/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/simpleunzip-%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E8%A7%A3%E5%87%8D/id6788384543',
+    links:[{t:'サポート',u:'/simpleunzip/'}], account:'不要（端末内で完結）' },
+
+  { no:11, name:'NonStop — 繋ぎミュージックプレイヤー', cat:'ミュージック', date:'2026-07-31', status:'released',
+    desc:'DJミックスやMIXテープの繋ぎ目をなくす音楽プレイヤー。ギャップレス再生とクロスフェードを設定ひとつで切り替えられます。',
+    icon:'/nonstop/icon.png',
+    store:'https://apps.apple.com/jp/app/nonstop-%E7%B9%8B%E3%81%8E%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC/id6794858698',
+    links:[{t:'紹介ページ',u:'/nonstop/'}], account:'不要（アカウント登録なしで利用可）' },
+
+  { no:12, name:'Toonify Studio', cat:'写真/ビデオ', date:'2026-08-19', status:'released',
+    desc:'写真を選ぶだけで背景を切り抜き、文字入れまで自動。1枚の写真から表情違いの8枚がそろう、LINEスタンプ用の素材メーカー。',
+    icon:ICON+'Purple211/v4/b6/c3/de/b6c3de86-cace-6ae8-719b-7a3399ff230c/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/toonify-studio/id6799540460',
+    links:[{t:'紹介ページ',u:'/toonifystudio/'},{t:'サポート',u:'/toonifystudio/support.html'}],
+    account:'不要（端末内で完結）' },
+
+  { no:13, name:'TuneDrop — 気持ちが漂う空', cat:'ソーシャルネットワーキング', date:'2026-08-19', status:'released',
+    desc:'診断でうまれたあなたの分身が空を漂い、寝ているあいだに人の気持ちに触れて、朝に日記を持って帰ってきます。放った言葉は24時間で消えます。',
+    icon:ICON+'Purple211/v4/5d/41/06/5d4106b8-1d75-6802-ad5e-75429453deac/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/tunedrop-%E6%B0%97%E6%8C%81%E3%81%A1%E3%81%8C%E6%BC%82%E3%81%86%E7%A9%BA/id6797012799',
+    links:[{t:'紹介ページ',u:'/tunedrop/'},{t:'サポート',u:'/tunedrop/support.html'}],
+    account:'必要（アプリ内アカウント／退会機能あり）' },
+
+  /* ── 審査・申請中 ── */
+  { no:14, name:'TuneDrop Focus', cat:'仕事効率化', date:'', status:'review',
+    desc:'集中しているあいだ、あなたの精霊が空を登っていく。青空から夕焼け、星空、そして宇宙へ。到達した高度が、そのままTuneDropの精霊のお金と経験値になります。',
+    icon:'/tunedropfocus/icon.png',
+    links:[{t:'紹介ページ',u:'/tunedropfocus/'},{t:'サポート',u:'/tunedropfocus/support.html'}],
+    account:'必要（TuneDrop と同じアカウント基盤）' },
+
+  { no:15, name:'会議分給メーター', cat:'ビジネス', date:'', status:'review',
+    desc:'会議中に消えていく人件費をタクシーメーターのように表示。参加者の役職と人数を入れるだけ。1時間ごとのチャイムで長引く会議に気づけます。',
+    icon:'/meetingcost/icon.jpg',
+    links:[{t:'紹介ページ',u:'/meetingcost/'},{t:'サポート',u:'/meetingcost/support.html'}],
+    account:'不要（端末内で完結）' },
+
+  { no:16, name:'怒り箱 AngerBOX', cat:'ヘルスケア/フィットネス', date:'', status:'review',
+    desc:'マジでブチギレ5秒前に開くアプリ。叩く・爆破する・破く・溶かす・混ぜる・消す。6通りのやり方で怒りをぶつけ、その記録をあとから振り返れます。',
+    icon:'/angerbox/icon.png',
+    links:[{t:'紹介ページ',u:'/angerbox/'},{t:'サポート',u:'/angerbox/support.html'}],
+    account:'不要（端末内で完結）' },
+];
+
+const TABS = [
+  { id:'released', label:'🚀 公開済み', note:'App Store で配信中のアプリです。番号はリリース順。' },
+  { id:'review',   label:'⏳ 審査・申請中', note:'Apple に提出済み、または再申請待ちのアプリです。結果が出しだい更新します。' },
+  { id:'log',      label:'📊 記録', note:'100本チャレンジの進み具合。SNS にそのまま貼れる数字です。' },
+];
+
+/* ============================================================ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const released = APPS.filter(a => a.status === 'released');
+const review   = APPS.filter(a => a.status === 'review');
+const fmtDate = d => d ? d.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$1.$2.$3') : '';
+
+const STATS_CALC = (() => {
+  const rows = released.map(a => {
+    const m = STATS.apps[a.no] || { dl:0, redl:0 };
+    return { no:a.no, name:a.name, ...m };
+  });
+  const sum = k => rows.reduce((t, r) => t + r[k], 0);
+  return { rows, dl:sum('dl'), redl:sum('redl') };
+})();
+
+function appCard(a){
+  const iconHtml = a.icon ? `<img src="${esc(a.icon)}" alt="" loading="lazy">` : esc(a.emoji || '📱');
+  const status = a.status === 'released'
+    ? `<span class="pill p-ok">公開中</span>`
+    : `<span class="pill p-wait">審査・申請中</span>`;
+  const dateRow = a.date
+    ? `<div class="row"><div class="row-k">リリース</div><div class="row-v">${fmtDate(a.date)}</div></div>`
+    : `<div class="row"><div class="row-k">リリース</div><div class="row-v">審査結果待ち</div></div>`;
+  const links = [
+    a.store ? `<a class="b b1" href="${esc(a.store)}" target="_blank" rel="noopener">App Store</a>` : '',
+    ...(a.links || []).map(l => `<a class="b b2" href="${esc(l.u)}"${/^https?:/.test(l.u) ? ' target="_blank" rel="noopener"' : ''}>${esc(l.t)}</a>`)
+  ].filter(Boolean).join('');
+
+  return `<article class="app">
+    <div class="app-hd">
+      <div class="icon">${iconHtml}</div>
+      <div>
+        <p class="app-name"><span class="no">#${a.no}</span>${esc(a.name)}</p>
+        <p class="app-cat">${esc(a.cat)} ・ ${status}</p>
+      </div>
+    </div>
+    <p class="desc">${esc(a.desc)}</p>
+    <div class="rows">
+      ${dateRow}
+      <div class="row"><div class="row-k">アカウント</div><div class="row-v">${esc(a.account)}</div></div>
+      ${SHOW_STATS && a.status === 'released' && STATS.apps[a.no]
+        ? `<div class="row"><div class="row-k">ダウンロード</div><div class="row-v num">${STATS.apps[a.no].dl} 件<span style="color:var(--sub)">（更新・再DL ${STATS.apps[a.no].redl} 件）</span></div></div>`
+        : ''}
+    </div>
+    ${links ? `<div class="links">${links}</div>` : ''}
+  </article>`;
+}
+
+function dlChart(){
+  const mo = STATS.monthly;
+  const mx = Math.max(...mo.map(x => x.dl), 1);
+  return `<div class="chart">${mo.map(x => `<div class="bar-w">
+      <div class="bar-n">${x.dl}</div>
+      <div class="bar${x.partial ? ' w' : ''}" style="height:${(x.dl / mx * 100).toFixed(1)}%"></div>
+      <div class="bar-m">${x.m.replace('-', '.')}${x.partial ? '*' : ''}</div>
+    </div>`).join('')}</div>`;
+}
+
+function logView(){
+  const first = released[0], last = released[released.length-1];
+  const days = Math.round((new Date(last.date) - new Date(first.date)) / 86400000);
+  const pace = (days / released.length).toFixed(1);
+  const tl = released.map(a =>
+    `<li><div class="tl-d">${fmtDate(a.date)}</div><div class="tl-t">#${a.no} ${esc(a.name)}</div></li>`).join('');
+  const S = STATS_CALC;
+  const shareText =
+`iOSアプリ100本チャレンジ 進捗
+公開済み ${released.length}本 / 審査中 ${review.length}本
+初リリース ${fmtDate(first.date)} → 最新 ${fmtDate(last.date)}
+平均 ${pace}日に1本ペース
+累計ダウンロード ${S.dl}件（${STATS.period}）
+残り ${100 - released.length - review.length}枠
+https://oyajibuki.github.io/`;
+
+  return `<h2 class="label">月別リリース</h2>
+    ${monthChart()}
+    <h2 class="label">サマリー</h2>
+    <div class="money-grid">
+      <div class="m hero-m"><div class="m-l">累計ダウンロード</div><div class="m-v num">${S.dl} 件</div><div class="m-s">${STATS.period}</div></div>
+      <div class="m"><div class="m-l">更新・再ダウンロード</div><div class="m-v num">${S.redl} 件</div><div class="m-s">合計 ${S.dl + S.redl} 件</div></div>
+      <div class="m"><div class="m-l">初リリースからの日数</div><div class="m-v num">${days} 日</div><div class="m-s">${fmtDate(first.date)} から</div></div>
+      <div class="m"><div class="m-l">平均ペース</div><div class="m-v num">${pace} 日に1本</div><div class="m-s">13本を公開</div></div>
+      <div class="m"><div class="m-l">残り</div><div class="m-v num">${100 - released.length - review.length} 枠</div><div class="m-s">100本まで</div></div>
+    </div>
+    <h2 class="label">月別ダウンロード</h2>
+    ${dlChart()}
+    <p class="sec-note" style="margin-top:10px">* 2026.09 は 9月1〜4日の4日分のみ。</p>
+    <h2 class="label">アプリ別ダウンロード</h2>
+    <div class="tbl-w"><table>
+      <thead><tr><th>アプリ</th><th>新規DL</th><th>更新・再DL</th><th>合計</th></tr></thead>
+      <tbody>${[...S.rows].sort((a,b) => b.dl - a.dl).map(r => `<tr>
+        <td>#${r.no} ${esc(r.name)}</td><td class="num">${r.dl}</td>
+        <td class="num">${r.redl}</td><td class="num">${r.dl + r.redl}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td>合計</td><td class="num">${S.dl}</td><td class="num">${S.redl}</td><td class="num">${S.dl + S.redl}</td></tr></tfoot>
+    </table></div>
+    <h2 class="label">リリース履歴</h2>
+    <ul class="tl">${tl}</ul>
+    <div class="share">
+      <h3>📣 SNS用テキスト</h3>
+      <pre id="shareText">${esc(shareText)}</pre>
+      <button class="copy" id="copyBtn">コピーする</button>
+    </div>`;
+}
+
+function render(id){
+  const t = TABS.find(x => x.id === id) || TABS[0];
+  const view = document.getElementById('view');
+  let h = `<p class="sec-note">${esc(t.note)}</p>`;
+
+  if (id === 'released') h += `<div class="grid">${released.map(appCard).join('')}</div>`;
+  else if (id === 'review') h += `<div class="grid">${review.map(appCard).join('')}</div>`;
+  else h += logView();
+
+  view.innerHTML = h;
+  document.querySelectorAll('.tab').forEach(b =>
+    b.setAttribute('aria-selected', String(b.dataset.id === id)));
+  location.hash = id;
+
+  const btn = document.getElementById('copyBtn');
+  if (btn) btn.onclick = () => {
+    navigator.clipboard.writeText(document.getElementById('shareText').textContent)
+      .then(() => { btn.textContent = 'コピーしました ✓'; setTimeout(() => btn.textContent = 'コピーする', 1800); })
+      .catch(() => { btn.textContent = 'コピーできませんでした'; });
+  };
+}
+
+/* 初期描画 */
+(function init(){
+  const counts = { released: released.length, review: review.length, log: null };
+  const tabs = TABS.slice();
+  document.getElementById('tabs').innerHTML = tabs.map(t =>
+    `<button class="tab" role="tab" data-id="${t.id}" aria-selected="false">${t.label}${
+      counts[t.id] != null ? `<span class="n">${counts[t.id]}</span>` : ''}</button>`).join('');
+  document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+    render(b.dataset.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  const done = released.length, wait = review.length;
+  const stats = [
+    { v: done, l: '公開済み' },
+    { v: wait, l: '審査・申請中' },
+    { v: done + wait, l: '着手ずみ' },
+    { v: 100 - done - wait, l: '100本まで' },
+  ];
+  document.getElementById('stats').innerHTML = stats.map(s =>
+    `<div class="stat"><div class="stat-v">${s.v}</div><div class="stat-l">${s.l}</div></div>`).join('');
+  const pct = (done + wait);
+  document.getElementById('gaugeFill').style.width = pct + '%';
+  document.getElementById('gaugeL').textContent = `${done + wait} / 100 本（${pct}%）`;
+
+  const latest = released.map(a => a.date).sort().pop();
+  document.getElementById('upd').textContent = `最終更新：${fmtDate(latest)} 時点のリリース情報`;
+
+  const hash = location.hash.replace('#','');
+  render(tabs.some(t => t.id === hash) ? hash : 'released');
+})();
+</script>
 </body>
 </html>
