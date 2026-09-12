@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>読書クエスト — 読んだページを、経験値に変える</title>
+  <meta name="description" content="毎日1回、その日に読んだページ数を入れるだけ。目標まで読んだ日が経験値になり、レベルが上がる。広告なし・アカウント不要の読書記録アプリ。">
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .note { background:#f3effb; border:1px solid #ded2f2; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.88rem; }
+    .coming { display:inline-block; background:#f0f0f0; color:#666; font-size:0.85rem; font-weight:600; padding:9px 20px; border-radius:10px; margin:16px 0 0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/dokushoquest/icon.png" alt="読書クエスト"></div>
+    <div>
+      <h1>読書クエスト</h1>
+      <p class="app-tagline">読んだページを、経験値に変える</p>
+    </div>
+  </div>
+
+  <span class="coming">App Store 公開準備中</span>
+
+  <p style="margin-top:20px;">
+    積ん読が減らないのは、読んだぶんが手元に残らないからです。読書クエストは、毎日1回その日に読んだページ数を入れるだけ。目標まで読んだ日が経験値になってレベルが上がります。読み進めたページ数が、数字で積み上がっていきます。
+  </p>
+
+  <div class="note">
+    <b>読めなかった日も記録してください。</b>目標に届かなかった日でも経験値が入る設計にしています。空白の日が続くと本から離れて戻ってこられなくなるので、記録を切らさないことのほうを優先しました。
+  </div>
+
+  <h2>できること</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">📖</span><div><b>毎日1回、その日に読んだページ数を入れるだけ</b><span>目標（既定20ページ）まで読めば達成。あとから直せます</span></div></li>
+    <li><span class="feature-emoji">➕</span><div><b>±10 のまとめ入力</b><span>20ページを1タップずつ押さずに、10ページ単位でまとめて入れられます</span></div></li>
+    <li><span class="feature-emoji">⭐️</span><div><b>経験値とレベル</b><span>目標まで読んだ日は40XP、目標の2倍で80XP。届かなかった日も最低10XP</span></div></li>
+    <li><span class="feature-emoji">📅</span><div><b>カレンダー</b><span>塗られたマスが「目標まで読んだ日」。抜けは後から埋められます</span></div></li>
+    <li><span class="feature-emoji">📊</span><div><b>直近30日のグラフと達成率</b><span>連続日数・最長記録もひと目で</span></div></li>
+    <li><span class="feature-emoji">🎯</span><div><b>1日の目標ページ数を設定できる</b><span>無料で変更できます</span></div></li>
+    <li><span class="feature-emoji">🔔</span><div><b>記録リマインダー</b><span>毎日決まった時刻に通知（任意）</span></div></li>
+  </ul>
+
+  <h2>作りの方針</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">📵</span><div><b>開発者のサーバーはありません</b><span>記録が開発者に渡ることはありません</span></div></li>
+    <li><span class="feature-emoji">📚</span><div><b>本の登録は要りません</b><span>書名を登録しなくても、その日のページ数だけで続けられます</span></div></li>
+    <li><span class="feature-emoji">☁️</span><div><b>iCloud同期・書き出し</b><span>プレミアム。機種変更しても続きから</span></div></li>
+    <li><span class="feature-emoji">🚫</span><div><b>広告なし</b><span>アカウント登録も不要です</span></div></li>
+    <li><span class="feature-emoji">🆓</span><div><b>記録は無料のまま</b><span>プレミアムはiCloud同期・書き出し・31日より前の閲覧・通算の分析。1ヶ月／1年／買い切りから選べます</span></div></li>
+  </ul>
+
+  <div class="note">
+    本アプリは、利用者ご自身が入力したページ数を記録するための記録用アプリです。電子書籍ストアや読書コミュニティとは接続せず、本文やコンテンツを配信するものでもありません。
+  </div>
+
+  <div class="sub-links">
+    <a href="/dokushoquest/support.html">サポート</a>
+    <a href="/dokushoquest/privacy.html">プライバシーポリシー</a>
+    <a href="/dokushoquest/terms.html">利用規約</a>
+  </div>
+</body>
+</html>
