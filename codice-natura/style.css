@@ -1,0 +1,29 @@
+:root {
+  --parchment: #EDE0C8;
+  --ink: #3A2718;
+  --sepia: #594026;
+  --accent: #6B4A2A;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: "Hoefler Text", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  line-height: 1.9;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 48px 22px 80px; }
+header { border-bottom: 1px solid rgba(89, 64, 38, .25); padding-bottom: 22px; margin-bottom: 32px; }
+h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: .02em; }
+.sub { color: var(--sepia); opacity: .75; font-size: 15px; margin: 0; }
+h2 { font-size: 20px; margin: 38px 0 10px; }
+h3 { font-size: 16px; margin: 24px 0 6px; }
+p, li { font-size: 15px; }
+ul { padding-left: 1.2em; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid rgba(89, 64, 38, .2); vertical-align: top; }
+th { color: var(--sepia); font-weight: normal; }
+a { color: var(--accent); }
+.note { background: rgba(89, 64, 38, .06); border-radius: 12px; padding: 16px 18px; margin: 20px 0; font-size: 14px; }
+footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid rgba(89, 64, 38, .25); font-size: 13px; color: var(--sepia); opacity: .8; }
+nav a { margin-right: 16px; }

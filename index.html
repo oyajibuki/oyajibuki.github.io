@@ -281,30 +281,36 @@ const APPS = [
     links:[{t:'紹介ページ',u:'/angerbox/'},{t:'サポート',u:'/angerbox/support.html'}],
     account:'不要（端末内で完結）' },
 
+  { no:16, name:'禁煙クエスト', cat:'ヘルスケア', date:'2026-09-13', status:'released',
+    desc:'1日1回、吸った本数を記録するだけ。0本の日は経験値になり、レベルが上がる。広告なし・課金なし・通信なしの禁煙記録アプリ。',
+    icon:ICON+'Purple211/v4/2c/64/5c/2c645cc2-99b8-239b-3e26-8470d5a28fc5/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/%E7%A6%81%E7%85%99%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88/id6810666566',
+    links:[{t:'紹介ページ',u:'/kinenquest/'},{t:'サポート',u:'/kinenquest/support.html'}],
+    account:'不要（端末内で完結）' },
+
   /* ── 審査・申請中 ── */
-  { no:16, name:'TuneDrop Focus', cat:'仕事効率化', date:'', status:'review',
+  { no:17, name:'TuneDrop Focus', cat:'仕事効率化', date:'', status:'review',
     desc:'集中しているあいだ、あなたの精霊が空を登っていく。青空から夕焼け、星空、そして宇宙へ。到達した高度が、そのままTuneDropの精霊のお金と経験値になります。',
     icon:'/tunedropfocus/icon.png',
     links:[{t:'紹介ページ',u:'/tunedropfocus/'},{t:'サポート',u:'/tunedropfocus/support.html'}],
     account:'必要（TuneDrop と同じアカウント基盤）' },
-
-  { no:17, name:'禁煙クエスト', cat:'ヘルスケア', date:'', status:'review',
-    desc:'1日1回、吸った本数を記録するだけ。0本の日は経験値になり、レベルが上がる。広告なし・課金なし・通信なしの禁煙記録アプリ。',
-    icon:'/kinenquest/icon.png',
-    links:[{t:'紹介ページ',u:'/kinenquest/'},{t:'サポート',u:'/kinenquest/support.html'}],
-    account:'不要（端末内で完結）' },
 
   { no:18, name:'早起きクエスト', cat:'ヘルスケア', date:'', status:'review',
     desc:'毎朝1回、起きた時刻を入れるだけ。目標より早く起きた日が経験値になり、レベルが上がる。広告なし・アカウント不要の早起き記録アプリ。',
     icon:'/hayaokiquest/icon.png',
     links:[{t:'紹介ページ',u:'/hayaokiquest/'},{t:'サポート',u:'/hayaokiquest/support.html'}],
     account:'不要（端末内で完結）' },
+
+  { no:19, name:'Codice Natura（ダヴィンチノート）', cat:'仕事効率化', date:'', status:'review',
+    desc:'ラフに描いた線が、陰影とハッチングのついたルネサンスのペン画に描き起こされるノート。ダヴィンチモードをONにすると、余白にダ・ヴィンチ本人が走り書きや作図を書き足していきます。',
+    icon:'/codice-natura/icon.png',
+    links:[{t:'紹介ページ',u:'/codice-natura/'},{t:'サポート',u:'/codice-natura/support.html'}],
+    account:'不要（端末内で完結）' },
 ];
 
 const TABS = [
   { id:'released', label:'🚀 公開済み', note:'App Store で配信中のアプリです。番号はリリース順。' },
   { id:'review',   label:'⏳ 審査・申請中', note:'Apple に提出済み、または再申請待ちのアプリです。結果が出しだい更新します。' },
-  { id:'log',      label:'📊 記録', note:'100本チャレンジの進み具合。SNS にそのまま貼れる数字です。' },
 ];
 
 /* ============================================================ */
@@ -343,63 +349,24 @@ function appCard(a){
   </article>`;
 }
 
-function logView(){
-  const first = released[0], last = released[released.length-1];
-  const days = Math.round((new Date(last.date) - new Date(first.date)) / 86400000);
-  const pace = (days / released.length).toFixed(1);
-  const tl = released.map(a =>
-    `<li><div class="tl-d">${fmtDate(a.date)}</div><div class="tl-t">#${a.no} ${esc(a.name)}</div></li>`).join('');
-  const shareText =
-`iOSアプリ100本チャレンジ 進捗
-公開済み ${released.length}本 / 審査中 ${review.length}本
-初リリース ${fmtDate(first.date)} → 最新 ${fmtDate(last.date)}
-平均 ${pace}日に1本ペース
-残り ${100 - released.length - review.length}枠
-https://oyajibuki.github.io/`;
-
-  return `<h2 class="label">月別リリース</h2>
-    ${monthChart()}
-    <h2 class="label">サマリー</h2>
-    <div class="money-grid">
-      <div class="m hero-m"><div class="m-l">公開済み</div><div class="m-v num">${released.length} 本</div><div class="m-s">審査・申請中 ${review.length}本</div></div>
-      <div class="m"><div class="m-l">初リリースからの日数</div><div class="m-v num">${days} 日</div><div class="m-s">${fmtDate(first.date)} から</div></div>
-      <div class="m"><div class="m-l">平均ペース</div><div class="m-v num">${pace} 日に1本</div><div class="m-s">${released.length}本を公開</div></div>
-      <div class="m"><div class="m-l">残り</div><div class="m-v num">${100 - released.length - review.length} 枠</div><div class="m-s">100本まで</div></div>
-    </div>
-    <h2 class="label">リリース履歴</h2>
-    <ul class="tl">${tl}</ul>
-    <div class="share">
-      <h3>📣 SNS用テキスト</h3>
-      <pre id="shareText">${esc(shareText)}</pre>
-      <button class="copy" id="copyBtn">コピーする</button>
-    </div>`;
-}
-
 function render(id){
   const t = TABS.find(x => x.id === id) || TABS[0];
   const view = document.getElementById('view');
   let h = `<p class="sec-note">${esc(t.note)}</p>`;
 
-  if (id === 'released') h += `<div class="grid">${released.map(appCard).join('')}</div>`;
-  else if (id === 'review') h += `<div class="grid">${review.map(appCard).join('')}</div>`;
-  else h += logView();
+  h += id === 'released'
+    ? `<div class="grid">${released.map(appCard).join('')}</div>`
+    : `<div class="grid">${review.map(appCard).join('')}</div>`;
 
   view.innerHTML = h;
   document.querySelectorAll('.tab').forEach(b =>
     b.setAttribute('aria-selected', String(b.dataset.id === id)));
   location.hash = id;
-
-  const btn = document.getElementById('copyBtn');
-  if (btn) btn.onclick = () => {
-    navigator.clipboard.writeText(document.getElementById('shareText').textContent)
-      .then(() => { btn.textContent = 'コピーしました ✓'; setTimeout(() => btn.textContent = 'コピーする', 1800); })
-      .catch(() => { btn.textContent = 'コピーできませんでした'; });
-  };
 }
 
 /* 初期描画 */
 (function init(){
-  const counts = { released: released.length, review: review.length, log: null };
+  const counts = { released: released.length, review: review.length };
   const tabs = TABS.slice();
   document.getElementById('tabs').innerHTML = tabs.map(t =>
     `<button class="tab" role="tab" data-id="${t.id}" aria-selected="false">${t.label}${
