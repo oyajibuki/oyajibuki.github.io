@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RemixMusic — プライバシーポリシー</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .updated { color:#999; font-size:0.85rem; margin-top:-4px; }
+    h2.policy { font-size:1.05rem; margin-top:2em; }
+    ul.policy { padding-left:1.2em; }
+    ul.policy li { margin-bottom:6px; }
+    .highlight { background:#f4fbf6; border:1px solid #d7eede; border-radius:10px; padding:14px 16px; margin:16px 0; }
+    .note { background:#fbf8f2; border:1px solid #eee0c8; border-radius:10px; padding:14px 16px; margin:16px 0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/remixmusic/">RemixMusic トップに戻る</a></div>
+
+  <h1>プライバシーポリシー</h1>
+  <p class="updated">最終更新日：2026年9月20日</p>
+
+  <p>本プライバシーポリシーは、RemixMusic（以下「本アプリ」）における利用者情報の取り扱いについて定めるものです。本アプリをご利用いただくことで、本ポリシーに同意したものとみなします。</p>
+
+  <div class="highlight">
+    <p><strong>本アプリは、開発者に対していかなる情報も送信しません。</strong>楽曲の読み込み・再生・ミックス・スクラッチ・録音は、すべてお使いの端末の中だけで完結します。開発者のサーバーは存在せず、アカウント登録も不要です。</p>
+  </div>
+
+  <div class="note">
+    <p><strong>ただし、Google Drive連携をお使いの場合に限り、Googleとの通信が発生します。</strong>この機能を使わない場合、本アプリは一切の外部通信を行いません。詳しくは「5. Google Drive連携について」をご覧ください。</p>
+  </div>
+
+  <h2 class="policy">1. 基本方針</h2>
+  <p>本アプリは利用者のプライバシーを最大限に尊重します。本アプリが扱う楽曲・録音した音声・設定などの情報は、<strong>お使いの端末内でのみ処理・保存され、開発者がこれらを閲覧・取得することはできません</strong>。アクセス解析ツールや広告SDKは一切組み込んでいません。</p>
+
+  <h2 class="policy">2. 音声の処理について</h2>
+  <p>再生・テンポ解析（BPM検出）・スクラッチ・イコライザー・ミックスの録音は、すべて端末内の処理で行われます。楽曲データや録音した音声が外部に送信されることはありません。</p>
+
+  <h2 class="policy">3. 写真へのアクセスについて</h2>
+  <p>動画の音声を素材として取り込む機能があります。iOSの写真選択画面（PhotosPicker）を使用しており、この方式では<strong>利用者が選んだ動画だけがアプリに渡されます</strong>。アプリが写真ライブラリ全体を読み取ることはありません。取り出した音声は端末内に保存されます。</p>
+
+  <h2 class="policy">4. ミュージックライブラリへのアクセスについて</h2>
+  <ul class="policy">
+    <li>端末内の音楽ライブラリから曲を読み込むために、メディアライブラリへのアクセス許可を求めます。許可は曲を選ぶ操作をしたときにのみ求められ、拒否しても他の取り込み方法はそのままお使いいただけます。</li>
+    <li>読み込むのは<strong>利用者が選択した曲だけ</strong>です。ライブラリの内容や再生履歴を収集・送信することはありません。</li>
+    <li>Apple Musicからダウンロードした曲など、著作権保護（DRM）された楽曲は仕組み上ご利用いただけません。本アプリはDRMの解除を行いません。</li>
+  </ul>
+
+  <h2 class="policy">5. Google Drive連携について</h2>
+  <p>Google Driveに保存した楽曲を読み込む機能を提供しています。<strong>この機能を利用する場合に限り、Googleのサーバーとの通信が発生します。</strong></p>
+  <ul class="policy">
+    <li><strong>認証方式：</strong>業界標準のOAuth 2.0を使用します。ログインはGoogleの画面で行われ、<strong>本アプリが利用者のGoogleアカウントのパスワードを受け取ることはありません</strong>。</li>
+    <li><strong>要求する権限：</strong>ファイルの<strong>読み取りのみ</strong>です。ファイルの作成・変更・削除は行いません。</li>
+    <li><strong>アクセストークンの保管：</strong>端末のキーチェーンに保存します。開発者のサーバーに送信されることはありません。</li>
+    <li><strong>送信される情報：</strong>フォルダ一覧の取得と、利用者が選んだファイルのダウンロードのために、Googleに対してのみ通信します。開発者や第三者に情報が渡ることはありません。</li>
+    <li><strong>連携の解除：</strong>アプリ内のGoogle Drive画面から「ログアウト」でトークンを削除できます。Googleアカウントの設定画面からも連携を解除できます。</li>
+  </ul>
+  <p>Googleによる情報の取り扱いについては、<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Googleのプライバシーポリシー</a>をご確認ください。</p>
+
+  <h2 class="policy">6. 端末内に保存される情報</h2>
+  <ul class="policy">
+    <li><strong>取り込んだ楽曲：</strong>アプリ内の書類フォルダに保存されます。「ファイル」アプリから確認・削除できます。</li>
+    <li><strong>録音したミックス：</strong>同じく書類フォルダに保存されます。開発者が内容を知ることはできません。</li>
+    <li><strong>設定：</strong>初回ガイダンスの表示済みフラグなど、ごく小さな設定値のみを端末内に保存します。</li>
+    <li><strong>購入状態：</strong>App内課金の購入情報はAppleが管理し、本アプリはその状態を参照するのみです。</li>
+  </ul>
+  <p>アプリを削除すると、これらの情報はすべて端末から削除されます。</p>
+
+  <h2 class="policy">7. App内課金について</h2>
+  <p>録音機能は買い切りのApp内課金です。決済はすべてApple（App Store）が処理し、<strong>本アプリがクレジットカード番号などの決済情報を受け取ることはありません</strong>。</p>
+
+  <h2 class="policy">8. 第三者提供</h2>
+  <p>本アプリは利用者の情報を収集しないため、第三者に提供する情報がありません。情報の販売・共有は一切行いません。</p>
+
+  <h2 class="policy">9. お子様の利用について</h2>
+  <p>本アプリは全年齢を対象としており、年齢に関する情報を含め、個人情報を収集しません。</p>
+
+  <h2 class="policy">10. 著作権について</h2>
+  <p>本アプリは、利用者ご自身が用意した音源を再生・編集するための道具です。取り込む楽曲の利用が適法であることは利用者の責任においてご確認ください。著作物を権利者の許諾なく公衆送信・配布することはお控えください。</p>
+
+  <h2 class="policy">11. 本ポリシーの変更</h2>
+  <p>内容を変更する場合は、本ページの最終更新日を改めたうえで掲載します。</p>
+
+  <h2 class="policy">12. お問い合わせ</h2>
+  <p>本ポリシーに関するお問い合わせは、<a href="/form/" target="_blank">お問い合わせフォーム</a>よりご連絡ください。</p>
+
+  <footer><p>RemixMusic &nbsp;·&nbsp; <a href="/">アプリ一覧</a> &nbsp;·&nbsp; <a href="./support.html">サポート</a> &nbsp;·&nbsp; <a href="./terms.html">利用規約</a> &nbsp;·&nbsp; <a href="/form/">お問い合わせ</a></p></footer>
+</body>
+</html>
