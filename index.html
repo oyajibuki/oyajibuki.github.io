@@ -323,10 +323,10 @@ const APPS = [
     links:[{t:'サポート',u:'/NekoBase/support.html'}],
     account:'不要（起動時に自動で作成）' },
 
-  /* ── 審査・申請中 ── */
-  { no:22, name:'RemixMusic — 2デッキDJミキサー', cat:'ミュージック', date:'', status:'review',
+  { no:22, name:'RemixMusic — DJミキサー', cat:'ミュージック', date:'2026-09-21', status:'released',
     desc:'手持ちの曲を2つのデッキに載せて、混ぜて、擦る。レコード盤を指で回せば本物のスクラッチ。SYNCでテンポと拍が揃います。録音は買い切りのオプション。',
-    icon:'/remixmusic/icon.png',
+    icon:ICON+'Purple221/v4/d0/d3/f3/d0d3f379-4b8b-7c39-e725-a23e267fb6c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/100x100bb.jpg',
+    store:'https://apps.apple.com/jp/app/remixmusic-dj%E3%83%9F%E3%82%AD%E3%82%B5%E3%83%BC/id6814154000',
     links:[{t:'紹介ページ',u:'/remixmusic/'},{t:'サポート',u:'/remixmusic/support.html'}],
     account:'不要（端末内で完結）' },
 ];
@@ -377,9 +377,10 @@ function render(id){
   const view = document.getElementById('view');
   let h = `<p class="sec-note">${esc(t.note)}</p>`;
 
-  h += id === 'released'
-    ? `<div class="grid">${released.map(appCard).join('')}</div>`
-    : `<div class="grid">${review.map(appCard).join('')}</div>`;
+  const list = id === 'released' ? released : review;
+  h += list.length
+    ? `<div class="grid">${list.map(appCard).join('')}</div>`
+    : `<p class="sec-note">いまは審査待ちのアプリはありません。提出ずみのものが出たらここに並びます。</p>`;
 
   view.innerHTML = h;
   document.querySelectorAll('.tab').forEach(b =>
