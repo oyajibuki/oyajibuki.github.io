@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NonStop — 曲間で、途切れない。</title>
-  <meta name="description" content="DJミックスやMIXテープの「繋ぎ」を途切れさせない音楽プレイヤー。ギャップレス再生とクロスフェードを設定ひとつで切り替えられます。">
+  <title data-i18n="pageTitle">NonStop — 曲間で、途切れない。</title>
+  <meta name="description" data-i18n="metaDescription" content="DJミックスやMIXテープの「繋ぎ」を途切れさせない音楽プレイヤー。ギャップレス再生とクロスフェードを設定ひとつで切り替えられます。">
   <link rel="stylesheet" href="/common.css">
   <style>
     .app-icon img { width:100%; height:100%; border-radius:14px; }
@@ -27,91 +27,110 @@
     .mode-table { width:100%; border-collapse:collapse; margin-top:8px; }
     .mode-table th, .mode-table td { text-align:left; padding:10px 4px; border-bottom:1px solid #eee; font-size:0.88rem; vertical-align:top; }
     .mode-table th { width:34%; color:#333; }
+    .lang-switcher { display:flex; align-items:center; gap:6px; font-size:0.82rem; margin-bottom:14px; }
+    .lang-switcher select { border:1px solid #ddd; border-radius:8px; padding:5px 8px; font-size:0.82rem; background:#fff; }
+    .price-currency-note { font-size:0.78rem; color:#999; margin-top:8px; }
   </style>
 </head>
 <body>
-  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+  <div class="back"><a href="/" data-i18n="backToTop">← アプリ一覧に戻る</a></div>
+
+  <div class="lang-switcher">
+    <span>🌐</span>
+    <select id="lang-select" onchange="changeLanguage(this.value)">
+      <option value="ja">日本語</option>
+      <option value="en">English</option>
+      <option value="zh-Hans">简体中文</option>
+      <option value="zh-Hant">繁體中文</option>
+      <option value="ko">한국어</option>
+      <option value="es">Español</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+      <option value="pt-BR">Português (BR)</option>
+      <option value="id">Bahasa Indonesia</option>
+    </select>
+  </div>
 
   <div class="app-header">
     <div class="app-icon"><img src="/nonstop/icon.png" alt="NonStop"></div>
     <div>
-      <h1>NonStop</h1>
-      <p class="app-tagline">曲間で、途切れない。</p>
+      <h1 data-i18n="appName">NonStop</h1>
+      <p class="app-tagline" data-i18n="tagline">曲間で、途切れない。</p>
     </div>
   </div>
 
-  <a class="btn-appstore" href="https://apps.apple.com/jp/app/nonstop-%E7%B9%8B%E3%81%8E%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC/id6794858698" target="_blank">App Store で開く</a>
+  <a class="btn-appstore" data-i18n="appStoreButton" href="https://apps.apple.com/jp/app/nonstop-%E7%B9%8B%E3%81%8E%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC/id6794858698" target="_blank">App Store で開く</a>
 
-  <p style="margin-top:20px;">
+  <p style="margin-top:20px;" data-i18n="intro">
     DJミックス、MIXテープ、ライブ盤。本来ひと続きで鳴るはずの音源なのに、
     CDやファイルではトラックが分かれているせいで、いいところで「プツッ」と切れる。
     NonStopは、その<strong>繋ぎ目をなくすためだけに作った音楽プレイヤー</strong>です。
   </p>
 
-  <div class="lede">
+  <div class="lede" data-i18n="lede">
     ∞ <strong>曲が変わっても、再生を止めません。</strong>
     複数の曲をあらかじめ1本の連続した音声として組み立ててから鳴らすので、
     曲の切れ目に無音が入る余地がありません。
   </div>
 
   <div class="sub-links">
-    <a href="/nonstop/support.html">サポート / FAQ</a>
-    <a href="/nonstop/privacy.html">プライバシーポリシー</a>
-    <a href="/nonstop/terms.html">利用規約</a>
+    <a href="/nonstop/support.html" data-i18n="linkSupport">サポート / FAQ</a>
+    <a href="/nonstop/privacy.html" data-i18n="linkPrivacy">プライバシーポリシー</a>
+    <a href="/nonstop/terms.html" data-i18n="linkTerms">利用規約</a>
   </div>
 
   <hr>
 
-  <h2>繋ぎ方は3つから選べます</h2>
+  <h2 data-i18n="modesHeading">繋ぎ方は3つから選べます</h2>
   <table class="mode-table">
     <tr>
-      <th>ギャップレス</th>
-      <td>無音を一切挟まず次の曲へ直結。CDから取り込んだMIXやライブ盤、クラシックの楽章間に。</td>
+      <th data-i18n="modeGaplessTitle">ギャップレス</th>
+      <td data-i18n="modeGaplessDesc">無音を一切挟まず次の曲へ直結。CDから取り込んだMIXやライブ盤、クラシックの楽章間に。</td>
     </tr>
     <tr>
-      <th>クロスフェード</th>
-      <td>前の曲と次の曲を0.5〜12秒重ねて溶かします。カーブは等パワー／リニアから選択。</td>
+      <th data-i18n="modeCrossfadeTitle">クロスフェード</th>
+      <td data-i18n="modeCrossfadeDesc">前の曲と次の曲を0.5〜12秒重ねて溶かします。カーブは等パワー／リニアから選択。</td>
     </tr>
     <tr>
-      <th>OFF（通常再生）</th>
-      <td>ふつうの音楽プレイヤーと同じ挙動。曲間の間も0〜3秒で調整できます。</td>
+      <th data-i18n="modeOffTitle">OFF（通常再生）</th>
+      <td data-i18n="modeOffDesc">ふつうの音楽プレイヤーと同じ挙動。曲間の間も0〜3秒で調整できます。</td>
     </tr>
   </table>
-  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;" data-i18n="modesNote">
     設定の切り替えは再生中でもOK。音を止めずにその場で変わります。
   </p>
 
   <hr>
 
-  <h2>主な機能</h2>
+  <h2 data-i18n="featuresHeading">主な機能</h2>
   <ul class="feature-list">
-    <li><span class="feature-emoji">∞</span><div><b>完全ギャップレス再生</b><span>曲の切れ目で再生を止めない設計。1曲目の最後のサンプルと2曲目の最初のサンプルが直接つながります。</span></div></li>
-    <li><span class="feature-emoji">🎚️</span><div><b>クロスフェード</b><span>0.5〜12秒。DJミックスのように前後の曲を重ねて繋ぎます。</span></div></li>
-    <li><span class="feature-emoji">✂️</span><div><b>無音の自動カット</b><span>ファイル自体に焼き込まれた曲頭・曲尻の無音を自動で検出して詰めます。ここを処理しないと、再生を繋いでも無音は消えません。</span></div></li>
-    <li><span class="feature-emoji">🔊</span><div><b>音量をそろえる</b><span>曲ごとの録音レベルの差をならして、繋ぎ目で音量が飛ばないようにします。</span></div></li>
-    <li><span class="feature-emoji">📥</span><div><b>6つの取り込み方法</b><span>パソコンからWi-Fi転送（QRコード）、端末内のミュージック、ファイルApp、Dropbox、Google Drive に対応。</span></div></li>
-    <li><span class="feature-emoji">🎛️</span><div><b>フルイコライザー（プレミアム）</b><span>10バンドEQ・プリセット22種・残響・ディレイ・再生速度/キー・ステレオ幅・リミッター。</span></div></li>
-    <li><span class="feature-emoji">🔒</span><div><b>音源は端末の中だけ</b><span>取り込んだ曲をどこかへアップロードすることはありません。</span></div></li>
+    <li><span class="feature-emoji">∞</span><div><b data-i18n="feature1Title">完全ギャップレス再生</b><span data-i18n="feature1Desc">曲の切れ目で再生を止めない設計。1曲目の最後のサンプルと2曲目の最初のサンプルが直接つながります。</span></div></li>
+    <li><span class="feature-emoji">🎚️</span><div><b data-i18n="feature2Title">クロスフェード</b><span data-i18n="feature2Desc">0.5〜12秒。DJミックスのように前後の曲を重ねて繋ぎます。</span></div></li>
+    <li><span class="feature-emoji">✂️</span><div><b data-i18n="feature3Title">無音の自動カット</b><span data-i18n="feature3Desc">ファイル自体に焼き込まれた曲頭・曲尻の無音を自動で検出して詰めます。ここを処理しないと、再生を繋いでも無音は消えません。</span></div></li>
+    <li><span class="feature-emoji">🔊</span><div><b data-i18n="feature4Title">音量をそろえる</b><span data-i18n="feature4Desc">曲ごとの録音レベルの差をならして、繋ぎ目で音量が飛ばないようにします。</span></div></li>
+    <li><span class="feature-emoji">📥</span><div><b data-i18n="feature5Title">6つの取り込み方法</b><span data-i18n="feature5Desc">パソコンからWi-Fi転送（QRコード）、端末内のミュージック、ファイルApp、Dropbox、Google Drive に対応。</span></div></li>
+    <li><span class="feature-emoji">🎛️</span><div><b data-i18n="feature6Title">フルイコライザー（プレミアム）</b><span data-i18n="feature6Desc">10バンドEQ・プリセット22種・残響・ディレイ・再生速度/キー・ステレオ幅・リミッター。</span></div></li>
+    <li><span class="feature-emoji">🔒</span><div><b data-i18n="feature7Title">音源は端末の中だけ</b><span data-i18n="feature7Desc">取り込んだ曲をどこかへアップロードすることはありません。</span></div></li>
   </ul>
 
   <hr>
 
-  <h2>曲の取り込み方</h2>
+  <h2 data-i18n="sourcesHeading">曲の取り込み方</h2>
   <ul class="sources">
-    <li>パソコンからWi-Fi転送（QR / IP）</li>
-    <li>iPhone / iPad / iPod のミュージック</li>
-    <li>ファイルApp</li>
-    <li>Apple Music</li>
-    <li>Dropbox</li>
-    <li>Google Drive</li>
+    <li data-i18n="source1">パソコンからWi-Fi転送（QR / IP）</li>
+    <li data-i18n="source2">iPhone / iPad / iPod のミュージック</li>
+    <li data-i18n="source3">ファイルApp</li>
+    <li data-i18n="source4">Apple Music</li>
+    <li data-i18n="source5">Dropbox</li>
+    <li data-i18n="source6">Google Drive</li>
   </ul>
-  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;" data-i18n="sourcesNote">
     パソコンからの転送は、同じWi-Fiにつないでブラウザに表示されたQRコードのアドレスを開き、
     曲をドラッグ＆ドロップするだけ。ケーブルもiTunesも不要です。<br>
     Dropbox と Google Drive はアカウントにログインして、フォルダをたどって複数曲をまとめて取り込めます。
   </p>
 
-  <div class="note">
+  <div class="note" data-i18n="appleMusicNote">
     ⚠️ <strong>Apple Musicのストリーミング楽曲は取り込めません。</strong>
     配信楽曲はDRMで保護されており、iOSの仕様上ほかのアプリが音声データを扱えないためです。
     そのためギャップレス処理もイコライザーも掛けられません（これはアプリ側で回避できるものではありません）。
@@ -120,32 +139,102 @@
 
   <hr>
 
-  <h2>料金</h2>
-  <p style="font-size:0.9rem; color:#666;">
+  <h2 data-i18n="pricingHeading">料金</h2>
+  <p style="font-size:0.9rem; color:#666;" data-i18n="pricingIntro">
     <strong>繋ぎ機能（ギャップレス・クロスフェード・無音カット）は無料版でもすべて使えます。</strong>
     このアプリの本体機能に制限はかけていません。
   </p>
   <table class="price-table">
-    <tr><td>無料版</td><td>広告あり / ライブラリ50曲まで</td></tr>
-    <tr><td>プレミアム 7日間</td><td>¥100</td></tr>
-    <tr><td>プレミアム 月額</td><td>¥300</td></tr>
-    <tr><td>プレミアム 年額</td><td>¥3,000</td></tr>
-    <tr><td>プレミアム 買い切り</td><td>¥4,800</td></tr>
+    <tr><td data-i18n="priceFreeLabel">無料版</td><td data-i18n="priceFreeValue">広告あり / ライブラリ50曲まで</td></tr>
+    <tr><td data-i18n="price7dLabel">プレミアム 7日間</td><td data-i18n="price7dValue">¥100</td></tr>
+    <tr><td data-i18n="priceMonthlyLabel">プレミアム 月額</td><td data-i18n="priceMonthlyValue">¥300</td></tr>
+    <tr><td data-i18n="priceYearlyLabel">プレミアム 年額</td><td data-i18n="priceYearlyValue">¥3,000</td></tr>
+    <tr><td data-i18n="priceLifetimeLabel">プレミアム 買い切り</td><td data-i18n="priceLifetimeValue">¥4,800</td></tr>
   </table>
-  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+  <p class="price-currency-note" id="price-currency-note" style="display:none;" data-i18n="pricingCurrencyNote"></p>
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;" data-i18n="pricingNote">
     プレミアムの特典は「広告なし」「フルイコライザー」「ライブラリ無制限」の3つです。
     買い切りを選べば以後の請求はありません。
   </p>
 
   <hr>
 
-  <h2>こんな人に</h2>
-  <p style="font-size:0.92rem;">
+  <h2 data-i18n="audienceHeading">こんな人に</h2>
+  <p style="font-size:0.92rem;" data-i18n="audienceText">
     CDのDJミックスをiPhoneで聴きたい ／ MIXテープの繋ぎが切れるのが我慢ならない ／
     ライブ盤・フェス音源のMCと曲の間で切れてほしくない ／
     クラシックの楽章間に無音が入るのが気になる ／ 自作のDJセットを持ち歩きたい
   </p>
 
-  <p style="margin-top:24px; font-weight:600; color:#8b2fd6;">繋ぎ目のない音楽を、そのまま。</p>
+  <p style="margin-top:24px; font-weight:600; color:#8b2fd6;" data-i18n="footerTagline">繋ぎ目のない音楽を、そのまま。</p>
+
+
+  <script>
+    const translations = {"en":{"backToTop":"← Back to app list","backToApp":"← Back to NonStop","appName":"NonStop","tagline":"Never lose the beat.","linkSupport":"Support / FAQ","linkPrivacy":"Privacy Policy","linkTerms":"Terms of Service","pageTitle":"NonStop — Never lose the beat.","metaDescription":"A music player that keeps DJ mixes and mixtapes flowing without a break. Switch between gapless playback and crossfade with a single setting.","appStoreButton":"Get it on the App Store","intro":"DJ mixes, mixtapes, live albums — they're meant to play as one continuous piece, but CDs and files split them into separate tracks, so the music cuts out right where it shouldn't. NonStop is a music player <strong>built for one purpose: erasing that gap</strong>.","lede":"∞ <strong>Playback never stops, even when the track changes.</strong> Multiple songs are assembled into one continuous audio stream before playback, so there's no room for silence to sneak in between tracks.","modesHeading":"Choose from 3 ways to connect tracks","modeGaplessTitle":"Gapless","modeGaplessDesc":"Connects straight into the next track with zero silence. Perfect for CD-ripped mixes, live albums, and movements of a classical piece.","modeCrossfadeTitle":"Crossfade","modeCrossfadeDesc":"Blends the previous and next track together over 0.5–12 seconds. Choose an equal-power or linear curve.","modeOffTitle":"Off (normal playback)","modeOffDesc":"Behaves like an ordinary music player. You can still adjust the gap between tracks from 0–3 seconds.","modesNote":"You can switch modes even while music is playing — it changes instantly without interrupting the sound.","featuresHeading":"Key Features","feature1Title":"True gapless playback","feature1Desc":"Built so playback never stops at a track boundary — the last sample of one track connects directly to the first sample of the next.","feature2Title":"Crossfade","feature2Desc":"0.5–12 seconds. Blend consecutive tracks together, DJ-mix style.","feature3Title":"Automatic silence trimming","feature3Desc":"Automatically detects and trims the silence baked into the start and end of a file. Without this step, gaps stay even with gapless playback turned on.","feature4Title":"Volume matching","feature4Desc":"Evens out the recording-level differences between tracks so volume doesn't jump at the transition.","feature5Title":"6 ways to import","feature5Desc":"Supports Wi-Fi transfer from a computer (QR code), the on-device Music library, the Files app, Dropbox, and Google Drive.","feature6Title":"Full equalizer (Premium)","feature6Desc":"10-band EQ, 22 presets, reverb, delay, playback speed/pitch, stereo width, and a limiter.","feature7Title":"Your music never leaves your device","feature7Desc":"Imported tracks are never uploaded anywhere.","sourcesHeading":"Ways to import tracks","source1":"Wi-Fi transfer from a computer (QR / IP)","source2":"iPhone / iPad / iPod Music library","source3":"Files app","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"For transfers from a computer, just connect to the same Wi-Fi, open the QR-code address shown in the app in a browser, and drag & drop your tracks. No cable, no iTunes needed.<br>Dropbox and Google Drive let you sign in and browse folders to import multiple tracks at once.","appleMusicNote":"⚠️ <strong>Apple Music streaming tracks can't be imported.</strong> Streamed tracks are protected by DRM, and iOS doesn't allow other apps to access that audio data. That means gapless processing and the equalizer can't be applied either (this isn't something the app can work around). Tracks ripped from CDs or purchased from the iTunes Store (DRM-free) can be imported.","pricingHeading":"Pricing","pricingIntro":"<strong>The core seamless-playback features — gapless, crossfade, and silence trimming — are all free.</strong> The app's core functionality is never restricted.","priceFreeLabel":"Free","price7dLabel":"Premium — 7 days","priceMonthlyLabel":"Premium — Monthly","priceYearlyLabel":"Premium — Yearly","priceLifetimeLabel":"Premium — Lifetime","pricingNote":"Premium gives you three things: no ads, the full equalizer, and an unlimited library. Choose Lifetime and you'll never be billed again.","audienceHeading":"Who it's for","audienceText":"You want to listen to a CD DJ mix on your iPhone / You can't stand hearing a mixtape cut between tracks / You don't want live-album MCs or festival recordings interrupted between songs / Silence between movements of a classical piece bothers you / You want to carry your own DJ set with you","footerTagline":"Seamless music, exactly as it should be.","pricingCurrencyNote":"Prices are shown in Japanese yen (¥). Your actual price in the App Store is charged in your local currency and may differ slightly.","priceFreeValue":"Ads shown / up to 50 tracks in your library"},"zh-Hans":{"backToTop":"← 返回应用列表","backToApp":"← 返回 NonStop","appName":"NonStop","tagline":"曲目切换，永不间断。","linkSupport":"支持 / 常见问题","linkPrivacy":"隐私政策","linkTerms":"服务条款","pageTitle":"NonStop — 曲目切换，永不间断。","metaDescription":"一款让DJ混音和串烧磁带的“衔接”永不中断的音乐播放器。只需一个设置即可在无缝播放和淡入淡出之间切换。","appStoreButton":"在 App Store 中打开","intro":"DJ混音、串烧磁带、现场专辑——这些音源本应一气呵成地播放，却因为CD或文件将其拆分成了独立的音轨，导致音乐在不该中断的地方突然“咔哒”一声断开。NonStop是<strong>专为消除这种断层而生的音乐播放器</strong>。","lede":"∞ <strong>即使曲目切换，播放也不会中断。</strong>应用会预先将多首曲目组装成一段连续的音频再进行播放，因此曲目之间没有任何空隙可供静音潜入。","modesHeading":"三种衔接方式任你选择","modeGaplessTitle":"无缝播放","modeGaplessDesc":"不插入任何静音，直接衔接下一首曲目。适用于从CD导入的混音、现场专辑，以及古典乐章之间的衔接。","modeCrossfadeTitle":"淡入淡出","modeCrossfadeDesc":"让前后两首曲目重叠0.5〜12秒，实现自然过渡。可从等功率或线性曲线中选择。","modeOffTitle":"关闭（普通播放）","modeOffDesc":"与普通音乐播放器的行为相同。曲目之间的间隔也可在0〜3秒范围内调整。","modesNote":"即使在播放中也可以随时切换设置，声音不会中断，即刻生效。","featuresHeading":"主要功能","feature1Title":"真正的无缝播放","feature1Desc":"设计上保证播放不会在曲目分界处中断——第一首曲目的最后一个采样点与第二首曲目的第一个采样点直接相连。","feature2Title":"淡入淡出","feature2Desc":"0.5〜12秒。像DJ混音一样将前后曲目重叠衔接。","feature3Title":"自动静音裁切","feature3Desc":"自动检测并裁切烙印在文件本身开头和结尾的静音部分。如果不处理这一步，即使开启了无缝播放，静音依然不会消失。","feature4Title":"音量均衡","feature4Desc":"拉平各曲目录音电平的差异，避免衔接处音量突变。","feature5Title":"6种导入方式","feature5Desc":"支持通过电脑Wi-Fi传输（扫描二维码）、设备内音乐库、文件App、Dropbox、Google Drive 导入。","feature6Title":"完整均衡器（高级版）","feature6Desc":"10段EQ、22种预设、混响、延迟、播放速度/音高、立体声宽度、限幅器。","feature7Title":"音源仅保存在设备本地","feature7Desc":"导入的曲目绝不会被上传到任何地方。","sourcesHeading":"曲目导入方式","source1":"通过电脑Wi-Fi传输（二维码 / IP地址）","source2":"iPhone / iPad / iPod 音乐库","source3":"文件App","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"从电脑传输时，只需连接同一Wi-Fi，在浏览器中打开应用显示的二维码地址，然后将曲目拖放进去即可，无需数据线，也无需iTunes。<br>Dropbox 和 Google Drive 只需登录账号，浏览文件夹即可一次性批量导入多首曲目。","appleMusicNote":"⚠️ <strong>无法导入 Apple Music 的流媒体曲目。</strong>流媒体曲目受DRM保护，且根据iOS的规范，其他应用无法处理该音频数据。因此也无法对其应用无缝处理或均衡器（这并非应用可以规避的限制）。从CD导入的曲目、在iTunes Store购买的曲目等无DRM保护的音乐可以正常导入。","pricingHeading":"价格","pricingIntro":"<strong>衔接功能（无缝播放、淡入淡出、静音裁切）在免费版中也可全部使用。</strong>本应用不对核心功能设置任何限制。","priceFreeLabel":"免费版","price7dLabel":"高级版 7天","priceMonthlyLabel":"高级版 月付","priceYearlyLabel":"高级版 年付","priceLifetimeLabel":"高级版 买断","pricingNote":"高级版提供三项权益：“无广告”“完整均衡器”“无限曲库”。选择买断方案后不会再产生任何后续扣费。","audienceHeading":"适合这样的你","audienceText":"想在iPhone上听CD版DJ混音 ／ 无法忍受串烧磁带的衔接被打断 ／ 不希望现场专辑、音乐节录音中的报幕与曲目之间被切断 ／ 在意古典乐章之间出现的静音 ／ 想随身携带自己制作的DJ套曲","footerTagline":"无缝衔接的音乐，原汁原味地呈现。","pricingCurrencyNote":"价格以日元（¥）显示。您在 App Store 中实际支付的金额将以您所在地区的当地货币结算，可能会略有差异。","priceFreeValue":"含广告 / 曲库最多50首"},"zh-Hant":{"backToTop":"← 返回應用程式列表","backToApp":"← 返回 NonStop","appName":"NonStop","tagline":"曲目之間，無縫不斷。","linkSupport":"支援 / 常見問題","linkPrivacy":"隱私權政策","linkTerms":"使用條款","pageTitle":"NonStop — 曲目之間，無縫不斷。","metaDescription":"讓 DJ 混音與 MIX 帶的「銜接」不再中斷的音樂播放器。只需一個設定，即可在無縫播放與交叉淡入淡出之間切換。","appStoreButton":"在 App Store 開啟","intro":"DJ 混音、MIX 帶、現場錄音專輯。這些音源原本應該一氣呵成，卻因為 CD 或檔案將曲目切割開來，總在最精彩的地方「喀」一聲中斷。NonStop 是一款<strong>專為消除這種銜接空隙而生的音樂播放器</strong>。","lede":"∞ <strong>即使切換曲目，播放也不會中斷。</strong>系統會事先將多首曲目組合成一段連續的音訊再播放，因此曲目交界處完全沒有留白的空間。","modesHeading":"三種銜接方式任您選擇","modeGaplessTitle":"無縫播放","modeGaplessDesc":"完全不留空白，直接銜接下一首曲目。適合從 CD 轉錄的混音、現場專輯，以及古典樂章之間的銜接。","modeCrossfadeTitle":"交叉淡入淡出","modeCrossfadeDesc":"在前後曲目之間以 0.5～12 秒重疊融合。可選擇等功率或線性曲線。","modeOffTitle":"關閉（一般播放）","modeOffDesc":"行為與一般音樂播放器相同。曲目間隔仍可在 0～3 秒間調整。","modesNote":"即使在播放中也能切換設定，聲音不會中斷，會立即套用變更。","featuresHeading":"主要功能","feature1Title":"完全無縫播放","feature1Desc":"設計上不會在曲目交界處中斷播放，第一首曲目的最後一個取樣會直接接上第二首曲目的第一個取樣。","feature2Title":"交叉淡入淡出","feature2Desc":"0.5～12 秒。如同 DJ 混音般，將前後曲目重疊銜接。","feature3Title":"自動裁切靜音","feature3Desc":"自動偵測並裁切檔案本身開頭與結尾內建的靜音部分。若不處理這部分，即使開啟無縫播放，空白仍不會消失。","feature4Title":"音量校準","feature4Desc":"拉平各曲目間的錄音音量差異，避免銜接處音量忽大忽小。","feature5Title":"六種匯入方式","feature5Desc":"支援從電腦透過 Wi-Fi 傳輸（QR Code）、裝置內建音樂、檔案 App、Dropbox 以及 Google Drive。","feature6Title":"完整等化器（進階版）","feature6Desc":"10 段等化器、22 種預設、殘響、延遲、播放速度／音高、立體聲寬度、限幅器。","feature7Title":"音樂只存在您的裝置中","feature7Desc":"匯入的曲目絕不會被上傳至任何地方。","sourcesHeading":"曲目匯入方式","source1":"從電腦透過 Wi-Fi 傳輸（QR / IP）","source2":"iPhone / iPad / iPod 的音樂","source3":"檔案 App","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"從電腦傳輸時，只要連接同一個 Wi-Fi，在瀏覽器開啟 App 顯示的 QR Code 網址，再將曲目拖放進去即可，不需要傳輸線也不需要 iTunes。<br>Dropbox 與 Google Drive 只要登入帳號，即可瀏覽資料夾並一次匯入多首曲目。","appleMusicNote":"⚠️ <strong>無法匯入 Apple Music 的串流曲目。</strong>串流曲目受 DRM 保護，基於 iOS 的規範，其他 App 無法存取該音訊資料。因此也無法套用無縫處理或等化器（這並非 App 端可以規避的限制）。從 CD 轉錄的曲目或在 iTunes Store 購買的曲目等不含 DRM 的音樂則可以匯入。","pricingHeading":"價格","pricingIntro":"<strong>銜接功能（無縫播放、交叉淡入淡出、靜音裁切）在免費版中也能完整使用。</strong>本 App 的核心功能不設任何限制。","priceFreeLabel":"免費版","price7dLabel":"進階版 7 天","priceMonthlyLabel":"進階版 月繳","priceYearlyLabel":"進階版 年繳","priceLifetimeLabel":"進階版 買斷","pricingNote":"進階版提供三項特典：「無廣告」「完整等化器」「無限曲目庫」。選擇買斷方案後，之後不會再產生任何費用。","audienceHeading":"適合這樣的您","audienceText":"想在 iPhone 上聽 CD 的 DJ 混音／無法忍受 MIX 帶的銜接中斷／不希望現場專輯、音樂節錄音的 MC 與曲目之間被打斷／在意古典樂章之間出現的靜音／想隨身攜帶自製的 DJ 歌單","footerTagline":"無縫銜接的音樂，原汁原味。","pricingCurrencyNote":"價格以日圓（¥）顯示。您在 App Store 實際支付的金額將以當地貨幣計價，可能略有差異。","priceFreeValue":"含廣告 / 曲庫最多50首"},"ko":{"backToTop":"← 앱 목록으로 돌아가기","backToApp":"← NonStop으로 돌아가기","appName":"NonStop","tagline":"곡 사이, 끊기지 않게.","linkSupport":"지원 / FAQ","linkPrivacy":"개인정보처리방침","linkTerms":"이용약관","pageTitle":"NonStop — 곡 사이, 끊기지 않게.","metaDescription":"DJ 믹스나 믹스테이프의 '연결'이 끊기지 않는 음악 플레이어. 설정 하나로 갭리스 재생과 크로스페이드를 전환할 수 있습니다.","appStoreButton":"App Store에서 열기","intro":"DJ 믹스, 믹스테이프, 라이브 앨범. 원래는 하나로 이어져야 할 음원인데, CD나 파일에서는 트랙이 나뉘어 있어서 한창 좋을 때 '뚝' 끊겨버립니다. NonStop은 그 <strong>이음매를 없애기 위해서만 만든 음악 플레이어</strong>입니다.","lede":"∞ <strong>곡이 바뀌어도 재생을 멈추지 않습니다.</strong> 여러 곡을 미리 하나의 연속된 음성으로 조립한 뒤 재생하기 때문에, 곡 사이에 무음이 끼어들 여지가 없습니다.","modesHeading":"연결 방식을 3가지 중에서 선택할 수 있습니다","modeGaplessTitle":"갭리스","modeGaplessDesc":"무음을 전혀 넣지 않고 다음 곡으로 바로 연결합니다. CD에서 추출한 믹스나 라이브 앨범, 클래식 악장 사이에 적합합니다.","modeCrossfadeTitle":"크로스페이드","modeCrossfadeDesc":"이전 곡과 다음 곡을 0.5~12초 동안 겹쳐서 자연스럽게 이어줍니다. 커브는 등파워/리니어 중에서 선택할 수 있습니다.","modeOffTitle":"OFF(일반 재생)","modeOffDesc":"일반적인 음악 플레이어와 같은 동작입니다. 곡 사이의 간격도 0~3초 사이에서 조정할 수 있습니다.","modesNote":"설정 전환은 재생 중에도 가능합니다. 소리를 멈추지 않고 그 자리에서 바뀝니다.","featuresHeading":"주요 기능","feature1Title":"완전한 갭리스 재생","feature1Desc":"곡의 이음매에서 재생이 멈추지 않도록 설계했습니다. 첫 번째 곡의 마지막 샘플과 두 번째 곡의 첫 샘플이 직접 연결됩니다.","feature2Title":"크로스페이드","feature2Desc":"0.5~12초. DJ 믹스처럼 앞뒤 곡을 겹쳐서 연결합니다.","feature3Title":"무음 자동 컷","feature3Desc":"파일 자체에 포함된 곡 시작과 끝의 무음을 자동으로 감지해 잘라냅니다. 이 처리를 하지 않으면 재생을 이어붙여도 무음은 사라지지 않습니다.","feature4Title":"음량 맞추기","feature4Desc":"곡마다 다른 녹음 레벨 차이를 맞춰서 이음매에서 음량이 튀지 않도록 합니다.","feature5Title":"6가지 가져오기 방법","feature5Desc":"컴퓨터에서 Wi-Fi 전송(QR코드), 기기 내 뮤직, 파일 앱, Dropbox, Google Drive를 지원합니다.","feature6Title":"풀 이퀄라이저(프리미엄)","feature6Desc":"10밴드 EQ, 프리셋 22종, 리버브, 딜레이, 재생 속도/키, 스테레오 폭, 리미터.","feature7Title":"음원은 기기 안에만","feature7Desc":"가져온 곡을 어딘가에 업로드하는 일은 없습니다.","sourcesHeading":"곡을 가져오는 방법","source1":"컴퓨터에서 Wi-Fi 전송(QR / IP)","source2":"iPhone / iPad / iPod의 뮤직","source3":"파일 앱","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"컴퓨터에서 전송할 때는 같은 Wi-Fi에 연결한 상태로 브라우저에 표시된 QR코드 주소를 열고, 곡을 드래그 앤 드롭하기만 하면 됩니다. 케이블도 iTunes도 필요 없습니다.<br>Dropbox와 Google Drive는 계정에 로그인해서 폴더를 따라가며 여러 곡을 한 번에 가져올 수 있습니다.","appleMusicNote":"⚠️ <strong>Apple Music 스트리밍 곡은 가져올 수 없습니다.</strong> 스트리밍 곡은 DRM으로 보호되어 있으며, iOS 특성상 다른 앱이 오디오 데이터를 다룰 수 없기 때문입니다. 이 때문에 갭리스 처리도 이퀄라이저도 적용할 수 없습니다(이는 앱 측에서 우회할 수 있는 문제가 아닙니다). CD에서 가져온 곡이나 iTunes Store에서 구매한 곡 등 DRM이 없는 곡은 가져올 수 있습니다.","pricingHeading":"요금","pricingIntro":"<strong>연결 기능(갭리스・크로스페이드・무음 컷)은 무료 버전에서도 모두 사용할 수 있습니다.</strong> 이 앱의 핵심 기능에는 제한을 두지 않습니다.","priceFreeLabel":"무료 버전","price7dLabel":"프리미엄 7일간","priceMonthlyLabel":"프리미엄 월간","priceYearlyLabel":"프리미엄 연간","priceLifetimeLabel":"프리미엄 평생 이용권","pricingNote":"프리미엄 혜택은 '광고 없음', '풀 이퀄라이저', '라이브러리 무제한' 3가지입니다. 평생 이용권을 선택하면 이후 추가 결제가 없습니다.","audienceHeading":"이런 분들에게","audienceText":"CD DJ 믹스를 iPhone으로 듣고 싶다 / 믹스테이프의 연결이 끊기는 걸 참을 수 없다 / 라이브 앨범・페스티벌 음원의 MC와 곡 사이가 끊기지 않았으면 한다 / 클래식 악장 사이에 무음이 들어가는 게 신경 쓰인다 / 직접 만든 DJ 세트를 들고 다니고 싶다","footerTagline":"끊김 없는 음악을, 그대로.","pricingCurrencyNote":"가격은 일본 엔(¥)으로 표시됩니다. App Store에서 실제로 청구되는 금액은 사용자의 현지 통화로 결제되며 다소 차이가 있을 수 있습니다.","priceFreeValue":"광고 있음 / 라이브러리 50곡까지"},"es":{"backToTop":"← Volver a la lista de apps","backToApp":"← Volver a NonStop","appName":"NonStop","tagline":"Sin cortes entre canciones.","linkSupport":"Soporte / Preguntas frecuentes","linkPrivacy":"Política de privacidad","linkTerms":"Términos de servicio","pageTitle":"NonStop — Sin cortes entre canciones.","metaDescription":"Un reproductor de música que mantiene la mezcla de tus DJ sets y mixtapes sin interrupciones. Cambia entre reproducción sin pausas (gapless) y crossfade con un solo ajuste.","appStoreButton":"Consíguela en la App Store","intro":"Mezclas de DJ, mixtapes, discos en vivo: música pensada para sonar de forma continua, pero que los CD o los archivos dividen en pistas separadas, cortando el sonido justo donde no debería. NonStop es un reproductor de música <strong>creado con un único propósito: eliminar ese corte</strong>.","lede":"∞ <strong>La reproducción nunca se detiene, ni siquiera al cambiar de canción.</strong> Varias canciones se ensamblan en un único flujo de audio continuo antes de reproducirse, así que no queda espacio para que se cuele el silencio entre pistas.","modesHeading":"Elige entre 3 formas de enlazar las pistas","modeGaplessTitle":"Sin pausas (gapless)","modeGaplessDesc":"Conecta directamente con la siguiente pista sin ningún silencio. Ideal para mezclas ripeadas de CD, discos en vivo y los movimientos de una obra clásica.","modeCrossfadeTitle":"Crossfade","modeCrossfadeDesc":"Combina la pista anterior y la siguiente durante 0,5 a 12 segundos. Elige entre curva de potencia constante o lineal.","modeOffTitle":"Desactivado (reproducción normal)","modeOffDesc":"Se comporta como un reproductor de música común. Aun así, puedes ajustar la pausa entre pistas de 0 a 3 segundos.","modesNote":"Puedes cambiar de modo incluso mientras suena la música: el cambio es instantáneo y no interrumpe el sonido.","featuresHeading":"Funciones principales","feature1Title":"Reproducción realmente sin pausas","feature1Desc":"Diseñado para que la reproducción nunca se detenga en el límite entre pistas: la última muestra de una canción se conecta directamente con la primera muestra de la siguiente.","feature2Title":"Crossfade","feature2Desc":"De 0,5 a 12 segundos. Combina pistas consecutivas al estilo de una mezcla de DJ.","feature3Title":"Recorte automático de silencios","feature3Desc":"Detecta y recorta automáticamente el silencio incrustado al inicio y al final de un archivo. Sin este paso, los cortes persisten aunque actives la reproducción sin pausas.","feature4Title":"Igualación de volumen","feature4Desc":"Compensa las diferencias de nivel de grabación entre pistas para que el volumen no dé saltos en la transición.","feature5Title":"6 formas de importar","feature5Desc":"Compatible con transferencia por Wi-Fi desde un ordenador (código QR), la biblioteca de Música del dispositivo, la app Archivos, Dropbox y Google Drive.","feature6Title":"Ecualizador completo (Premium)","feature6Desc":"Ecualizador de 10 bandas, 22 preajustes, reverberación, delay, velocidad/tono de reproducción, amplitud estéreo y limitador.","feature7Title":"Tu música nunca sale de tu dispositivo","feature7Desc":"Las pistas importadas nunca se suben a ningún sitio.","sourcesHeading":"Formas de importar pistas","source1":"Transferencia por Wi-Fi desde un ordenador (QR / IP)","source2":"Biblioteca de Música de iPhone / iPad / iPod","source3":"App Archivos","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"Para transferir desde un ordenador, solo conéctate a la misma red Wi-Fi, abre en el navegador la dirección del código QR que muestra la app y arrastra y suelta tus pistas. No necesitas cables ni iTunes.<br>Con Dropbox y Google Drive puedes iniciar sesión y navegar por carpetas para importar varias pistas a la vez.","appleMusicNote":"⚠️ <strong>Las pistas en streaming de Apple Music no se pueden importar.</strong> Las canciones en streaming están protegidas por DRM, y iOS no permite que otras apps accedan a esos datos de audio. Por eso tampoco se les puede aplicar el procesamiento sin pausas ni el ecualizador (esto no es algo que la app pueda evitar). Sí se pueden importar las pistas ripeadas de un CD o compradas en iTunes Store (sin DRM).","pricingHeading":"Precios","pricingIntro":"<strong>Las funciones de conexión entre pistas (sin pausas, crossfade y recorte de silencios) están disponibles gratis.</strong> Las funciones principales de la app nunca están restringidas.","priceFreeLabel":"Versión gratuita","price7dLabel":"Premium 7 días","priceMonthlyLabel":"Premium mensual","priceYearlyLabel":"Premium anual","priceLifetimeLabel":"Premium pago único","pricingNote":"Premium te da tres cosas: sin anuncios, ecualizador completo y biblioteca sin límite. Si eliges el pago único, no volverás a recibir cargos.","audienceHeading":"Para quién es","audienceText":"Quieres escuchar en tu iPhone una mezcla de DJ grabada en CD / No soportas que se corte una mixtape entre canciones / No quieres que se interrumpan los comentarios del presentador o las grabaciones de un festival entre temas / Te molesta el silencio entre los movimientos de una obra clásica / Quieres llevar contigo tu propio set de DJ","footerTagline":"Música sin cortes, tal como debe ser.","pricingCurrencyNote":"Los precios se muestran en yenes japoneses (¥). El precio real en la App Store se cobra en tu moneda local y puede variar ligeramente.","priceFreeValue":"Con anuncios / hasta 50 pistas en la biblioteca"},"de":{"backToTop":"← Zurück zur App-Liste","backToApp":"← Zurück zu NonStop","appName":"NonStop","tagline":"Zwischen den Songs, ohne Unterbrechung.","linkSupport":"Support / FAQ","linkPrivacy":"Datenschutzerklärung","linkTerms":"Nutzungsbedingungen","pageTitle":"NonStop — Zwischen den Songs, ohne Unterbrechung.","metaDescription":"Ein Musikplayer, der die Übergänge in DJ-Mixes und Mixtapes nicht unterbricht. Wechsle mit einer einzigen Einstellung zwischen lückenloser Wiedergabe und Überblendung.","appStoreButton":"Im App Store öffnen","intro":"DJ-Mixes, Mixtapes, Live-Alben – eigentlich als durchgehendes Stück gedacht, aber CDs und Dateien teilen sie in einzelne Tracks auf, sodass die Musik genau an der falschen Stelle abbricht. NonStop ist ein Musikplayer, <strong>der nur für einen Zweck entwickelt wurde: diese Lücke verschwinden zu lassen</strong>.","lede":"∞ <strong>Die Wiedergabe stoppt nie, auch wenn der Song wechselt.</strong> Mehrere Songs werden vorab zu einem einzigen durchgehenden Audiostream zusammengesetzt, bevor sie abgespielt werden – so bleibt kein Raum für Stille zwischen den Tracks.","modesHeading":"Wähle aus 3 Übergangsarten","modeGaplessTitle":"Lückenlos","modeGaplessDesc":"Verbindet ohne jede Stille direkt mit dem nächsten Song. Ideal für von CD gerippte Mixes, Live-Alben und Sätze klassischer Werke.","modeCrossfadeTitle":"Überblendung","modeCrossfadeDesc":"Überlagert den vorherigen und den nächsten Song für 0,5–12 Sekunden. Wähle zwischen einer gleichbleibenden oder linearen Kurve.","modeOffTitle":"Aus (normale Wiedergabe)","modeOffDesc":"Verhält sich wie ein gewöhnlicher Musikplayer. Die Pause zwischen den Songs lässt sich trotzdem von 0–3 Sekunden einstellen.","modesNote":"Du kannst den Modus auch während der Wiedergabe wechseln – die Änderung erfolgt sofort, ohne den Ton zu unterbrechen.","featuresHeading":"Hauptfunktionen","feature1Title":"Echte lückenlose Wiedergabe","feature1Desc":"So konzipiert, dass die Wiedergabe an Songgrenzen nie stoppt – das letzte Sample eines Tracks geht direkt in das erste Sample des nächsten über.","feature2Title":"Überblendung","feature2Desc":"0,5–12 Sekunden. Überlagert aufeinanderfolgende Songs im DJ-Mix-Stil.","feature3Title":"Automatisches Stille-Trimmen","feature3Desc":"Erkennt und entfernt automatisch die im Datei-Anfang und -Ende eingebrannte Stille. Ohne diesen Schritt bleiben Lücken bestehen, selbst wenn die lückenlose Wiedergabe aktiviert ist.","feature4Title":"Lautstärkeangleichung","feature4Desc":"Gleicht Unterschiede im Aufnahmepegel zwischen den Songs aus, damit die Lautstärke beim Übergang nicht springt.","feature5Title":"6 Importmöglichkeiten","feature5Desc":"Unterstützt WLAN-Übertragung vom Computer (QR-Code), die geräteinterne Musikbibliothek, die Dateien-App, Dropbox und Google Drive.","feature6Title":"Vollständiger Equalizer (Premium)","feature6Desc":"10-Band-EQ, 22 Presets, Hall, Delay, Wiedergabegeschwindigkeit/Tonhöhe, Stereobreite und ein Limiter.","feature7Title":"Deine Musik verlässt niemals dein Gerät","feature7Desc":"Importierte Songs werden niemals irgendwohin hochgeladen.","sourcesHeading":"So importierst du Songs","source1":"WLAN-Übertragung vom Computer (QR / IP)","source2":"Musikbibliothek von iPhone / iPad / iPod","source3":"Dateien-App","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"Für die Übertragung vom Computer verbindest du dich einfach mit demselben WLAN, öffnest die in der App angezeigte QR-Code-Adresse im Browser und ziehst deine Songs per Drag & Drop hinein. Kein Kabel, kein iTunes nötig.<br>Bei Dropbox und Google Drive meldest du dich an und kannst durch Ordner navigieren, um mehrere Songs auf einmal zu importieren.","appleMusicNote":"⚠️ <strong>Streaming-Titel von Apple Music können nicht importiert werden.</strong> Gestreamte Titel sind durch DRM geschützt, und iOS erlaubt anderen Apps grundsätzlich keinen Zugriff auf diese Audiodaten. Deshalb lassen sich weder die lückenlose Verarbeitung noch der Equalizer darauf anwenden (das lässt sich app-seitig nicht umgehen). Von CD gerippte oder im iTunes Store gekaufte Titel (ohne DRM) können importiert werden.","pricingHeading":"Preise","pricingIntro":"<strong>Die zentralen Übergangsfunktionen (lückenlose Wiedergabe, Überblendung, Stille-Trimmen) sind vollständig kostenlos nutzbar.</strong> Die Kernfunktionen der App sind zu keinem Zeitpunkt eingeschränkt.","priceFreeLabel":"Kostenlos","price7dLabel":"Premium – 7 Tage","priceMonthlyLabel":"Premium – Monatlich","priceYearlyLabel":"Premium – Jährlich","priceLifetimeLabel":"Premium – Einmalkauf","pricingNote":"Premium bietet dir drei Dinge: keine Werbung, den vollständigen Equalizer und eine unbegrenzte Bibliothek. Entscheidest du dich für den Einmalkauf, wird dir danach nichts mehr berechnet.","audienceHeading":"Für wen geeignet","audienceText":"Du willst einen DJ-Mix von CD auf dem iPhone hören / Es stört dich, wenn ein Mixtape zwischen den Songs abbricht / Du möchtest nicht, dass Ansagen oder Übergänge bei Live-Alben und Festivalaufnahmen unterbrochen werden / Stille zwischen den Sätzen eines klassischen Werks stört dich / Du möchtest dein eigenes DJ-Set mit dir tragen","footerTagline":"Nahtlose Musik, genau so, wie sie sein soll.","pricingCurrencyNote":"Die Preise werden in japanischen Yen (¥) angezeigt. Der tatsächliche Preis im App Store wird in deiner lokalen Währung berechnet und kann geringfügig abweichen.","priceFreeValue":"Mit Werbung / bis zu 50 Titel in der Bibliothek"},"fr":{"backToTop":"← Retour à la liste des applications","backToApp":"← Retour à NonStop","appName":"NonStop","tagline":"Entre les morceaux, sans coupure.","linkSupport":"Assistance / FAQ","linkPrivacy":"Politique de confidentialité","linkTerms":"Conditions d'utilisation","pageTitle":"NonStop — Entre les morceaux, sans coupure.","metaDescription":"Un lecteur de musique qui ne coupe jamais l'enchaînement de vos mix DJ ou mixtapes. Basculez entre lecture sans interruption et fondu enchaîné d'un simple réglage.","appStoreButton":"Ouvrir sur l'App Store","intro":"Mix DJ, mixtapes, albums live : à l'origine pensés pour être écoutés d'une seule traite, mais découpés en pistes séparées par les CD ou les fichiers, ce qui coupe la musique juste au mauvais moment. NonStop est un lecteur de musique <strong>conçu dans un seul but : supprimer cette coupure</strong>.","lede":"∞ <strong>La lecture ne s'arrête jamais, même quand le morceau change.</strong> Plusieurs titres sont assemblés à l'avance en un seul flux audio continu avant la lecture, si bien qu'aucun silence ne peut se glisser entre les morceaux.","modesHeading":"Trois façons d'enchaîner vos morceaux","modeGaplessTitle":"Sans coupure","modeGaplessDesc":"Passe directement au morceau suivant sans aucun silence. Idéal pour les mix récupérés d'un CD, les albums live et les mouvements d'une œuvre classique.","modeCrossfadeTitle":"Fondu enchaîné","modeCrossfadeDesc":"Superpose le morceau précédent et le suivant sur 0,5 à 12 secondes. Choisissez une courbe à puissance constante ou linéaire.","modeOffTitle":"Désactivé (lecture normale)","modeOffDesc":"Se comporte comme un lecteur de musique classique. Vous pouvez tout de même régler l'intervalle entre les morceaux de 0 à 3 secondes.","modesNote":"Vous pouvez changer de réglage même pendant la lecture : le changement s'applique instantanément, sans couper le son.","featuresHeading":"Fonctionnalités principales","feature1Title":"Lecture véritablement sans coupure","feature1Desc":"Conçu pour que la lecture ne s'arrête jamais à la jonction entre deux morceaux : le dernier échantillon du premier titre se connecte directement au premier échantillon du suivant.","feature2Title":"Fondu enchaîné","feature2Desc":"De 0,5 à 12 secondes. Superposez les morceaux à la manière d'un mix DJ.","feature3Title":"Suppression automatique des silences","feature3Desc":"Détecte et supprime automatiquement les silences intégrés au début et à la fin d'un fichier. Sans ce traitement, les silences subsistent même avec la lecture sans coupure activée.","feature4Title":"Égalisation du volume","feature4Desc":"Compense les différences de niveau d'enregistrement entre les morceaux pour éviter les sauts de volume à la transition.","feature5Title":"6 méthodes d'importation","feature5Desc":"Transfert Wi-Fi depuis un ordinateur (QR code), bibliothèque musicale de l'appareil, application Fichiers, Dropbox et Google Drive.","feature6Title":"Égaliseur complet (Premium)","feature6Desc":"Égaliseur 10 bandes, 22 préréglages, réverbération, delay, vitesse/tonalité de lecture, largeur stéréo et limiteur.","feature7Title":"Votre musique reste sur votre appareil","feature7Desc":"Les morceaux importés ne sont jamais envoyés où que ce soit.","sourcesHeading":"Comment importer vos morceaux","source1":"Transfert Wi-Fi depuis un ordinateur (QR / IP)","source2":"Musique de l'iPhone / iPad / iPod","source3":"Application Fichiers","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"Pour un transfert depuis un ordinateur, connectez-vous simplement au même Wi-Fi, ouvrez dans votre navigateur l'adresse du QR code affiché dans l'application, puis glissez-déposez vos morceaux. Aucun câble ni iTunes n'est nécessaire.<br>Dropbox et Google Drive vous permettent de vous connecter et de parcourir vos dossiers pour importer plusieurs morceaux à la fois.","appleMusicNote":"⚠️ <strong>Les morceaux en streaming d'Apple Music ne peuvent pas être importés.</strong> Les titres diffusés en streaming sont protégés par DRM, et iOS ne permet à aucune autre application d'accéder à ces données audio. Il n'est donc pas possible non plus d'appliquer le traitement sans coupure ni l'égaliseur (l'application ne peut pas contourner cette limitation). Les morceaux extraits d'un CD ou achetés sur l'iTunes Store (sans DRM) peuvent être importés.","pricingHeading":"Tarifs","pricingIntro":"<strong>Les fonctions d'enchaînement (lecture sans coupure, fondu enchaîné, suppression des silences) sont toutes disponibles dans la version gratuite.</strong> Aucune restriction n'est appliquée aux fonctionnalités principales de l'application.","priceFreeLabel":"Version gratuite","price7dLabel":"Premium 7 jours","priceMonthlyLabel":"Premium mensuel","priceYearlyLabel":"Premium annuel","priceLifetimeLabel":"Premium à vie","pricingNote":"La version Premium offre trois avantages : « sans publicité », « égaliseur complet » et « bibliothèque illimitée ». Optez pour l'achat unique et vous ne serez plus jamais facturé par la suite.","audienceHeading":"Pour qui ?","audienceText":"Vous voulez écouter un mix DJ de CD sur votre iPhone / Vous ne supportez pas qu'une mixtape soit coupée entre deux morceaux / Vous ne voulez aucune coupure entre les titres et les annonces d'un album live ou d'un festival / Le silence entre les mouvements d'une œuvre classique vous dérange / Vous voulez emporter votre propre set DJ partout avec vous","footerTagline":"Une musique sans coupure, telle qu'elle doit être.","pricingCurrencyNote":"Les prix sont indiqués en yens japonais (¥). Le montant réellement facturé sur l'App Store est prélevé dans votre devise locale et peut légèrement différer.","priceFreeValue":"Avec publicités / jusqu'à 50 titres dans la bibliothèque"},"pt-BR":{"backToTop":"← Voltar à lista de apps","backToApp":"← Voltar ao NonStop","appName":"NonStop","tagline":"Sem intervalo entre as faixas.","linkSupport":"Suporte / Perguntas frequentes","linkPrivacy":"Política de Privacidade","linkTerms":"Termos de Uso","pageTitle":"NonStop — Sem intervalo entre as faixas.","metaDescription":"Um player de música que mantém a mixagem de DJ ou a fita mix sem interrupções. Alterne entre reprodução sem intervalos (gapless) e crossfade com um único ajuste.","appStoreButton":"Baixar na App Store","intro":"Mixagens de DJ, fitas mix, álbuns ao vivo — são feitos para tocar como uma única peça contínua, mas CDs e arquivos os dividem em faixas separadas, cortando a música bem na hora errada. O NonStop é um player de música <strong>criado com um único propósito: eliminar esse corte</strong>.","lede":"∞ <strong>A reprodução nunca para, mesmo quando a faixa muda.</strong> Várias músicas são montadas em um único fluxo de áudio contínuo antes de tocar, então não há espaço para o silêncio se infiltrar entre as faixas.","modesHeading":"Escolha entre 3 formas de conectar as faixas","modeGaplessTitle":"Gapless (sem intervalo)","modeGaplessDesc":"Conecta direto na próxima faixa, sem nenhum silêncio. Perfeito para mixagens extraídas de CD, álbuns ao vivo e movimentos de uma obra clássica.","modeCrossfadeTitle":"Crossfade","modeCrossfadeDesc":"Mescla a faixa anterior e a próxima ao longo de 0,5 a 12 segundos. Escolha entre curva de potência igual ou linear.","modeOffTitle":"Desligado (reprodução normal)","modeOffDesc":"Funciona como um player de música comum. Você ainda pode ajustar o intervalo entre as faixas de 0 a 3 segundos.","modesNote":"Você pode trocar de modo mesmo durante a reprodução — a mudança acontece instantaneamente, sem interromper o som.","featuresHeading":"Principais recursos","feature1Title":"Reprodução verdadeiramente sem intervalos","feature1Desc":"Projetado para que a reprodução nunca pare na transição entre faixas — a última amostra de uma faixa se conecta diretamente à primeira amostra da próxima.","feature2Title":"Crossfade","feature2Desc":"0,5 a 12 segundos. Mescla faixas consecutivas, no estilo de uma mixagem de DJ.","feature3Title":"Corte automático de silêncio","feature3Desc":"Detecta e corta automaticamente o silêncio gravado no início e no fim do arquivo. Sem essa etapa, os intervalos persistem mesmo com o modo sem intervalos ativado.","feature4Title":"Equalização de volume","feature4Desc":"Nivela as diferenças de volume de gravação entre as faixas para que o volume não salte na transição.","feature5Title":"6 formas de importar","feature5Desc":"Compatível com transferência via Wi-Fi a partir de um computador (código QR), a biblioteca de Música do aparelho, o app Arquivos, Dropbox e Google Drive.","feature6Title":"Equalizador completo (Premium)","feature6Desc":"Equalizador de 10 bandas, 22 predefinições, reverb, delay, velocidade/tom de reprodução, largura estéreo e limitador.","feature7Title":"Sua música nunca sai do seu aparelho","feature7Desc":"As faixas importadas nunca são enviadas para lugar nenhum.","sourcesHeading":"Formas de importar faixas","source1":"Transferência via Wi-Fi a partir de um computador (QR / IP)","source2":"Biblioteca de Música do iPhone / iPad / iPod","source3":"App Arquivos","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"Para transferir de um computador, basta conectar-se à mesma rede Wi-Fi, abrir no navegador o endereço do código QR exibido no app e arrastar e soltar suas faixas. Sem cabo, sem iTunes.<br>Dropbox e Google Drive permitem fazer login e navegar pelas pastas para importar várias faixas de uma vez.","appleMusicNote":"⚠️ <strong>Faixas em streaming do Apple Music não podem ser importadas.</strong> As faixas transmitidas são protegidas por DRM, e o iOS não permite que outros apps acessem esses dados de áudio. Por isso, tanto o processamento sem intervalos quanto o equalizador também não podem ser aplicados (isso não é algo que o app possa contornar). Faixas extraídas de CDs ou compradas na iTunes Store (sem DRM) podem ser importadas.","pricingHeading":"Preços","pricingIntro":"<strong>Os recursos essenciais de continuidade — gapless, crossfade e corte de silêncio — são todos gratuitos.</strong> As funções principais do app nunca são restritas.","priceFreeLabel":"Versão gratuita","price7dLabel":"Premium 7 dias","priceMonthlyLabel":"Premium mensal","priceYearlyLabel":"Premium anual","priceLifetimeLabel":"Premium vitalício","pricingNote":"O Premium oferece três vantagens: sem anúncios, equalizador completo e biblioteca ilimitada. Ao escolher o plano vitalício, você não será cobrado novamente.","audienceHeading":"Para quem é","audienceText":"Você quer ouvir uma mixagem de DJ de CD no iPhone / Você não suporta ouvir o corte entre as faixas de uma fita mix / Você não quer que a fala do MC ou as gravações de festivais sejam interrompidas entre as músicas / O silêncio entre os movimentos de uma obra clássica te incomoda / Você quer levar seu próprio set de DJ para qualquer lugar","footerTagline":"Música sem cortes, exatamente como deveria ser.","pricingCurrencyNote":"Os preços são exibidos em ienes japoneses (¥). O valor real cobrado na App Store é em sua moeda local e pode variar ligeiramente.","priceFreeValue":"Com anúncios / até 50 faixas na biblioteca"},"id":{"backToTop":"← Kembali ke daftar aplikasi","backToApp":"← Kembali ke NonStop","appName":"NonStop","tagline":"Tanpa jeda di antara lagu.","linkSupport":"Dukungan / FAQ","linkPrivacy":"Kebijakan Privasi","linkTerms":"Ketentuan Layanan","pageTitle":"NonStop — Tanpa jeda di antara lagu.","metaDescription":"Pemutar musik yang menjaga sambungan DJ mix dan mixtape tetap mengalir tanpa putus. Beralih antara pemutaran gapless dan crossfade hanya dengan satu pengaturan.","appStoreButton":"Buka di App Store","intro":"DJ mix, mixtape, rekaman live — semestinya diputar sebagai satu kesatuan yang mengalir, tetapi karena CD atau file memisahkannya menjadi trek-trek terpisah, musiknya terputus tepat di bagian yang seharusnya tidak terputus. NonStop adalah pemutar musik yang <strong>dibuat khusus untuk satu tujuan: menghilangkan jeda itu</strong>.","lede":"∞ <strong>Pemutaran tidak pernah berhenti, bahkan saat lagu berganti.</strong> Beberapa lagu disusun terlebih dahulu menjadi satu aliran audio yang berkesinambungan sebelum diputar, sehingga tidak ada ruang bagi keheningan untuk menyelinap di antara lagu.","modesHeading":"Pilih dari 3 cara penyambungan lagu","modeGaplessTitle":"Gapless","modeGaplessDesc":"Menyambung langsung ke lagu berikutnya tanpa keheningan sama sekali. Cocok untuk mix hasil ripping CD, rekaman live, dan antar-movement karya klasik.","modeCrossfadeTitle":"Crossfade","modeCrossfadeDesc":"Menggabungkan lagu sebelumnya dan berikutnya selama 0,5–12 detik. Pilih kurva equal-power atau linear.","modeOffTitle":"OFF (pemutaran normal)","modeOffDesc":"Berperilaku seperti pemutar musik biasa. Jeda antar lagu tetap dapat diatur dari 0–3 detik.","modesNote":"Anda bisa mengganti mode bahkan saat musik sedang diputar — perubahan terjadi seketika tanpa menghentikan suara.","featuresHeading":"Fitur Utama","feature1Title":"Pemutaran gapless sejati","feature1Desc":"Dirancang agar pemutaran tidak pernah berhenti di batas antar lagu — sampel terakhir dari satu lagu tersambung langsung ke sampel pertama lagu berikutnya.","feature2Title":"Crossfade","feature2Desc":"0,5–12 detik. Menggabungkan lagu-lagu berurutan, gaya DJ mix.","feature3Title":"Pemangkasan keheningan otomatis","feature3Desc":"Secara otomatis mendeteksi dan memangkas keheningan yang tertanam di awal dan akhir file. Tanpa langkah ini, jeda akan tetap ada meski pemutaran gapless sudah diaktifkan.","feature4Title":"Penyamaan volume","feature4Desc":"Meratakan perbedaan level rekaman antar lagu agar volume tidak melompat saat perpindahan.","feature5Title":"6 cara mengimpor","feature5Desc":"Mendukung transfer Wi-Fi dari komputer (kode QR), Musik di perangkat, aplikasi File, Dropbox, dan Google Drive.","feature6Title":"Equalizer lengkap (Premium)","feature6Desc":"EQ 10 band, 22 preset, reverb, delay, kecepatan/pitch pemutaran, lebar stereo, dan limiter.","feature7Title":"Musik Anda tidak pernah keluar dari perangkat","feature7Desc":"Lagu yang diimpor tidak pernah diunggah ke mana pun.","sourcesHeading":"Cara mengimpor lagu","source1":"Transfer Wi-Fi dari komputer (QR / IP)","source2":"Musik di iPhone / iPad / iPod","source3":"Aplikasi File","source4":"Apple Music","source5":"Dropbox","source6":"Google Drive","sourcesNote":"Untuk transfer dari komputer, cukup hubungkan ke Wi-Fi yang sama, buka alamat kode QR yang ditampilkan di aplikasi menggunakan browser, lalu seret & lepas lagu Anda. Tidak perlu kabel maupun iTunes.<br>Dropbox dan Google Drive memungkinkan Anda masuk (login) dan menjelajahi folder untuk mengimpor beberapa lagu sekaligus.","appleMusicNote":"⚠️ <strong>Lagu streaming Apple Music tidak dapat diimpor.</strong> Lagu yang di-streaming dilindungi oleh DRM, dan iOS tidak mengizinkan aplikasi lain mengakses data audio tersebut. Karena itu, pemrosesan gapless maupun equalizer juga tidak dapat diterapkan (ini bukan sesuatu yang bisa diatasi dari sisi aplikasi). Lagu hasil ripping CD atau yang dibeli dari iTunes Store (tanpa DRM) dapat diimpor.","pricingHeading":"Harga","pricingIntro":"<strong>Fitur inti penyambungan lagu (gapless, crossfade, dan pemangkasan keheningan) semuanya gratis digunakan.</strong> Fungsi inti aplikasi ini tidak pernah dibatasi.","priceFreeLabel":"Versi Gratis","price7dLabel":"Premium 7 Hari","priceMonthlyLabel":"Premium Bulanan","priceYearlyLabel":"Premium Tahunan","priceLifetimeLabel":"Premium Seumur Hidup","pricingNote":"Premium memberi Anda tiga hal: tanpa iklan, equalizer lengkap, dan pustaka tanpa batas. Pilih paket seumur hidup dan Anda tidak akan ditagih lagi setelahnya.","audienceHeading":"Untuk siapa aplikasi ini","audienceText":"Ingin mendengarkan DJ mix dari CD di iPhone Anda / Tidak tahan mendengar sambungan mixtape yang terputus / Tidak ingin MC di rekaman live atau festival terputus di antara lagu / Terganggu dengan keheningan di antara movement karya klasik / Ingin membawa DJ set buatan sendiri ke mana-mana","footerTagline":"Musik tanpa jeda, apa adanya.","pricingCurrencyNote":"Harga ditampilkan dalam yen Jepang (¥). Harga sebenarnya di App Store akan dikenakan dalam mata uang lokal Anda dan mungkin sedikit berbeda.","priceFreeValue":"Ada iklan / hingga 50 lagu di pustaka"}};
+
+    function applyLanguage(lang) {
+      if (!translations[lang]) return;
+      const dict = translations[lang];
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (!dict[key]) return;
+        if (el.tagName === 'META') {
+          el.setAttribute('content', dict[key]);
+        } else {
+          el.innerHTML = dict[key];
+        }
+      });
+
+      document.querySelectorAll('[id^="list_"]').forEach(el => {
+        const key = el.getAttribute('id').replace('list_', '');
+        if (Array.isArray(dict[key])) {
+          el.innerHTML = dict[key].map(item => `<li>${item}</li>`).join('');
+        }
+      });
+
+      if (dict.pricingCurrencyNote) {
+        const note = document.getElementById('price-currency-note');
+        if (note) { note.textContent = dict.pricingCurrencyNote; note.style.display = 'block'; }
+      }
+    }
+
+    function changeLanguage(lang) {
+      applyLanguage(lang);
+      try { localStorage.setItem('nonstopLang', lang); } catch (e) {}
+      const url = new URL(window.location.href);
+      if (lang === 'ja') { url.searchParams.delete('lang'); } else { url.searchParams.set('lang', lang); }
+      window.history.replaceState({}, '', url);
+      const sel = document.getElementById('lang-select');
+      if (sel) sel.value = lang;
+    }
+
+    function detectLanguage() {
+      const params = new URLSearchParams(window.location.search);
+      let lang = params.get('lang');
+      if (lang) return lang;
+      try {
+        const saved = localStorage.getItem('nonstopLang');
+        if (saved) return saved;
+      } catch (e) {}
+      const nav = (navigator.language || navigator.userLanguage || 'ja');
+      const supported = ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko', 'es', 'de', 'fr', 'pt-BR', 'id'];
+      if (nav.toLowerCase().startsWith('zh')) {
+        return /hant|tw|hk|mo/i.test(nav) ? 'zh-Hant' : 'zh-Hans';
+      }
+      if (nav.toLowerCase().startsWith('pt')) return 'pt-BR';
+      if (supported.includes(nav)) return nav;
+      const base = nav.split('-')[0];
+      return supported.includes(base) ? base : 'ja';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = detectLanguage();
+      const sel = document.getElementById('lang-select');
+      if (sel) sel.value = lang;
+      if (lang && lang !== 'ja') applyLanguage(lang);
+    });
+  </script>
 </body>
 </html>
