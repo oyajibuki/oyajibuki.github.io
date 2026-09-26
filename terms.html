@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="pageTitle">asagiri — 利用規約（共通）</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .updated { color:#999; font-size:0.85rem; margin-top:-4px; }
+    h2.policy { font-size:1.05rem; margin-top:2em; }
+    ul.policy { padding-left:1.2em; }
+    ul.policy li { margin-bottom:6px; }
+    .lang-switcher { display:flex; align-items:center; gap:6px; font-size:0.82rem; margin-bottom:14px; }
+    .lang-switcher select { border:1px solid #ddd; border-radius:8px; padding:5px 8px; font-size:0.82rem; background:#fff; }
+    .note-box { background:#f5f5f7; border-radius:12px; padding:16px 20px; margin:20px 0; font-size:0.92rem; }
+  </style>
+</head>
+<body>
+  <div class="back"><a href="/" data-i18n="backToTop">← アプリ一覧に戻る</a></div>
+
+  <div class="lang-switcher">
+    <span>🌐</span>
+    <select id="lang-select" onchange="changeLanguage(this.value)">
+      <option value="ja">日本語</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <h1 data-i18n="h1">利用規約（共通）</h1>
+  <p class="updated" data-i18n="updated">最終更新日：2026年9月26日</p>
+
+  <p data-i18n="intro">本利用規約（以下「本規約」）は、個人開発者 asagiri（以下「開発者」）が提供する各iOSアプリに共通して適用される、基本的な利用条件を定めるものです。開発者が提供するアプリをダウンロードまたは利用された時点で、本規約に同意したものとみなします。個別のアプリに固有の条件がある場合は、各アプリの紹介ページに掲載されている利用規約もあわせてご確認ください。</p>
+
+  <h2 class="policy" data-i18n="s1Title">1. 本規約について</h2>
+  <p data-i18n="s1Body">開発者は複数のiOSアプリを個人で開発・提供しています。本規約は、それら各アプリに共通する基本的な利用条件を定めるものであり、各アプリ固有の事項については、各アプリの紹介ページの利用規約が優先して適用されます。</p>
+
+  <h2 class="policy" data-i18n="s2Title">2. コンテンツの著作権</h2>
+  <ul class="policy" id="list_s2List">
+    <li>アプリ内で利用者が取り込む音楽・画像・文章等のコンテンツは、<strong>利用者ご自身が適法に入手・作成したもの</strong>に限ります。</li>
+    <li>コンテンツの利用にあたっては、著作権法その他の関連法令および各サービスの利用規約を遵守してください。</li>
+    <li>違法にアップロード・複製されたコンテンツの取り込みや利用について、開発者は一切の責任を負いません。</li>
+  </ul>
+
+  <h2 class="policy" data-i18n="s3Title">3. 外部サービスとの連携</h2>
+  <p data-i18n="s3Body1">Google Drive・Dropbox等との連携機能を持つアプリでは、利用者ご自身のアカウントに保管されたファイルを読み取り、端末へ取り込むためのものです。読み取り専用の権限のみを使用し、ファイルの作成・変更・削除は行いません。取り扱いの詳細は<a href="/privacy.html">プライバシーポリシー（共通）</a>をご覧ください。</p>
+  <p data-i18n="s3Body2">各外部サービスの提供内容・可用性は各社が定めるものであり、仕様変更やサービス終了によって連携機能が利用できなくなる場合があります。</p>
+
+  <h2 class="policy" data-i18n="s4Title">4. 有料機能</h2>
+  <ul class="policy" id="list_s4List">
+    <li>有料機能の購入はAppleのApp Store決済システムを通じて行われます。</li>
+    <li>サブスクリプションは、期間終了の24時間前までに解約されない限り自動更新されます。解約はiOSの「設定」→ご自身の名前→「サブスクリプション」から行えます。</li>
+    <li>買い切りプランをご購入いただいた場合、以後の請求は発生しません。</li>
+    <li>返金はAppleの定めるポリシーに従います。開発者が直接返金を行うことはできません。</li>
+  </ul>
+
+  <h2 class="policy" data-i18n="s5Title">5. 禁止事項</h2>
+  <p data-i18n="s5Intro">利用者は、開発者が提供するアプリの利用にあたり次の行為を行ってはなりません。</p>
+  <ul class="policy" id="list_s5List">
+    <li>法令または公序良俗に違反する行為</li>
+    <li>著作権その他の権利を侵害する行為</li>
+    <li>アプリの逆コンパイル・逆アセンブルその他の解析行為</li>
+    <li>アプリの動作を妨害し、または不正にアクセスする行為</li>
+  </ul>
+
+  <h2 class="policy" data-i18n="s6Title">6. 免責事項</h2>
+  <ul class="policy" id="list_s6List">
+    <li>アプリは現状有姿で提供されます。特定目的への適合性を保証するものではありません。</li>
+    <li>アプリの利用によって生じた損害（データの消失、機器の不具合等を含む）について、開発者は法令上許容される範囲で責任を負いません。</li>
+    <li>アプリ内のデータは原則として端末内にのみ保存されます。<strong>バックアップの責任は利用者にあります。</strong>アプリの削除や端末の初期化によりデータは失われます。</li>
+    <li>OSやサードパーティサービスの仕様変更により、一部機能が利用できなくなる場合があります。</li>
+  </ul>
+
+  <div class="note-box" data-i18n="appNote">
+    <strong>各アプリ固有の項目について：</strong>本ページは開発者に共通する基本条件です。アプリごとの機能や料金プランに関する詳細な取り決めは、各アプリの紹介ページ内の利用規約に記載されています。内容が異なる場合は、各アプリのページの利用規約が優先して適用されます。
+  </div>
+
+  <h2 class="policy" data-i18n="s7Title">7. 本規約の変更</h2>
+  <p data-i18n="s7Body">本規約は、法令の変更や提供アプリの追加・変更に応じて改定されることがあります。重要な変更がある場合は、本ページにて告知します。</p>
+
+  <h2 class="policy" data-i18n="s8Title">8. 準拠法</h2>
+  <p data-i18n="s8Body">本規約は日本法に準拠し、開発者が提供するアプリに関して紛争が生じた場合は、開発者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。</p>
+
+  <h2 class="policy" data-i18n="s9Title">9. お問い合わせ</h2>
+  <p data-i18n="s9Body">本規約に関するご質問は、<a href="mailto:oyajibuki@gmail.com">oyajibuki@gmail.com</a> までご連絡ください。</p>
+
+  <script>
+    const translations = {
+      "en": {
+        "backToTop": "← Back to app list",
+        "pageTitle": "asagiri — Terms of Service (Common)",
+        "h1": "Terms of Service (Common)",
+        "updated": "Last updated: September 26, 2026",
+        "intro": "These Terms of Service (\"the Terms\") set out the baseline conditions of use that apply in common to every iOS app published by independent developer asagiri (\"the developer\"). By downloading or using an app published by the developer, you agree to these Terms. If an individual app has its own additional conditions, please also check the Terms of Service on that app's own page.",
+        "s1Title": "1. About These Terms",
+        "s1Body": "The developer independently develops and publishes multiple iOS apps. These Terms establish the baseline conditions of use common to those apps; where an individual app has its own specific terms, that app's own page takes precedence.",
+        "s2Title": "2. Copyright of Content",
+        "s2List": [
+          "Music, images, text, or other content that a user imports into an app must be <strong>lawfully obtained or created by the user themselves</strong>, only.",
+          "When using such content, please comply with copyright law, other applicable regulations, and the terms of service of any service used to obtain it.",
+          "The developer bears no responsibility whatsoever for the import or use of illegally uploaded or copied content."
+        ],
+        "s3Title": "3. Integration with External Services",
+        "s3Body1": "For apps with integration features for services such as Google Drive or Dropbox, these are intended to read files stored in the user's own account and import them to the device. They use read-only access only and never create, modify, or delete files. See the <a href=\"/privacy.html\">Privacy Policy (Common)</a> for details on how this data is handled.",
+        "s3Body2": "The features and availability of each external service are determined by their respective providers, and integration may become unavailable due to specification changes or service discontinuation.",
+        "s4Title": "4. Paid Features",
+        "s4List": [
+          "Purchases of paid features are processed through Apple's App Store payment system.",
+          "Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. You can cancel from iOS Settings → your name → Subscriptions.",
+          "If you purchase a one-time (lifetime) plan, you will not be billed again afterward.",
+          "Refunds follow Apple's policies. The developer cannot issue refunds directly."
+        ],
+        "s5Title": "5. Prohibited Conduct",
+        "s5Intro": "When using an app published by the developer, you must not:",
+        "s5List": [
+          "Engage in conduct that violates any law or public order and morals",
+          "Infringe on copyright or any other rights",
+          "Decompile, disassemble, or otherwise reverse-engineer the app",
+          "Interfere with the app's operation or access it in an unauthorized manner"
+        ],
+        "s6Title": "6. Disclaimer",
+        "s6List": [
+          "Apps are provided \"as is,\" with no guarantee of fitness for any particular purpose.",
+          "To the extent permitted by law, the developer is not liable for any damages arising from use of an app, including data loss or device malfunction.",
+          "Data within an app is generally stored only on the device. <strong>You are responsible for backing it up.</strong> Deleting the app or resetting your device will result in the loss of this data.",
+          "Some features may become unavailable due to changes to the OS or third-party services."
+        ],
+        "appNote": "<strong>Regarding app-specific items:</strong> This page describes the developer's baseline terms. Detailed rules for a specific app's features or pricing plans are set out in that app's own Terms of Service page. Where the content differs, that app's own page takes precedence.",
+        "s7Title": "7. Changes to These Terms",
+        "s7Body": "These Terms may be revised in response to changes in law or to the apps offered. Any significant changes will be announced on this page.",
+        "s8Title": "8. Governing Law",
+        "s8Body": "These Terms are governed by the laws of Japan. Any dispute arising in connection with an app published by the developer shall be subject to the exclusive jurisdiction of the court having jurisdiction over the developer's location as the court of first instance.",
+        "s9Title": "9. Contact",
+        "s9Body": "For questions about these Terms, please email <a href=\"mailto:oyajibuki@gmail.com\">oyajibuki@gmail.com</a>."
+      }
+    };
+
+    function applyLanguage(lang) {
+      if (!translations[lang]) return;
+      const dict = translations[lang];
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (!dict[key]) return;
+        if (el.tagName === 'META') {
+          el.setAttribute('content', dict[key]);
+        } else {
+          el.innerHTML = dict[key];
+        }
+      });
+
+      document.querySelectorAll('[id^="list_"]').forEach(el => {
+        const key = el.getAttribute('id').replace('list_', '');
+        if (Array.isArray(dict[key])) {
+          el.innerHTML = dict[key].map(item => `<li>${item}</li>`).join('');
+        }
+      });
+    }
+
+    function changeLanguage(lang) {
+      applyLanguage(lang);
+      try { localStorage.setItem('commonPolicyLang', lang); } catch (e) {}
+      const url = new URL(window.location.href);
+      if (lang === 'ja') { url.searchParams.delete('lang'); } else { url.searchParams.set('lang', lang); }
+      window.history.replaceState({}, '', url);
+      const sel = document.getElementById('lang-select');
+      if (sel) sel.value = lang;
+    }
+
+    function detectLanguage() {
+      const params = new URLSearchParams(window.location.search);
+      let lang = params.get('lang');
+      if (lang) return lang;
+      try {
+        const saved = localStorage.getItem('commonPolicyLang');
+        if (saved) return saved;
+      } catch (e) {}
+      const nav = (navigator.language || navigator.userLanguage || 'ja');
+      return nav.toLowerCase().startsWith('ja') ? 'ja' : 'en';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = detectLanguage();
+      const sel = document.getElementById('lang-select');
+      if (sel) sel.value = lang;
+      if (lang && lang !== 'ja') applyLanguage(lang);
+    });
+  </script>
+</body>
+</html>
