@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shot Builder — サポート</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .updated { color:#999; font-size:0.85rem; margin-top:-4px; }
+    h2.policy { font-size:1.05rem; margin-top:2em; }
+    ul.policy { padding-left:1.2em; }
+    ul.policy li { margin-bottom:6px; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; vertical-align:top; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .lede { background:#fff0f2; border:1px solid #f8cdd4; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.9rem; }
+    .contact-box { background:#f7f7f8; border-radius:12px; padding:18px; margin-top:8px; }
+    .contact-link { display:inline-block; background:#fa5c73; color:#fff !important; padding:11px 22px; border-radius:10px; font-weight:600; text-decoration:none; }
+    .reply-note { font-size:0.85rem; color:#666; margin-top:12px; }
+    .mailto { font-size:0.85rem; color:#666; margin-top:4px; }
+    .faq-item { padding:16px 0; border-bottom:1px solid #eee; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-item h3 { font-size:0.98rem; margin:0 0 6px; }
+    .faq-item p { font-size:0.9rem; color:#555; margin:0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/shotbuilder/">Shot Builder に戻る</a></div>
+  <div class="app-header">
+    <div class="app-icon"><img src="/shotbuilder/icon.png" alt="Shot Builder"></div>
+    <div>
+      <h1>Shot Builder サポート</h1>
+      <p class="app-tagline">ストアスクショ作成</p>
+    </div>
+  </div>
+
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p style="margin:0 0 14px; font-size:0.9rem;">不具合のご報告、ご要望などはこちらからご連絡ください。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+    <p class="mailto">フォームが開けない場合は <a href="mailto:oyajibuki@gmail.com?subject=Shot%20Builder%20%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">oyajibuki@gmail.com</a> まで直接どうぞ。</p>
+  </div>
+
+  <h2>使い方</h2>
+
+  <div class="faq-item">
+    <h3>1. キャンバスを決める</h3>
+    <p>上部で端末（6.5 / 6.9 / iPad 13）と画面数（1〜5枚）を選びます。点線が画面の区切りです。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>2. 素材を追加する</h3>
+    <p>「追加」タブから、背景に使う写真（全画面に広がります）やアプリのスクショ（枠付き）、文字を追加します。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>3. 整える</h3>
+    <p>「編集」タブでクロップ・デバイス枠・影・斜めカット・文字のスタイルを調整します。「背景」タブでは背景の色と斜め分割を設定できます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>4. 書き出す</h3>
+    <p>右上の「書き出し」で、画面数に分割した画像が写真アプリに保存されます。</p>
+  </div>
+
+  <h2>よくある質問</h2>
+
+  <div class="faq-item">
+    <h3>素材は外部に送信されますか？</h3>
+    <p>いいえ。本アプリに開発者のサーバーはなく、取り込んだ画像や作成した画像が送信されることはありません。通信はApp内課金の処理（Apple）のみです。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>3画面などのパノラマはどう書き出されますか？</h3>
+    <p>全画面をつなげた1枚の大きな画像として描画してから、指定した端末の画面幅ごとにピクセル単位で切り分け、写真アプリに保存します。画面の境界をまたぐ要素も、継ぎ目なくつながります。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>書き出した画像はApp Storeにそのまま提出できますか？</h3>
+    <p>選んだ端末のサイズ（6.5インチ 1242×2688 / 6.9インチ 1320×2868 / iPad 13インチ 2064×2752）で書き出されます。透過のない画像です。最新の必要サイズはApp Store Connectでご確認ください。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>ステータスバーを消したいです</h3>
+    <p>画像を選んで「クロップ」を開き、「ステータスバーを除去」を押すか、上辺をドラッグして切り落としてください。塗りつぶしではなく、画像そのものを切り取ります。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>2本指の操作が効きません</h3>
+    <p>要素をタップして選択してから、キャンバス上で2本指のピンチ（拡大縮小）・回転を行ってください。ロックした要素は動かせません。「編集」の拡大・回転スライダでも調整できます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>写真が背景として全画面に広がらず、動いてしまいます</h3>
+    <p>背景用の写真は「ロック」をオンにすると、触れても動かなくなります。ロックした要素は、編集タブ上部の番号チップから選択できます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>無料版では何ができますか？</h3>
+    <p>2画面までの作成、基本フォント5種、基本のテキストスタイル2種、枠は黒・銀、1プロジェクトの保存ができます。書き出しに透かしは入りません。Proでは3〜5画面・全フォント・全スタイル・斜めカット・枠の全カラー・プロジェクトの無制限保存が使えます。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>購入したのに解放されません</h3>
+    <p>購入画面の「購入を復元」をお試しください。端末が購入時と同じApple Accountでサインインしている必要があります。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>作りかけのプロジェクトは消えませんか？</h3>
+    <p>自動で端末内に保存されます。左上のフォルダのボタンから開き直せます。アプリを削除すると失われるので、大事な画像は書き出して保存してください。</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Macでも使えますか？</h3>
+    <p>Mac（Mac Catalyst）版も同じ内容でご利用いただけます。</p>
+  </div>
+
+  <div class="sub-links">
+    <a href="/shotbuilder/">紹介ページ</a>
+    <a href="/shotbuilder/support.html">サポート</a>
+    <a href="/shotbuilder/privacy.html">プライバシーポリシー</a>
+    <a href="/shotbuilder/terms.html">利用規約</a>
+  </div>
+</body>
+</html>

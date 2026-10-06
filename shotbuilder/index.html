@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shot Builder — App Storeスクショをパノラマで作る</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .updated { color:#999; font-size:0.85rem; margin-top:-4px; }
+    h2.policy { font-size:1.05rem; margin-top:2em; }
+    ul.policy { padding-left:1.2em; }
+    ul.policy li { margin-bottom:6px; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; vertical-align:top; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .lede { background:#fff0f2; border:1px solid #f8cdd4; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.9rem; }
+    .contact-box { background:#f7f7f8; border-radius:12px; padding:18px; margin-top:8px; }
+    .contact-link { display:inline-block; background:#fa5c73; color:#fff !important; padding:11px 22px; border-radius:10px; font-weight:600; text-decoration:none; }
+    .reply-note { font-size:0.85rem; color:#666; margin-top:12px; }
+    .mailto { font-size:0.85rem; color:#666; margin-top:4px; }
+    .faq-item { padding:16px 0; border-bottom:1px solid #eee; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-item h3 { font-size:0.98rem; margin:0 0 6px; }
+    .faq-item p { font-size:0.9rem; color:#555; margin:0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/shotbuilder/icon.png" alt="Shot Builder"></div>
+    <div>
+      <h1>Shot Builder</h1>
+      <p class="app-tagline">ストアスクショ作成</p>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;">
+    App Store に載せるスクリーンショットを、<strong>iPhone だけで、自分のセンスで</strong>作るためのアプリです。
+    テンプレに当てはめるのではなく、複数画面をまたぐ大きな1枚を作って、書き出すときに自動で切り分けます。
+  </p>
+
+  <div class="lede">
+    🖼 <strong>1枚の大きな絵が、そのまま複数枚のスクショになります。</strong>
+    画面の境界をまたぐ写真・端末・キャッチコピーも、ピクセル単位で正確に分割して保存します。
+  </div>
+
+  <div class="sub-links">
+    <a href="/shotbuilder/support.html">サポート / FAQ</a>
+    <a href="/shotbuilder/privacy.html">プライバシーポリシー</a>
+    <a href="/shotbuilder/terms.html">利用規約</a>
+  </div>
+
+  <hr>
+
+  <h2>主な機能</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">📐</span><div><b>1〜5画面のパノラマキャンバス</b><span>iPhone 6.5インチ / 6.9インチ / iPad 13インチに対応。区切りの点線を見ながら配置できます。</span></div></li>
+    <li><span class="feature-emoji">✂️</span><div><b>ステータスバーを切り落とす</b><span>辺をドラッグして必要な範囲だけを残します。塗りつぶしではなく、物理的にクロップします。</span></div></li>
+    <li><span class="feature-emoji">📱</span><div><b>デバイス枠をワンタップで</b><span>標準・ダイナミックアイランド・ノッチ・細枠から選べます。色と影の強さも調整できます。</span></div></li>
+    <li><span class="feature-emoji">🔀</span><div><b>斜め配置・斜めカット</b><span>拡大・回転は自由自在。背景の斜め分割や、画像の斜めカットにも対応します。</span></div></li>
+    <li><span class="feature-emoji">🔤</span><div><b>流行りのフォントとテキストスタイル</b><span>M PLUS をはじめ、同梱フォント約20書体。極太二重縁・座布団・ネオン・斜体影をワンタップで。</span></div></li>
+    <li><span class="feature-emoji">↩️</span><div><b>Undo / Redo とプロジェクト保存</b><span>操作は何度でも戻せます。作りかけは自動で保存されます。</span></div></li>
+    <li><span class="feature-emoji">💾</span><div><b>ワンタップ書き出し</b><span>指定の画面数に自動で分割し、写真アプリへ保存します。</span></div></li>
+    <li><span class="feature-emoji">🔒</span><div><b>アカウント不要・端末内で完結</b><span>素材は外部に送信されません。広告もありません。</span></div></li>
+  </ul>
+
+  <hr>
+
+  <h2>料金</h2>
+  <table class="price-table">
+    <tr><td>無料</td><td>2画面まで / 基本フォント5種 / 基本スタイル2種 / 保存1プロジェクト</td></tr>
+    <tr><td>Pro（買い切り）</td><td>¥980</td></tr>
+  </table>
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+    Pro では、3〜5画面のパノラマ・全フォント・全テキストスタイル・斜めカット・枠の全カラー・プロジェクトの無制限保存が使えます。
+    <strong>買い切りなので、月額料金はかかりません。</strong>
+    無料のままでも書き出しに透かしは入りません。
+  </p>
+
+  <hr>
+
+  <h2>こんな人に</h2>
+  <p style="font-size:0.92rem;">
+    自分のアプリのスクショをテンプレっぽくしたくない ／ 画面をまたぐデザインを作りたい ／
+    PCを開かずに、スマホだけで済ませたい
+  </p>
+
+</body>
+</html>
