@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>禅ブラウザ ZenBrowse — 漫画と小説を、静かに読むブラウザ</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .updated { color:#999; font-size:0.85rem; margin-top:-4px; }
+    h2.policy { font-size:1.05rem; margin-top:2em; }
+    ul.policy { padding-left:1.2em; }
+    ul.policy li { margin-bottom:6px; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .feature-list { list-style:none; padding:0; margin:8px 0 0; }
+    .feature-list li { padding:14px 0; border-bottom:1px solid #eee; display:flex; gap:12px; align-items:flex-start; }
+    .feature-list li:last-child { border-bottom:none; }
+    .feature-emoji { font-size:22px; line-height:1.4; flex-shrink:0; }
+    .feature-list b { display:block; font-size:0.98rem; }
+    .feature-list span { font-size:0.85rem; color:#666; }
+    .price-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; vertical-align:top; }
+    .price-table td:last-child { text-align:right; font-weight:600; }
+    .lede { background:#eef5ec; border:1px solid #cfe3cb; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.9rem; }
+    .contact-box { background:#f7f7f8; border-radius:12px; padding:18px; margin-top:8px; }
+    .contact-link { display:inline-block; background:#5a9464; color:#fff !important; padding:11px 22px; border-radius:10px; font-weight:600; text-decoration:none; }
+    .reply-note { font-size:0.85rem; color:#666; margin-top:12px; }
+    .mailto { font-size:0.85rem; color:#666; margin-top:4px; }
+    .faq-item { padding:16px 0; border-bottom:1px solid #eee; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-item h3 { font-size:0.98rem; margin:0 0 6px; }
+    .faq-item p { font-size:0.9rem; color:#555; margin:0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
+
+  <div class="app-header">
+    <div class="app-icon"><img src="/zenbrowse/icon.png" alt="禅ブラウザ"></div>
+    <div>
+      <h1>禅ブラウザ ZenBrowse</h1>
+      <p class="app-tagline">漫画と小説を、静かに読むブラウザ</p>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;">
+    広告もトラッキングも、静かに消えるブラウザです。
+    Web漫画はタップでめくれる全画面表示に、Web小説は<strong>文庫本のような縦書き</strong>に。
+    電波のない地下鉄でも続きが読めるよう、オフライン保存もできます。
+  </p>
+
+  <div class="lede">
+    🍵 <strong>日本人が作った、読むためのブラウザ。</strong>
+    広告ブロックだけでなく、「読む」体験そのものを静かに整えます。
+  </div>
+
+  <div class="sub-links">
+    <a href="/zenbrowse/">紹介ページ</a>
+    <a href="/zenbrowse/support.html">サポート</a>
+    <a href="/zenbrowse/privacy.html">プライバシーポリシー</a>
+    <a href="/zenbrowse/terms.html">利用規約</a>
+  </div>
+
+  <hr>
+
+  <h2>主な機能</h2>
+  <ul class="feature-list">
+    <li><span class="feature-emoji">🛡</span><div><b>広告・トラッキングのブロック</b><span>約6万件のルールで、広告とトラッキングの通信を端末の中で止めます。追従バナーや、タップすると別サイトへ飛ぶ透明な罠も取り除きます。</span></div></li>
+    <li><span class="feature-emoji">📖</span><div><b>漫画モード</b><span>上下のバーを消した全画面で、左側タップで次のページへ。右開き・左開き、夜モード（暖色）にも対応します。</span></div></li>
+    <li><span class="feature-emoji">📜</span><div><b>Web小説を縦書きで</b><span>対応サイトの本文を、行がページの境目で切れない縦書きに組み直します。数字は縦中横に。最後のページをめくると次の話へ。</span></div></li>
+    <li><span class="feature-emoji">⬇️</span><div><b>オフライン保存</b><span>小説は本文を、ニュースやブログはページごと保存。地下鉄でも「後で読む」から開けます。小説は「この先の話をまとめて保存」も（Pro）。</span></div></li>
+    <li><span class="feature-emoji">❤️</span><div><b>推し活モード</b><span>応援したいサイトだけ、ワンタップで広告を表示。そのサイトに収益が届くようにできます。</span></div></li>
+    <li><span class="feature-emoji">🚃</span><div><b>電車マナーモード</b><span>自分で再生していない動画や広告の音を自動で止めます。イヤホン中はそのまま鳴ります。</span></div></li>
+    <li><span class="feature-emoji">📊</span><div><b>今日の禅（ダッシュボード）</b><span>広告を消して守った時間を、あなたの時給でお金に換算。スクロールした距離と一緒にグラフで振り返れます。</span></div></li>
+    <li><span class="feature-emoji">🔑</span><div><b>ログイン情報の保存</b><span>iPhoneのキーチェーンに暗号化して保存し、Face IDで確認してから入力します。</span></div></li>
+    <li><span class="feature-emoji">🚫</span><div><b>アプリを起動させない</b><span>リンクを押したときに、勝手に他のアプリへ切り替わるのを防ぎます。</span></div></li>
+  </ul>
+
+  <hr>
+
+  <h2>料金</h2>
+  <table class="price-table">
+    <tr><td>無料</td><td>広告ブロック・漫画モード・縦書き・推し活・電車マナーモード・ログイン保存 / オフライン保存3件 / 直近1か月の記録</td></tr>
+    <tr><td>Pro（買い切り）</td><td>¥3,000</td></tr>
+    <tr><td>Pro（年額）</td><td>¥1,500 / 年</td></tr>
+    <tr><td>Pro（月額）</td><td>¥150 / 月</td></tr>
+  </table>
+  <p style="font-size:0.85rem; color:#666; margin-top:12px;">
+    Pro では、オフライン保存し放題・Web小説のまとめて保存・1か月より前の記録の振り返り・iCloudでの引き継ぎが使えます。
+    年額・月額は自動更新のサブスクリプションです。
+  </p>
+
+</body>
+</html>
