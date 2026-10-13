@@ -21,7 +21,7 @@ const GENRE_JA = {
   'Education': '教育', 'Finance': 'ファイナンス', 'Entertainment': 'エンターテインメント',
   'Business': 'ビジネス', 'Travel': '旅行', 'Food & Drink': 'フード/ドリンク',
   'Reference': '辞書/辞典/その他', 'Medical': 'メディカル', 'Weather': '天気',
-  'Sports': 'スポーツ', 'News': 'ニュース', 'Books': 'ブック', 'Shopping': 'ショッピング',
+  'Sports': 'スポーツ', 'News': 'ニュース', 'Books': 'ブック', 'Book': 'ブック', 'Shopping': 'ショッピング',
   'Developer Tools': 'デベロッパツール', 'Graphics & Design': 'グラフィック/デザイン',
 };
 const LD_JA = {
