@@ -11,7 +11,8 @@
   window.PASS_CONFIG = window.PASS_CONFIG || {
     price: { jp: '¥480', us: '$3.99' }[CT.code] || '',
     // 本番（live）のリンク。テストモードのリンクは README に控えてある
-    checkoutUrl: {
+    // 手元（localhost）では決済に飛ばさず、そのまま作品を開く（開発者の確認用）
+    checkoutUrl: /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? '' : {
       jp: 'https://buy.stripe.com/8x2eVd4ND1VkbgBgTrcjS03',
       us: 'https://buy.stripe.com/00wdR9bc1eI6fwR9qZcjS04',
     }[CT.code] || '',

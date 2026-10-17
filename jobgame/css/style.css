@@ -156,6 +156,9 @@ a { color: var(--accent); }
   #printArea th { background: #f2f2f2; white-space: nowrap; width: 1%; }
   #printArea .pr-name { font-size: 18pt; }
   #printArea .pr-table td:nth-child(1), #printArea .pr-table td:nth-child(2) { white-space: nowrap; width: 1%; }
+  /* 見出しの th は width:1% なので、事項の列だけは残りの幅を全部使う */
+  #printArea .pr-table th:last-child { width: auto; white-space: normal; }
+  html, body.printing { background: #fff !important; }
   #printArea .pr-epitaph { font-size: 13pt; margin: 12px 0; }
   #printArea .pr-note { font-size: 8pt; color: #555; margin-top: 16px; }
   #printArea tr { page-break-inside: avoid; }
