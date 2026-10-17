@@ -17,7 +17,7 @@ window.I18N = {
     'rel.mother': '母', 'rel.father': '父',
     'back': 'もどる', 'cancel': 'やめる',
     'title.suffix': '職業シミュレーション',
-    'pass.v.title1': '6,781万', 'pass.v.title2': '分の1',
+    'pass.v.title1': '7千万', 'pass.v.title2': '分の1',
     // 国ごとに上書きされる文言の既定値
     'brand': '職業シミュレーション', 'brandHtml': '職業シミュレーション',
     'ev.senior': '{age}歳になりました。年金を受け取りながら、地域の仕事をする道もあります。',
