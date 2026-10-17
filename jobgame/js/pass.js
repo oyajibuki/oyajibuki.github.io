@@ -10,10 +10,10 @@
   // 価格と決済先は国ごと（Stripe Payment Link の URL。空のあいだは「テスト購入」で開く）
   window.PASS_CONFIG = window.PASS_CONFIG || {
     price: { jp: '¥480', us: '$3.99' }[CT.code] || '',
-    // いまはテストモード（sandbox）のリンク。本番に切り替えるときは live のリンクに差し替える
+    // 本番（live）のリンク。テストモードのリンクは README に控えてある
     checkoutUrl: {
-      jp: 'https://buy.stripe.com/test_bJe4gz3Jz0Rg4Sd8mVcjS01',
-      us: 'https://buy.stripe.com/test_8x228reod43s84pgTrcjS02',
+      jp: 'https://buy.stripe.com/8x2eVd4ND1VkbgBgTrcjS03',
+      us: 'https://buy.stripe.com/00wdR9bc1eI6fwR9qZcjS04',
     }[CT.code] || '',
   }
 
