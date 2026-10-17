@@ -56,7 +56,7 @@
   document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) go(g.dataset.go) })
 
   // ---------- 状態 ----------
-  const S = { p: null, peers: [], playing: false, speed: 1, secPerYear: store.get('len', 6), sex: store.get('sex', ''), acc: 0, busy: false }
+  const S = { p: null, peers: [], playing: false, speed: 1, secPerYear: store.get('len', 6), sex: store.get('sex', ''), name: store.get('name', ''), acc: 0, busy: false }
 
   // ---------- ホーム ----------
   // 大分類ごとの就業者の割合（国の統計。日本は労働力調査、アメリカは雇用予測）
@@ -74,6 +74,10 @@
     document.querySelectorAll('#lenSeg button').forEach(b => b.classList.toggle('on', +b.dataset.sec === S.secPerYear))
     document.querySelectorAll('#sexSeg button').forEach(b => b.classList.toggle('on', b.dataset.sex === S.sex))
   }
+  // 自分の名前で遊べる（空欄なら毎回ランダムな名前）。記号は落としておく
+  const cleanName = v => v.replace(/[<>&"'`\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 20)
+  $('nameIn').value = S.name
+  $('nameIn').addEventListener('input', () => { S.name = cleanName($('nameIn').value); store.set('name', S.name) })
   $('sexSeg').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return
     S.sex = b.dataset.sex; store.set('sex', S.sex); renderHome()
@@ -86,7 +90,7 @@
   // ---------- 雇用契約書 ----------
   $('btnStart').addEventListener('click', newLife)
   function newLife() {
-    S.p = E.create({ sex: S.sex })
+    S.p = E.create({ sex: S.sex, name: S.name })
     S.peers = Array.from({ length: 4 }, () => E.create({ auto: true }))
     const p = S.p, j = JOBS[p.job]
     $('cNo').textContent = `No. ${C.code.toUpperCase()}-${E.START_YEAR}-${p.id.toUpperCase()}`

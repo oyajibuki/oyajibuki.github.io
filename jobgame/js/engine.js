@@ -106,7 +106,7 @@
     const size = isPublic ? C.publicSize : weighted(window.COMPANY_SIZES, s => s.w)
     const p = {
       id: Math.random().toString(36).slice(2, 8),
-      name: C.names.full(sex, pick(C.names.family), pick(C.names.given[sex])), sex, edu,
+      name: opts.name || C.names.full(sex, pick(C.names.family), pick(C.names.given[sex])), sex, edu,
       age: edu.age, year: START_YEAR, startAge: edu.age,
       job: job.code, origin: job.code, size,
       emp: isPublic ? 'public' : isSelf ? 'self' : irregular ? 'irregular' : 'regular',
