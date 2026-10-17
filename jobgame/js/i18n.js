@@ -28,7 +28,7 @@ window.I18N = {
 
     // ホーム
     'home.start': '働きはじめる', 'home.zukan': '職業図鑑', 'home.memorial': 'メモリアル',
-    'home.len': 'ひとつの仕事人生の長さ', 'home.len.short': '約2分', 'home.len.mid': '約5分', 'home.len.long': '約10分',
+    'home.sex': '性別', 'home.sex.any': 'ランダム（統計どおり）', 'home.sex.f': '女性', 'home.sex.m': '男性', 'home.len': 'ひとつの仕事人生の長さ', 'home.len.short': '約2分', 'home.len.mid': '約5分', 'home.len.long': '約10分',
     'home.dist': 'いま働きはじめる人だったら', 'home.other': 'その他',
     'home.c1.h': '今年の重点', 'home.c1': '毎年、仕事以外の時間を何に使うかを選びます。休養・娯楽・資格の勉強・学び直し・副業・転職活動。可処分時間は残業に削られます。',
     'home.c2.h': '決断の場面', 'home.c2': '昇進の打診、資格試験、転職の内定、独立の誘い、結婚、出産と育休、親の介護、転勤、心と体の限界、定年、65歳からの働き方。選択は人生を変えますが、最初の職業の統計から抜け出すのは簡単ではありません。',
@@ -229,7 +229,7 @@ window.I18N = {
     'c.rare': '<b>{people}</b> people hold this job — roughly <b>1 in {n}</b> workers.',
 
     'home.start': 'Start working', 'home.zukan': 'Job encyclopedia', 'home.memorial': 'Memorial',
-    'home.len': 'Length of one working life', 'home.len.short': '~2 min', 'home.len.mid': '~5 min', 'home.len.long': '~10 min',
+    'home.sex': 'Gender', 'home.sex.any': 'Random (by the stats)', 'home.sex.f': 'Woman', 'home.sex.m': 'Man', 'home.len': 'Length of one working life', 'home.len.short': '~2 min', 'home.len.mid': '~5 min', 'home.len.long': '~10 min',
     'home.dist': 'If you started working today', 'home.other': 'Other',
     'home.c1.h': 'This year\'s focus', 'home.c1': 'Each year you decide what to do with your time outside work: rest, have fun, study for a license, reskill, take on a side gig, or look for a new job. Overtime eats into all of it.',
     'home.c2.h': 'Moments of decision', 'home.c2': 'Promotions, exams, job offers, going solo, marriage, a new baby, caring for a parent, relocation, burnout, and how to work after 65. Your choices change your life, but escaping the statistics of your first job is not easy.',

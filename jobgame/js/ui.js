@@ -56,7 +56,7 @@
   document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) go(g.dataset.go) })
 
   // ---------- 状態 ----------
-  const S = { p: null, peers: [], playing: false, speed: 1, secPerYear: store.get('len', 6), acc: 0, busy: false }
+  const S = { p: null, peers: [], playing: false, speed: 1, secPerYear: store.get('len', 6), sex: store.get('sex', ''), acc: 0, busy: false }
 
   // ---------- ホーム ----------
   // 大分類ごとの就業者の割合（国の統計。日本は労働力調査、アメリカは雇用予測）
@@ -72,7 +72,12 @@
     const max = Math.max(...rows.map(r => r.pct))
     $('majorBars').innerHTML = rows.map(r => `<div class="mbar"><span>${C.icons.major[r.m.code] || ''} ${esc(C.majorLabel(r.m.name))}</span><div class="track"><div class="fill" style="width:${r.pct / max * 100}%"></div></div><span class="pct">${r.pct.toFixed(1)}%</span></div>`).join('')
     document.querySelectorAll('#lenSeg button').forEach(b => b.classList.toggle('on', +b.dataset.sec === S.secPerYear))
+    document.querySelectorAll('#sexSeg button').forEach(b => b.classList.toggle('on', b.dataset.sex === S.sex))
   }
+  $('sexSeg').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return
+    S.sex = b.dataset.sex; store.set('sex', S.sex); renderHome()
+  })
   $('lenSeg').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return
     S.secPerYear = +b.dataset.sec; store.set('len', S.secPerYear); renderHome()
@@ -81,7 +86,7 @@
   // ---------- 雇用契約書 ----------
   $('btnStart').addEventListener('click', newLife)
   function newLife() {
-    S.p = E.create()
+    S.p = E.create({ sex: S.sex })
     S.peers = Array.from({ length: 4 }, () => E.create({ auto: true }))
     const p = S.p, j = JOBS[p.job]
     $('cNo').textContent = `No. ${C.code.toUpperCase()}-${E.START_YEAR}-${p.id.toUpperCase()}`

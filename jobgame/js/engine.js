@@ -49,7 +49,7 @@
           inc: s.inc ?? o.inc ?? mp.inc, incAvg: s.avg ?? null, y0: s.y0 ?? null,
           ot: o.otFixed ?? s.ot ?? o.ot ?? Math.round(mp.ot * (MP[mid.code] && MP[mid.code].ot != null ? 1 : (C.otScale ?? 1))),
           phys: o.phys ?? mp.phys, st: o.st ?? mp.st, ai: o.ai ?? mp.ai,
-          self: s.self ?? o.self ?? mp.self, female: s.female ?? 0.45,
+          self: s.self ?? o.self ?? mp.self, female: o.female ?? s.female ?? 0.45,
           irr: s.irr_m != null ? { m: s.irr_m, f: s.irr_f } : null,
           sexW: { m: s.sex_m ?? (C.sexWage || {}).m ?? 1, f: s.sex_f ?? (C.sexWage || {}).f ?? 1 },
           eduDist: s.eduDist || null,
@@ -90,8 +90,10 @@
 
   // ---------- 誕生（入職） ----------
   function create(opts = {}) {
-    const job = opts.job ? JOBS[opts.job] : weighted(ENTRY_JOBS, j => j.share)
-    const sex = rnd() < job.female ? 'f' : 'm' // 職業ごとの女性比率
+    // 性別を選んだときは、その性別で働く人の数に比例して職業を引く。選ばないときは職業を引いてから、その職業の女性比率で性別を決める
+    const pickSex = opts.sex === 'm' || opts.sex === 'f' ? opts.sex : null
+    const job = opts.job ? JOBS[opts.job] : weighted(ENTRY_JOBS, j => j.share * (pickSex ? (pickSex === 'f' ? j.female : 1 - j.female) : 1))
+    const sex = pickSex || (rnd() < job.female ? 'f' : 'm')
     let edu
     if (C.longSchool && C.longSchool.match(job)) edu = C.longSchool.edu
     else if (job.eduDist) edu = weighted(window.EDUCATION, e => job.eduDist[e.lv] || 0.0001) // 職業ごとの学歴の分布（実数）
