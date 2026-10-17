@@ -267,6 +267,7 @@ const APPS = [
     desc:'目的地に近づくと自動でアラームが鳴る位置情報アラームアプリ。乗り過ごしを防ぎます。',
     icon:ICON+'Purple221/v4/d3/12/9c/d3129c87-bbca-6da6-5f45-03287aa58a3e/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/100x100bb.jpg',
     store:'https://apps.apple.com/jp/app/%E3%82%B8%E3%82%AA%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0geoalame-%E5%A0%B4%E6%89%80%E3%81%A7%E8%B5%B7%E3%81%93%E3%81%99%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0/id6781700974',
+    play:'https://play.google.com/store/apps/details?id=com.mseki502.geoalame',
     links:[{t:'紹介ページ',u:'/geoalame/'},{t:'サポート',u:'https://vaulted-brisket-501.notion.site/GEO-Alame-3834f322121880379de9fcca21609c88'}],
     account:'不要（端末内で完結）' },
 
@@ -458,6 +459,7 @@ function appCard(a){
     : `<div class="row"><div class="row-k">リリース</div><div class="row-v">審査結果待ち</div></div>`;
   const links = [
     a.store ? `<a class="b b1" href="${esc(a.store)}" target="_blank" rel="noopener">App Store</a>` : '',
+    a.play ? `<a class="b b1" href="${esc(a.play)}" target="_blank" rel="noopener">Google Play</a>` : '',
     ...(a.links || []).map(l => `<a class="b b2" href="${esc(l.u)}"${/^https?:/.test(l.u) ? ' target="_blank" rel="noopener"' : ''}>${esc(l.t)}</a>`)
   ].filter(Boolean).join('');
 
