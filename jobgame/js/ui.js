@@ -331,8 +331,16 @@
   $('btnPass').addEventListener('click', () => window.Pass.open(S.snap, 'ending'))
   // 結果をシェア（URL は公開版に固定。英語は英語版へ）
   const SHARE_URL = 'https://oyajibuki.github.io/jobgame/' + (C.lang === 'ja' ? '' : `?lang=${C.lang}`)
-  $('btnShareX').addEventListener('click', () => {
-    window.open(`https://x.com/intent/post?text=${encodeURIComponent(S.shareText)}&url=${encodeURIComponent(SHARE_URL)}`, '_blank', 'noopener')
+  // SNS ごとの共有画面（Instagram・TikTok・YouTube は文章とURLだけの共有ができないので、作品画面の画像・動画から共有する）
+  const shareTo = {
+    x: (tx, u) => `https://x.com/intent/post?text=${encodeURIComponent(tx)}&url=${encodeURIComponent(u)}`,
+    line: (tx, u) => `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(u)}&text=${encodeURIComponent(tx)}`,
+    fb: (tx, u) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}`,
+    threads: (tx, u) => `https://www.threads.net/intent/post?text=${encodeURIComponent(tx + '\n' + u)}`,
+  }
+  document.querySelector('#ending .share-row').addEventListener('click', e => {
+    const b = e.target.closest('[data-share]'); if (!b) return
+    window.open(shareTo[b.dataset.share](S.shareText, SHARE_URL), '_blank', 'noopener')
   })
   if (navigator.share) {
     $('btnShareMore').classList.remove('hidden')

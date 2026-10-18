@@ -763,6 +763,27 @@
     } finally { btn.disabled = false }
   })
 
+  // ---------- 画像・動画を SNS へ ----------
+  // スマホでは共有シート（Instagram・TikTok・LINE などを選べる）にファイルごと渡す。
+  // パソコンなど共有シートが使えないときは、保存してから各サービスの投稿画面を開き、文章はコピーしておく
+  const UPLOAD = { yt: 'https://www.youtube.com/upload', ig: 'https://www.instagram.com/', tt: 'https://www.tiktok.com/upload', x: 'https://x.com/compose/post', line: 'https://line.me/R/', fb: 'https://www.facebook.com/' }
+  async function shareFile(blob, fname, where) {
+    const st = shortText(cur)
+    const text = `${st.title}\n${'https://oyajibuki.github.io/jobgame/' + (CT.lang === 'ja' ? '' : `?lang=${CT.lang}`)}\n${t('short.tags')}`
+    const file = new File([blob], fname, { type: blob.type })
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], text, title: st.title }); return } catch (e) { if (e && e.name === 'AbortError') return }
+    }
+    download(blob, fname)
+    try { await navigator.clipboard.writeText(text) } catch {}
+    window.open(UPLOAD[where] || UPLOAD.x, '_blank', 'noopener')
+  }
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('[data-imgshare]'); if (!b) return
+    const blob = await new Promise(r => $('passCanvas').toBlob(r, 'image/png'))
+    shareFile(blob, `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}.png`, b.dataset.imgshare)
+  })
+
   // 書類セット：4枚を並べて、1枚ずつ／まとめて保存
   async function renderDocs(snap) {
     $('docsGrid').innerHTML = DOCS.map(([k]) => `<figure><canvas id="doc_${k}"></canvas><figcaption><span>${t('docs.name.' + k)}</span><button class="btn sm" data-doc="${k}">${t('docs.save')}</button></figcaption></figure>`).join('')
@@ -785,8 +806,10 @@
       const { blob, ext } = await makeShort(cur, r => { $('shortStatus').textContent = t('pass.videoMaking', { p: Math.round(r * 100) }) })
       const url = URL.createObjectURL(blob)
       $('shortStatus').textContent = t('pass.videoDone')
-      $('shortOut').innerHTML = `<video src="${url}" controls playsinline></video><button class="btn primary" id="dlShort">${t('pass.videoSave')}</button>`
-      $('dlShort').addEventListener('click', () => download(blob, `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}_short.${ext}`))
+      const fname = `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}_short.${ext}`
+      $('shortOut').innerHTML = `<video src="${url}" controls playsinline></video><div class="cta-row"><button class="btn primary" id="dlShort">${t('pass.videoSave')}</button><button class="btn share-yt" data-vshare="yt">YouTube ${t('share.shorts')}</button><button class="btn share-ig" data-vshare="ig">Instagram ${t('share.reels')}</button><button class="btn share-tt" data-vshare="tt">TikTok</button></div><div class="share-note">${t('share.videoNote')}</div>`
+      $('dlShort').addEventListener('click', () => download(blob, fname))
+      $('shortOut').querySelectorAll('[data-vshare]').forEach(b => b.addEventListener('click', () => shareFile(blob, fname, b.dataset.vshare)))
     } catch (e) {
       $('shortStatus').textContent = e.message
     } finally { btn.disabled = false }
