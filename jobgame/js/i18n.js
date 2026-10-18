@@ -160,7 +160,7 @@ window.I18N = {
     'sum.kids': '{n}人の子どもを育てました。', 'sum.care': '{who}を{n}年介護しました{quit}。', 'sum.careQuit': '（介護離職）', 'sum.moved': '{home}から{place}へ移り住みました。',
 
     // エンディング
-    'e.doc': '職歴証明書', 'e.summary': '{age}歳で「{job}」として働きはじめ、{reason}しました。{changes}',
+    'e.hi.rank': '同期5人の中で', 'e.hi.rankV': '{n}位', 'e.hi.top': '同じ年に働きはじめた人の中で', 'e.hi.topV': '上位{n}%', 'e.hi.botV': '下位{n}%', 'e.hi.rare': '最初の職業は', 'e.hi.rareV': '{n}人に1人', 'e.share.x': '𝕏 でシェア', 'e.share.more': 'ほかで共有', 'e.share.text': '「{job}」を引いて、生涯収入は{money}でした。\n同期5人中{rank}位・{top}\n{ep}\n#7千万分の1', 'e.doc': '職歴証明書', 'e.summary': '{age}歳で「{job}」として働きはじめ、{reason}しました。{changes}',
     'e.changes': '途中で{n}回、職業が変わりました。', 'e.oneJob': 'ひとつの職業を貫きました。',
     'e.years': '働いた年数', 'e.lifetime': '生涯収入（退職金込み）', 'e.peak': '最高年収', 'e.rank': '最高の役職', 'e.lics': '取った資格', 'e.savings': '最終貯蓄',
     'e.jobs': '歩いた職業', 'e.manager': '🏛️ 管理職', 'e.peers': '同期のその後', 'e.peerLife': '{ep} · 生涯 {money}',
@@ -353,7 +353,7 @@ window.I18N = {
     'sum.married': 'Married to {name}, {aJob}, for {n} years.', 'sum.divorced': 'Married, then divorced.', 'sum.single': 'Never married.',
     'sum.kids': 'Raised {n} children.', 'sum.care': 'Cared for {who} for {n} years{quit}.', 'sum.careQuit': ', leaving work to do it', 'sum.moved': 'Moved from {home} to {place}.',
 
-    'e.doc': 'Certificate of Employment', 'e.summary': 'Started at {age} as {aJob}. {reason}. {changes}',
+    'e.hi.rank': 'Among 5 peers', 'e.hi.rankV': '#{n}', 'e.hi.top': 'Among everyone who started that year', 'e.hi.topV': 'Top {n}%', 'e.hi.botV': 'Bottom {n}%', 'e.hi.rare': 'First job', 'e.hi.rareV': '1 in {n}', 'e.share.x': 'Share on 𝕏', 'e.share.more': 'Share…', 'e.share.text': 'I drew "{job}" and earned {money} over a working life.\n#{rank} of 5 peers · {top}\n{ep}\n#1in170million', 'e.doc': 'Certificate of Employment', 'e.summary': 'Started at {age} as {aJob}. {reason}. {changes}',
     'e.changes': 'Changed jobs {n} times along the way.', 'e.oneJob': 'Stayed in one occupation the whole way.',
     'e.years': 'Years worked', 'e.lifetime': 'Lifetime earnings', 'e.peak': 'Peak pay', 'e.rank': 'Highest level', 'e.lics': 'Licenses earned', 'e.savings': 'Final savings',
     'e.jobs': 'Jobs held', 'e.manager': '🏛️ Management', 'e.peers': 'What became of the others', 'e.peerLife': '{ep} · lifetime {money}',

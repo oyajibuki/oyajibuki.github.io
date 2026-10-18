@@ -282,11 +282,30 @@
     $('eJobs').innerHTML = p.titles.map(x => `<span class="chip">${esc(x)}</span>`).join('') + (p.jobsHeld.some(c => E.isMgr(c)) ? `<span class="chip">${t('e.manager')}</span>` : '')
     $('ePeers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}</span><span class="r">${esc(t('e.peerLife', { ep: E.epitaph(q), money: money(q.lifetime) }))}</span></div>`).join('')
     $('eFamily').textContent = window.Life.summary(p)
+    // シェアしたくなる数字：同期の中の順位、同じ年に働きはじめた人の中の位置、最初の職業の希少さ
+    const rank = 1 + S.peers.filter(q => q.lifetime > p.lifetime).length
+    const ref = Array.from({ length: 200 }, () => { const q = E.create({ auto: true }); let g = 0; while (!q.ended && g++ < 90) E.step(q); return q.lifetime })
+    const above = ref.filter(v => v > p.lifetime).length / ref.length * 100
+    const top = above <= 50 ? t('e.hi.topV', { n: Math.max(1, Math.round(above)) }) : t('e.hi.botV', { n: Math.max(1, Math.round(100 - above)) })
+    const first = JOBS[p.jobsHeld[0]]
+    const rare = Math.max(1, Math.round(1 / first.share)).toLocaleString()
+    $('eHi').innerHTML = [['e.hi.rank', t('e.hi.rankV', { n: rank })], ['e.hi.top', top], ['e.hi.rare', t('e.hi.rareV', { n: rare })]]
+      .map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
+    S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p) })
     S.snap = window.Pass.snapshot(p, S.peers)
     $('eWord').value = ''
     go('ending')
   }
   $('btnPass').addEventListener('click', () => window.Pass.open(S.snap, 'ending'))
+  // 結果をシェア（URL は公開版に固定。英語は英語版へ）
+  const SHARE_URL = 'https://oyajibuki.github.io/jobgame/' + (C.lang === 'ja' ? '' : `?lang=${C.lang}`)
+  $('btnShareX').addEventListener('click', () => {
+    window.open(`https://x.com/intent/post?text=${encodeURIComponent(S.shareText)}&url=${encodeURIComponent(SHARE_URL)}`, '_blank', 'noopener')
+  })
+  if (navigator.share) {
+    $('btnShareMore').classList.remove('hidden')
+    $('btnShareMore').addEventListener('click', () => navigator.share({ text: S.shareText, url: SHARE_URL }).catch(() => {}))
+  }
   $('btnSave').addEventListener('click', () => {
     const p = S.p
     const list = store.get('memorial', [])
