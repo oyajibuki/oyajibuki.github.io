@@ -53,6 +53,7 @@
     if (id === 'memorial') renderMemorial()
     if (id === 'home') renderHomeMem()
     if (id !== 'play') S.playing = false
+    if (window.__syncFloat) setTimeout(window.__syncFloat, 0)
   }
   document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) go(g.dataset.go) })
 
@@ -375,11 +376,9 @@
   // ---------- ホームの「いま」：今日働きはじめた人・仕事を離れた人（推計） ----------
   const F = C.flow
   let heroLive = null, lastSpawn = 0
-  function secondsToday() {
-    const now = new Date()
-    const [h, m, s] = now.toLocaleTimeString('en-GB', { timeZone: F.tz, hour12: false }).split(':').map(Number)
-    return (h % 24) * 3600 + m * 60 + s + now.getMilliseconds() / 1000
-  }
+  // ページを開いた瞬間を0として数える
+  const OPENED = performance.now()
+  const secondsToday = () => (performance.now() - OPENED) / 1000
   const YEAR = 365 * 86400
   const fmtWait = v => (F.hire / YEAR > 0.5 ? Math.max(0.1, v).toFixed(1) : String(Math.max(1, Math.ceil(v))))
   const prev = { h: -1, s: -1 }
@@ -422,6 +421,14 @@
     if (m) window.Pass.open(m.snap, 'home')
   })
   $('btnMoreLives').addEventListener('click', () => { makeOthers(); renderHomeMem(); $('homeMem').scrollLeft = 0 })
+
+  // 元のボタンが画面から外れたら、下に浮かぶボタンを出す（ホーム画面のときだけ）
+  $('btnStartFloat').addEventListener('click', newLife)
+  const floatBtn = $('btnStartFloat')
+  let startVisible = true
+  const syncFloat = () => floatBtn.classList.toggle('hidden', startVisible || !$('home').classList.contains('active'))
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { startVisible = es[0].isIntersecting; syncFloat() }).observe($('btnStart'))
+  window.__syncFloat = syncFloat
 
   applyText()
   renderHome()

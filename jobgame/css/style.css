@@ -245,3 +245,9 @@ a { color: var(--accent); }
 .hero-data { max-width: 760px; margin: 0 auto 16px; }
 .doc-scene { margin: -2px -2px 14px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
 @media (max-width: 560px) { .live { grid-template-columns: 1fr 1fr; gap: 10px; } .btn-start { padding: 18px 44px; } .mc { flex-basis: 240px; } }
+
+/* スクロールしても残る「働きはじめる」（ホームだけ・元のボタンが見えなくなったら出る） */
+.btn-start.float { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; font-size: 22px; padding: 14px 44px; animation: floatPulse 2.2s ease-in-out infinite; }
+.btn-start.float:hover { transform: translateX(-50%) translateY(-2px) scale(1.03); }
+@keyframes floatPulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
+#home .wrap { padding-bottom: 120px; }
