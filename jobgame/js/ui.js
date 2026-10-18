@@ -68,7 +68,7 @@
     return window.OCC.majors.map(m => ({ m, pct: E.JOB_LIST.filter(j => j.major === m.code).reduce((a, j) => a + (j.workers || 0), 0) / tot * 100 }))
   }
   function renderHome() {
-    let rows = majorShares().sort((a, b) => window.MAJOR_WORKERS ? 0 : b.pct - a.pct)
+    let rows = majorShares().sort((a, b) => b.pct - a.pct)
     // 大分類が多い国（アメリカは22）は上位11とその他にまとめる
     if (rows.length > 12) rows = [...rows.slice(0, 11), { m: { code: '', name: t('home.other') }, pct: rows.slice(11).reduce((a, r) => a + r.pct, 0) }]
     const max = Math.max(...rows.map(r => r.pct))
@@ -162,7 +162,7 @@
     const recent = p.log.slice(-60).reverse()
     $('log').innerHTML = recent.map(l => `<li class="${l.kind}"><span class="a">${age(l.age)}</span><span>${esc(l.text)}</span></li>`).join('')
     renderFocus()
-    drawChart($('chart'), p, S.peers)
+    chartExtras($('chartLegend'), null, p, drawChart($('chart'), p, S.peers))
   }
 
   function renderFamily(p) {
@@ -208,27 +208,40 @@
 
   // 年収の推移（自分 + 同期）
   function drawChart(svg, p, peers = []) {
-    const W = 600, H = 140, pad = 6
+    const W = 600, H = 170, top = 10, bottom = 22, left = 6, right = 64
     const all = [p, ...peers]
     const a0 = Math.min(...all.map(q => q.startAge)), a1 = Math.max(70, ...all.map(q => q.age))
     const vmax = Math.max(C.money.ticks[0] * 0.8, ...all.flatMap(q => q.history.map(h => h.income))) * 1.1
-    const x = a => pad + (a - a0) / (a1 - a0) * (W - pad * 2)
-    const y = v => H - 16 - v / vmax * (H - pad - 16) // 下は年齢の目盛りのぶん空ける
+    const x = a => left + (a - a0) / (a1 - a0) * (W - left - right)
+    const y = v => H - bottom - v / vmax * (H - top - bottom)
     const line = q => q.history.map((h, i) => `${i ? 'L' : 'M'}${x(h.age).toFixed(1)},${y(h.income).toFixed(1)}`).join(' ')
     let s = ''
-    for (const v of C.money.ticks) if (v < vmax) s += `<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${W - 4}" y="${y(v) - 3}" fill="var(--muted)" font-size="10" text-anchor="end">${v}</text>`
-    // 年齢の目盛り（10歳ごと）。何歳で年収が変わったかを読めるように
+    // 年収の目盛り（右側の余白に単位つきで）
+    for (const v of C.money.ticks) if (v < vmax) s += `<line x1="${left}" x2="${W - right}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${W - right + 6}" y="${y(v) + 4}" fill="var(--muted)" font-size="12">${esc(money(v))}</text>`
+    // 年齢の目盛り（10歳ごと）
     for (let a = Math.ceil(a0 / 10) * 10; a <= a1; a += 10) {
-      const xa = x(a), anchor = xa < 20 ? 'start' : xa > W - 20 ? 'end' : 'middle'
-      s += `<line x1="${xa}" x2="${xa}" y1="${pad}" y2="${H - 14}" stroke="var(--line)" stroke-width="1"/><text x="${xa}" y="${H - 2}" fill="var(--muted)" font-size="10" text-anchor="${anchor}">${t('unit.age', { n: a })}</text>`
+      const xa = x(a)
+      s += `<line x1="${xa}" x2="${xa}" y1="${top}" y2="${H - bottom}" stroke="var(--line)"/><text x="${xa}" y="${H - 6}" fill="var(--muted)" font-size="12" text-anchor="${xa < 24 ? 'start' : 'middle'}">${t('unit.age', { n: a })}</text>`
     }
-    for (const q of peers) if (q.history.length) s += `<path d="${line(q)}" fill="none" stroke="var(--muted)" stroke-opacity=".45" stroke-width="1.2"/>`
-    if (p.history.length) s += `<path d="${line(p)}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>`
-    // いちばん大きく年収が下がった年に印（前の年より15%以上下がったときだけ）
+    for (const q of peers) if (q.history.length) s += `<path d="${line(q)}" fill="none" stroke="var(--muted)" stroke-opacity=".45" stroke-width="1.3"/>`
+    if (p.history.length) s += `<path d="${line(p)}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>`
+    // いちばん大きく年収が下がった年（前の年より15%以上）に印。理由はグラフの下に文章で
     let drop = null
-    p.history.forEach((h, i) => { if (i && p.history[i - 1].income > 0) { const r = h.income / p.history[i - 1].income; if (r < 0.85 && (!drop || r < drop.r)) drop = { r, h } } })
-    if (drop) s += `<circle cx="${x(drop.h.age)}" cy="${y(drop.h.income)}" r="4" fill="var(--red)"/><text x="${x(drop.h.age)}" y="${Math.max(12, y(drop.h.income) - 8)}" fill="var(--red)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--card)" stroke-width="3" paint-order="stroke">${t('chart.drop', { age: drop.h.age })}</text>`
+    p.history.forEach((h, i) => { if (i && p.history[i - 1].income > 0) { const r = h.income / p.history[i - 1].income; if (r < 0.85 && (!drop || r < drop.r)) drop = { r, h, prev: p.history[i - 1] } } })
+    if (drop) {
+      const dx = x(drop.h.age), dy = y(drop.h.income)
+      s += `<line x1="${dx}" x2="${dx}" y1="${top}" y2="${H - bottom}" stroke="var(--red)" stroke-dasharray="2 3" stroke-opacity=".7"/><circle cx="${dx}" cy="${dy}" r="5" fill="var(--red)" stroke="var(--card)" stroke-width="2"/>`
+    }
     svg.innerHTML = s
+    return drop
+  }
+  // 凡例と「何歳で、なぜ下がったか」
+  function chartExtras(legendEl, noteEl, p, drop) {
+    if (legendEl) legendEl.innerHTML = `<span><i style="background:var(--accent)"></i>${esc(t('chart.you', { name: p.name }))}</span><span><i style="background:var(--muted);opacity:.6"></i>${esc(t('chart.peers'))}</span>`
+    if (!noteEl) return
+    if (!drop) { noteEl.textContent = ''; return }
+    const why = p.log.filter(l => l.age === drop.h.age || l.age === drop.h.age - 1).filter(l => ['change', 'end', 'bad', 'leave', 'ai', 'life', 'up'].includes(l.kind)).map(l => l.text.replace(/（[^）]*）/g, '').split(/(?<=。)/)[0]).slice(-2).join(' ')
+    noteEl.innerHTML = `<b>● ${esc(t('chart.dropAt', { age: drop.h.age }))}</b> ${esc(t('chart.dropFromTo', { from: money(drop.prev.income), to: money(drop.h.income) }))}${why ? ` — ${esc(why)}` : ''}`
   }
 
   // ---------- ループ ----------
@@ -296,7 +309,7 @@
       ['e.rank', RANKS[p.peakRank].name], ['e.lics', t('unit.count', { n: p.licenses.length })], ['e.savings', money(p.savings)],
     ]
     $('eKv').innerHTML = kv.map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
-    drawChart($('eChart'), p, S.peers)
+    chartExtras($('eChartLegend'), $('eChartNote'), p, drawChart($('eChart'), p, S.peers))
     $('eJobs').innerHTML = p.titles.map(x => `<span class="chip">${esc(x)}</span>`).join('') + (p.jobsHeld.some(c => E.isMgr(c)) ? `<span class="chip">${t('e.manager')}</span>` : '')
     $('ePeers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}</span><span class="r">${esc(t('e.peerLife', { ep: E.epitaph(q), money: money(q.lifetime) }))}</span></div>`).join('')
     $('eFamily').textContent = window.Life.summary(p)
@@ -436,14 +449,6 @@
     if (m) window.Pass.open(m.snap, 'home')
   })
   $('btnMoreLives').addEventListener('click', () => { makeOthers(); renderHomeMem(); $('homeMem').scrollLeft = 0 })
-
-  // 元のボタンが画面から外れたら、下に浮かぶボタンを出す（ホーム画面のときだけ）
-  $('btnStartFloat').addEventListener('click', newLife)
-  const floatBtn = $('btnStartFloat')
-  let startVisible = true
-  const syncFloat = () => floatBtn.classList.toggle('hidden', startVisible || !$('home').classList.contains('active'))
-  if ('IntersectionObserver' in window) new IntersectionObserver(es => { startVisible = es[0].isIntersecting; syncFloat() }).observe($('btnStart'))
-  window.__syncFloat = syncFloat
 
   applyText()
   renderHome()

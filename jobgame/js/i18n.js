@@ -10,7 +10,7 @@ window.I18N = {
     'ev.seniorIdle': '{age}歳。いまは仕事をしていません。地域の仕事を探すか、このまま引退するかを選びます。',
     'ev.seniorIdle.t': '{age}歳、仕事を探しますか',
     // 共通
-    'unit.age': '{n}歳', 'chart.drop': '{age}歳で↓', 'unit.years': '{n}年', 'unit.yearsOf': '{n}年目', 'unit.count': '{n}個', 'unit.hours': '{n}時間',
+    'unit.age': '{n}歳', 'chart.drop': '{age}歳で↓', 'chart.you': '{name}（あなた）', 'chart.peers': '同じ春に働きはじめた同期4人', 'chart.dropAt': '{age}歳で年収が下がった', 'chart.dropFromTo': '{from} → {to}', 'unit.years': '{n}年', 'unit.yearsOf': '{n}年目', 'unit.count': '{n}個', 'unit.hours': '{n}時間',
     'about': '約{v}', 'sep': '・', 'list.sep': '、', 'quote': '「{s}」', 'paren': '（{s}）',
     'sex.m': '男性', 'sex.f': '女性',
     'emp.regular': '正社員', 'emp.irregular': '非正規', 'emp.public': '公務員', 'emp.self': '自営業', 'emp.rehired': '再雇用', 'emp.senior': 'シニア',
@@ -213,7 +213,7 @@ window.I18N = {
     'ev.seniorIdle.t': 'At {age}, look for work?',
     'ev.hunt.one': 'One offer came in.',
     'unit.years.one': '1 year',
-    'unit.age': 'age {n}', 'chart.drop': '↓ at {age}', 'unit.years': '{n} years', 'unit.yearsOf': 'year {n}', 'unit.count': '{n}', 'unit.hours': '{n} hours',
+    'unit.age': 'age {n}', 'chart.drop': '↓ at {age}', 'chart.you': '{name} (you)', 'chart.peers': '4 peers who started the same spring', 'chart.dropAt': 'Pay dropped at {age}', 'chart.dropFromTo': '{from} → {to}', 'unit.years': '{n} years', 'unit.yearsOf': 'year {n}', 'unit.count': '{n}', 'unit.hours': '{n} hours',
     'about': '~{v}', 'sep': ' · ', 'list.sep': ', ', 'quote': '"{s}"', 'paren': ' ({s})',
     'sex.m': 'Male', 'sex.f': 'Female',
     'emp.regular': 'Full-time', 'emp.irregular': 'Part-time / temp', 'emp.public': 'Government', 'emp.self': 'Self-employed', 'emp.rehired': 'Phased retirement', 'emp.senior': 'Part-time, senior',

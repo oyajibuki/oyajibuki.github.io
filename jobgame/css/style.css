@@ -114,7 +114,11 @@ a { color: var(--accent); }
 .study select { font: inherit; width: 100%; background: var(--bg2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px; margin: 4px 0 8px; }
 .meter { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
 .meter div { height: 100%; background: var(--yellow); width: 0; transition: width .4s; }
-#chart, #eChart { width: 100%; height: 140px; display: block; }
+#chart, #eChart { width: 100%; height: auto; display: block; }
+.chart-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.chart-legend i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+.chart-note { font-size: 13px; margin-top: 6px; color: var(--text); }
+.chart-note b { color: var(--red); }
 .log { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow: auto; }
 .log li { display: grid; grid-template-columns: 3.2em 1fr; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
 .log li .a { color: var(--muted); font-family: var(--mono); font-size: 12px; padding-top: 2px; }
@@ -254,3 +258,21 @@ a { color: var(--accent); }
 .work-scene { border-radius: 10px; border: 1px solid var(--line); margin-bottom: 12px; aspect-ratio: 3 / 1; }
 .work-wrap { padding-bottom: 0; padding-top: 12px; }
 .work-wrap .work-scene { max-height: 240px; margin: 0 auto; width: 100%; object-fit: contain; }
+
+/* ===== ホーム：本家と同じ並び（左にタイトルと数字、右に言語・絵・棒グラフ、下にいつも出ている開始ボタン） ===== */
+.hero.hero-k { grid-template-columns: 1.05fr 1fr; gap: 40px; margin-bottom: 28px; }
+.hero-l .topline { display: block; font-family: var(--mono); color: var(--green); margin: 8px 0 6px; }
+.hero-l .title { font-size: clamp(64px, 11vw, 150px); margin: 0 0 22px; }
+.hero-l .lead { font-size: 17px; color: var(--muted); line-height: 1.9; }
+.hero-l .live { grid-template-columns: auto auto; justify-content: start; gap: 44px; margin: 30px 0 8px; }
+.hero-l .live-n { font-size: clamp(34px, 4.6vw, 46px); }
+.hero-l .live-col span { font-size: 13px; max-width: 16em; }
+.hero-l .live-col em { font-size: 12px; }
+.hero-l .live-now { font-size: 15px; margin: 18px 0 0; }
+.hero-r { display: grid; gap: 14px; align-content: start; }
+.hero-r .langs { justify-self: end; }
+.hero-r .hero-scene { margin: 0; }
+.setup-card { max-width: 760px; margin: 0 auto 24px; }
+.start-dock { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 50; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+.start-dock .btn-start { border-radius: 10px; padding: 16px 64px; font-size: 24px; }
+@media (max-width: 900px) { .hero.hero-k { grid-template-columns: 1fr; } .hero-r .langs { justify-self: start; } }
