@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>データと出典（調査メモ）— 7千万分の1</title>
+<meta name="description" content="職業シミュレーション「7千万分の1」で使っている公的統計（国勢調査・賃金構造基本統計調査・BLSなど）と、ゲームでの使い方の調査メモ。">
+<link rel="canonical" href="https://oyajibuki.github.io/jobgame/docs/research.html">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .doc h1 { font-family: var(--serif); font-size: 26px; margin: 16px 0 8px; }
+  .doc h2 { font-size: 19px; margin: 36px 0 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .doc h3 { font-size: 16px; margin: 24px 0 8px; }
+  .doc p, .doc li { font-size: 14px; }
+  .doc table { display: block; overflow-x: auto; border-collapse: collapse; font-size: 13px; margin: 8px 0 16px; }
+  .doc th, .doc td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  .doc th { background: var(--bg2); white-space: nowrap; }
+  .doc code { font-family: var(--mono); font-size: 12px; background: var(--bg2); padding: 1px 4px; border-radius: 3px; }
+  .doc .top { display: flex; justify-content: space-between; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap narrow doc">
+<div class="top"><a href="../">← ゲームに戻る</a><a href="../legal.html">特定商取引法に基づく表記・規約</a></div>
+<h1>職業版「80億分の1」調査メモ（POC）</h1>
+<h2>1. 元ゲーム「80億分の1」（https://1in8b.life/ja/）の構造</h2>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>元ゲーム</th>
+<th>職業版での置き換え</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>母集団</td>
+<td>世界の出生数（172か国の統計）</td>
+<td>日本の就業者 6,781万人（労働力調査 2024年平均）</td>
+</tr>
+<tr>
+<td>ランダムに決まるもの</td>
+<td>生まれる国・家庭・性別</td>
+<td>最初の職業（329小分類）・学歴・企業規模・雇用形態</td>
+</tr>
+<tr>
+<td>開始カード</td>
+<td>出生届</td>
+<td>雇用契約書（「〇人に1人」の希少度つき）</td>
+</tr>
+<tr>
+<td>進行</td>
+<td>1年 ≈ 40〜60秒、倍速・一時停止・おまかせ</td>
+<td>1年 ≈ 3/6/14秒、1〜8倍速・一時停止・おまかせ</td>
+</tr>
+<tr>
+<td>毎年の選択</td>
+<td>今年の重点</td>
+<td>今年の重点（休養／娯楽／資格の勉強／学び直し／副業／仕事に打ち込む／転職活動）</td>
+</tr>
+<tr>
+<td>決断</td>
+<td>進学・仕事・恋愛・移住・治療</td>
+<td>昇進・資格試験・転職の内定・副業先からの誘い・独立・休職・定年</td>
+</tr>
+<tr>
+<td>立ち止まる</td>
+<td>5/15/30/50/70歳で「ひと息」</td>
+<td>勤続1/10/20/30年目で「ひと息」</td>
+</tr>
+<tr>
+<td>同時に生まれた人</td>
+<td>同じ1秒に生まれた4人</td>
+<td>同じ春に働きはじめた同期4人</td>
+</tr>
+<tr>
+<td>終わり</td>
+<td>死・メモリアル</td>
+<td>引退・職歴証明書・メモリアル</td>
+</tr>
+</tbody>
+</table>
+<h2>2. 職業ツリー（全職業）</h2>
+<ul>
+<li>出典: 総務省「日本標準職業分類（平成21年12月統計基準設定）分類項目名」
+  https://www.soumu.go.jp/toukei_toukatsu/index/seido/shokgyou/kou_h21.htm</li>
+<li><strong>大分類12 / 中分類74 / 小分類329</strong> を <code>tools/build_jsco.py</code> で自動抽出 → <code>data/jsco.json</code></li>
+<li>現行版は2009年設定。第6回改定（国際標準職業分類ISCOに準拠した見直し）が検討中のため、改定後は再生成が必要。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>大分類</th>
+<th>名称</th>
+<th>中分類数</th>
+<th>就業者（万人・概数）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>管理的職業従事者</td>
+<td>4</td>
+<td>127</td>
+</tr>
+<tr>
+<td>B</td>
+<td>専門的・技術的職業従事者</td>
+<td>20</td>
+<td>1,324</td>
+</tr>
+<tr>
+<td>C</td>
+<td>事務従事者</td>
+<td>7</td>
+<td>1,419</td>
+</tr>
+<tr>
+<td>D</td>
+<td>販売従事者</td>
+<td>3</td>
+<td>840</td>
+</tr>
+<tr>
+<td>E</td>
+<td>サービス職業従事者</td>
+<td>8</td>
+<td>840</td>
+</tr>
+<tr>
+<td>F</td>
+<td>保安職業従事者</td>
+<td>3</td>
+<td>130</td>
+</tr>
+<tr>
+<td>G</td>
+<td>農林漁業従事者</td>
+<td>3</td>
+<td>186</td>
+</tr>
+<tr>
+<td>H</td>
+<td>生産工程従事者</td>
+<td>11</td>
+<td>880</td>
+</tr>
+<tr>
+<td>I</td>
+<td>輸送・機械運転従事者</td>
+<td>5</td>
+<td>213</td>
+</tr>
+<tr>
+<td>J</td>
+<td>建設・採掘従事者</td>
+<td>5</td>
+<td>276</td>
+</tr>
+<tr>
+<td>K</td>
+<td>運搬・清掃・包装等従事者</td>
+<td>4</td>
+<td>497</td>
+</tr>
+<tr>
+<td>L</td>
+<td>分類不能の職業</td>
+<td>1</td>
+<td>49</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>上の表の人数（ホーム画面の棒グラフ）は労働力調査2024年平均。B・Cと合計（6,781万人）は JILPT掲載値、それ以外は概数。</li>
+<li><strong>ゲーム内で職業を引く確率と図鑑の人数は、令和2年国勢調査の実数</strong>（次節）。</li>
+</ul>
+<h2>2.5 職業ごとの実数（<code>tools/build_stats.py</code> → <code>data/stats.js</code>）</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>出典</th>
+<th>使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>人数</td>
+<td><a target="_blank" rel="noopener" href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032266822&amp;fileKind=0">令和2年国勢調査 抽出詳細集計 第10表</a>（男女，従業上の地位，職業（小分類）別就業者数・全国）</td>
+<td>最初の職業を引く確率、図鑑の人数</td>
+</tr>
+<tr>
+<td>女性の割合</td>
+<td>同上（男女別）</td>
+<td>最初の職業に就く人の性別</td>
+</tr>
+<tr>
+<td>非正規率（男女別）</td>
+<td>同上（派遣＋パート・アルバイト等 ÷ 雇用者）</td>
+<td>入職時の雇用形態（大卒以上は×0.6、それ以外は×0.9。高齢者を含む数字のため）</td>
+</tr>
+<tr>
+<td>自営率</td>
+<td>同上（雇人のある業主＋雇人のない業主＋家族従業者 ÷ 総数）</td>
+<td>入職時に自営で始まる確率（×0.4）、独立の誘い</td>
+</tr>
+<tr>
+<td>年収</td>
+<td><a target="_blank" rel="noopener" href="https://www.e-stat.go.jp/stat-search/files?toukei=00450091&amp;tstat=000001011429&amp;tclass1=000001229845">令和7年賃金構造基本統計調査 一般労働者 職種 第1表・第5表</a>（企業規模10人以上・産業計）</td>
+<td>40〜59歳の年齢階級で最も高い年収（きまって支給する現金給与額×12＋年間賞与）を、参考第3表（役職者を除く）との比で補正。役職手当はゲーム側で掛ける</td>
+</tr>
+<tr>
+<td>年齢カーブ</td>
+<td>同 第5表</td>
+<td>20代の年収÷上の年収を職業ごとの初任水準 <code>y0</code> に</td>
+</tr>
+<tr>
+<td>男女の賃金差</td>
+<td>同 参考第3表（男・女、役職者を除く）</td>
+<td>同じ職業・役職なしでの男女の年収比</td>
+</tr>
+<tr>
+<td>月の残業</td>
+<td>同 第1表（超過実労働時間数）</td>
+<td>体力・ストレスの消耗。<strong>医師だけは調査値19hが実態より低いため60hに固定</strong>（勤務医の約4割が年960h超）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>国勢調査は小分類の一部をまとめて数えている（例: 「裁判官，検察官，弁護士」、生産設備の制御・監視員は製造・加工処理にまとめる）。まとめ区分は <code>params.js</code> のウェイトで按分し、図鑑では「約」をつける。329職業すべてに人数あり。</li>
+<li>賃金統計は144職種。賃金統計の対象外の職業は、次の公的統計で補った。残る推定値は 401 飲食店主・店長、402 旅館主・支配人、434 防衛大学校・防衛医科大学校学生、999 分類不能 のみ（図鑑で「推定」と表示）。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>職業</th>
+<th>出典</th>
+<th>年収の出し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>441 警察官 / 452 消防員</td>
+<td><a target="_blank" rel="noopener" href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040497636&amp;fileKind=0">令和7年地方公務員給与実態調査 第5表</a>（警察職・消防職、全地方公共団体）</td>
+<td>給与月額×12＋平均基本給月額×4.6か月（期末・勤勉手当）。全年齢平均なので、<a target="_blank" rel="noopener" href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040497641&amp;fileKind=0">第7表の2</a>の一般行政職の年齢別給与で40〜50代のピークに引き上げ、民間の「役職者を除く比率」の平均を掛ける</td>
+</tr>
+<tr>
+<td>442 海上保安官</td>
+<td><a target="_blank" rel="noopener" href="https://www.jinji.go.jp/seisaku/kankoku/archive/kokkou/07kokkou_00002.html">令和7年国家公務員給与等実態調査</a>（公安職俸給表(二)）</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>431〜433 自衛官</td>
+<td>同（公安職俸給表(一)）</td>
+<td>自衛官は人事院の調査対象外。自衛官俸給表は公安職俸給表(一)を基準に定められているため、その値で代用</td>
+</tr>
+<tr>
+<td>621 船長 / 622 航海士 / 623 機関長・機関士 / 633 甲板員 / 634 機関員</td>
+<td><a target="_blank" rel="noopener" href="https://www.e-stat.go.jp/stat-search/files?toukei=00600320">令和7年船員労働統計調査</a>（一般船舶・日本人船員、職位別1人1か月平均報酬）</td>
+<td>（きまって支給する給与＋航海日当＋その他の手当）×12＋年間賞与。残業は年間時間外労働時間÷12</td>
+</tr>
+</tbody>
+</table>
+<h3>自営業の所得</h3>
+<table>
+<thead>
+<tr>
+<th>対象</th>
+<th>出典</th>
+<th>ゲームでの使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>農業（中分類46）</td>
+<td>営農類型別経営統計（令和6年・概要）主業経営体の1経営体当たり農業所得 <strong>494.2万円</strong></td>
+<td>経験年数で立ち上がり、年ごとに±ばらつく</td>
+</tr>
+<tr>
+<td>それ以外の自営業</td>
+<td><a target="_blank" rel="noopener" href="https://www.nta.go.jp/publication/statistics/kokuzeicho/shinkokuhyohon2024/hyouhon.htm">申告所得税標本調査（令和6年分）第2表</a> 事業所得者の営業等所得の分布（中央値 約330万円）</td>
+<td>経験年数とスキルで分位を決めて分布から引く。職業による差は統計がないため、雇用者の年収差を平方根で弱めて掛ける（ゲーム上の調整）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>申告所得税標本調査は<strong>申告納税額がある人だけ</strong>が対象のため、所得が低い自営業者が含まれず、実態より高めに出る。</li>
+<li>学歴による差は同じ職業の中での目安（高卒0.85／専門・短大0.92／大卒1.05／院卒1.12）。</li>
+</ul>
+<h3>ゲーム上の扱い</h3>
+<ul>
+<li><strong>大分類A（管理的職業）は入職時には引かない。</strong> 課長に昇進すると職業分類上「031 会社管理職員（公務員は013）」へ、役員で「021 会社役員」へ移る。給与ベースは出身職種のまま。</li>
+<li><code>route: 'school'</code>（医師・看護師・医療技術者・教員・理美容師など）は養成課程が前提のため、社会人の転職先には出てこない（POCの制約）。</li>
+<li><code>lic</code> が付いた職業は資格がないと転職先に出てこない。社会人が余暇で取れる資格は「資格の勉強」で狙える。</li>
+</ul>
+<h2>2.6 職種名（<code>JOB_VARIANTS</code>）</h2>
+<p>日本標準職業分類の小分類は「ソフトウェア作成者」「システム運用管理者」のように粒度が粗いので、いま実際に使われている呼び名を小分類の下に「職種名」として持たせた（図鑑では小分類の下にタグで表示）。</p>
+<table>
+<thead>
+<tr>
+<th>小分類</th>
+<th>職種名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101 システムコンサルタント</td>
+<td>ITコンサルタント、DXコンサルタント、AXコンサルタント</td>
+</tr>
+<tr>
+<td>102 システム設計者</td>
+<td>システムアーキテクト、クラウドアーキテクト、ソリューションアーキテクト</td>
+</tr>
+<tr>
+<td>103 情報処理プロジェクトマネージャ</td>
+<td>プロジェクトマネージャー（PM）、PMO、スクラムマスター</td>
+</tr>
+<tr>
+<td>104 ソフトウェア作成者</td>
+<td>業務系SE・プログラマー、バックエンド、フロントエンド、フルスタック、スマホアプリ、組込み、ゲームプログラマー、QA・テスト、データエンジニア、機械学習エンジニア、<strong>AXエンジニア</strong>、<strong>FDE（Forward Deployed Engineer）</strong></td>
+</tr>
+<tr>
+<td>105 システム運用管理者</td>
+<td>社内SE・情報システム、インフラ、<strong>クラウドエンジニア</strong>、<strong>データベースエンジニア</strong>、SRE、運用・監視オペレーター</td>
+</tr>
+<tr>
+<td>106 通信ネットワーク技術者</td>
+<td>ネットワークエンジニア、通信インフラエンジニア</td>
+</tr>
+<tr>
+<td>109 その他の情報処理・通信技術者</td>
+<td>セキュリティエンジニア、データサイエンティスト、<strong>プロダクトマネージャー</strong>、ヘルプデスク・テクニカルサポート</td>
+</tr>
+<tr>
+<td>224 デザイナー</td>
+<td>グラフィック、Web、UI/UX、プロダクト、インテリア・空間、ファッション</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>年収は小分類の統計値×職種ごとの倍率（0.8〜1.25）。<strong>倍率は公的統計がないためゲーム上の目安</strong>。</li>
+<li>職種ごとにAI代替リスクを持たせ、2031年のAI普及イベントで、AX・FDE・AXコンサルタント・プロダクトマネージャーのように「AIを使う側」（リスク0.15以下）は年収が上がり、テスト・運用監視・ヘルプデスクなどは下がる。</li>
+<li>AX・FDE・機械学習エンジニア・データサイエンティスト・プロダクトマネージャーは、メタスキルが高いほど就きやすい（転職の求人にも出やすい）。</li>
+</ul>
+<h2>3. パラメーターの根拠（ユーザー調査レポートより）</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+<th>ゲームでの使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>企業規模の賃金差</td>
+<td>大企業と小企業で生涯賃金約1.4倍（最大約1.8億円差）、50代月給 49万 vs 35万</td>
+<td><code>COMPANY_SIZES.mult</code>・年齢カーブのピーク年齢</td>
+</tr>
+<tr>
+<td>退職金</td>
+<td>大企業は定年時の資産差2,000万円以上</td>
+<td><code>COMPANY_SIZES.retire</code></td>
+</tr>
+<tr>
+<td>役職年収</td>
+<td>係長639 / 課長847 / 部長1,017万円</td>
+<td><code>RANKS.mult</code></td>
+</tr>
+<tr>
+<td>弁護士</td>
+<td>所得の5%調整平均1,022万円、中央値800万円</td>
+<td>参考（年収は賃金統計の「法務従事者」に差し替え済み）</td>
+</tr>
+<tr>
+<td>司法試験</td>
+<td>3,000〜8,000時間、予備試験3.6%</td>
+<td><code>LICENSES.shiho</code></td>
+</tr>
+<tr>
+<td>公認会計士</td>
+<td>3,000〜5,000時間、約7.4%</td>
+<td><code>LICENSES.cpa</code></td>
+</tr>
+<tr>
+<td>国家公務員総合職</td>
+<td>1,500時間以上、到達率32〜36%</td>
+<td><code>LICENSES.kokuso</code></td>
+</tr>
+<tr>
+<td>宅建</td>
+<td>300〜400時間、15〜18%</td>
+<td><code>LICENSES.takken</code></td>
+</tr>
+<tr>
+<td>残業</td>
+<td>広告・デザイン 63.6h／医療全体 21.1h、勤務医の約4割が年960h超</td>
+<td>賃金統計の実数に差し替え済み（医師のみ60h固定）</td>
+</tr>
+<tr>
+<td>トラック運転手</td>
+<td>年2,500時間超</td>
+<td>賃金統計の実数（大型 月33h など）に差し替え済み</td>
+</tr>
+<tr>
+<td>ストレス</td>
+<td>労働者の82.2%が強いストレス。IT業の1か月以上休業32.0%</td>
+<td>ストレス係数、情報処理技術者に加算</td>
+</tr>
+<tr>
+<td>非正規</td>
+<td>雇用の安定性へのストレス70.7%</td>
+<td>非正規にストレス加算</td>
+</tr>
+<tr>
+<td>副業</td>
+<td>副業経験者の6.7%が副業先へ転職</td>
+<td>副業中、年6.7%で誘いイベント</td>
+</tr>
+<tr>
+<td>起業</td>
+<td>経験分野の5年生存95%、未経験22%</td>
+<td>経験5年以上で年1%、未満で年26%の廃業</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>定型業務の代替、メタスキルが高い人ほど賃金が高い</td>
+<td>2031年にAIイベント。<code>ai × (1 − メタスキル)</code> でスキルと賃金が下がる</td>
+</tr>
+<tr>
+<td>非正規率</td>
+<td>男性約22%、女性約53%</td>
+<td>国勢調査の職業×男女別の実数に差し替え済み</td>
+</tr>
+</tbody>
+</table>
+<h2>3.5 ライフイベントとシニア就労（<code>js/life.js</code> / <code>LIFE_PARAMS</code> / <code>SENIOR_JOBS</code>）</h2>
+<table>
+<thead>
+<tr>
+<th>イベント</th>
+<th>根拠・目安</th>
+<th>ゲームでの扱い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>結婚</td>
+<td>50歳時未婚率 男性約28%・女性約18%</td>
+<td>年齢別の年確率。残業が多いと出会いが減る。配偶者の職業も統計から引く</td>
+</tr>
+<tr>
+<td>出産・育休</td>
+<td>夫婦の完結出生児数 約1.9人、育休取得率 男性約3割・女性8割超、第一子出産で約3割が離職</td>
+<td>育休1年（給付67%）＋時短3年（年収8割・昇進しにくい）など4択。取らなければ配偶者が離職することも</td>
+</tr>
+<tr>
+<td>子育て</td>
+<td>—</td>
+<td>6歳未満の子がいると自由時間・メンタルが減り、22歳まで教育費がかかる</td>
+</tr>
+<tr>
+<td>介護</td>
+<td>平均介護期間 約5年、介護離職 年約10万人</td>
+<td>親が75歳を過ぎると発生。自分で／介護休業＋サービス／施設／介護離職の4択</td>
+</tr>
+<tr>
+<td>転勤</td>
+<td>大企業・官公庁の正社員</td>
+<td>家族で引っ越す（配偶者は離職）／単身赴任3年／断る（5年昇進しにくい）</td>
+</tr>
+<tr>
+<td>家庭の満足度</td>
+<td>離婚は婚姻のおよそ3組に1組</td>
+<td>残業・単身赴任・介護で下がり、「家族と過ごす」で回復。低いと離婚の危機</td>
+</tr>
+<tr>
+<td>65歳からの仕事</td>
+<td>就業率 65〜69歳 約52%・70〜74歳 約34%・75歳以上 約11%</td>
+<td>65歳で継続雇用か地域の仕事（警備・駐車場・清掃・ごみ収集・管理人・農業など）か引退。70・75・80歳で再確認</td>
+</tr>
+<tr>
+<td>寺社</td>
+<td>実家が寺社の人は約1%</td>
+<td>65歳で「実家の寺社を継ぐ」選択肢（宗教家・自営）</td>
+</tr>
+</tbody>
+</table>
+<p>自動プレイ3,000人での結果: 既婚経験 約76%、既婚者の子ども 平均1.7人、離婚 約15%、親の介護を主に担った人 約48%（介護離職 約3%）、転勤経験 約38%、65歳以降も働いた人 約半数。</p>
+<h2>4. バランス確認（Node で自動プレイ 3,000人）</h2>
+<p><code>node &lt;scratch&gt;/sim.js &lt;このフォルダ&gt;</code> 相当の検証で、おまかせプレイの結果:</p>
+<p>実数に差し替えた後（4,000人）:</p>
+<table>
+<thead>
+<tr>
+<th>区分（正社員で就職）</th>
+<th>60歳までの賃金</th>
+<th>参考：ユースフル労働統計（同じ会社で正社員を続けた場合）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>大卒男性</td>
+<td>約2.6〜2.7億円</td>
+<td>約2.7億円前後</td>
+</tr>
+<tr>
+<td>高卒男性</td>
+<td>約2.2億円</td>
+<td>約2.1億円前後</td>
+</tr>
+<tr>
+<td>大卒女性</td>
+<td>約2.0〜2.1億円</td>
+<td>約2.2億円前後</td>
+</tr>
+<tr>
+<td>高卒女性</td>
+<td>約1.8億円</td>
+<td>約1.5億円前後</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>全体の平均生涯収入 約2.6億円（退職金・65歳以降・非正規・自営を含む）、課長以上 約20%</li>
+<li>残業を実数（多くの職業で月5〜30h）にしたため、ストレス係数を上げて休職経験 約18%・40歳時点のメンタル平均 約75に調整</li>
+<li>参考値は記憶にもとづく概数。正式版では JILPT「ユースフル労働統計」の最新版で照合する</li>
+</ul>
+<h2>5. 次にやること（正式版に向けて）</h2>
+<ul>
+<li>飲食店主・旅館主の所得（経済センサスや業界統計）</li>
+<li>自営業の業種別所得（申告所得税標本調査の業種別表が公表されている年分があれば）</li>
+<li>職種名ごとの年収差を公的統計で裏づける（経産省・IPAの調査など）</li>
+<li>最終学歴の分布を職業ごとの実数（国勢調査 第15-1表）に差し替え</li>
+<li>社会人入学（看護師・医師などの養成課程ルート）</li>
+<li>地域（都道府県）による職業分布の違い</li>
+<li>メモリアルの共有（サーバー保存）</li>
+</ul>
+<h2>7. 多言語化と国別データパック（v0.2）</h2>
+<ul>
+<li>言語ごとに国を切り替える方式（日本語＝日本、English＝アメリカ）。職業ツリー・統計・制度・名前・地名・通貨・資格は国ごとの <code>data/countries/&lt;国&gt;/</code> に分け、ゲームの仕組み（engine / life / pass / ui）は共通。</li>
+<li>共通の物差しとして <strong>ISCO-08（国際標準職業分類）</strong> を使う。各国の中分類を ISCO の中分類（43区分）に対応付け（<code>ISCO_MAP</code>）、体力負荷・ストレス・AI代替リスク・残業の目安（<code>ISCO_PARAMS</code>）は ISCO 側に持たせる。日本は従来どおり中分類ごとに調整した値を優先し、ISCO は図鑑と雇用契約書に表示。</li>
+<li>日本の JSCO→ISCO、アメリカの SOC→ISCO の対応は、中分類単位でいちばん近いものを手で当てたもの（公式の対応表は小分類単位で多対多）。</li>
+</ul>
+<h2>8. アメリカのデータ（<code>tools/build_us.py</code> → <code>data/countries/us/</code>）</h2>
+<p>BLS のサイトはスクリプトからのダウンロードを拒否するため、ブラウザで開いたページ内でファイルを読み、必要な列だけを書き出した（<code>tools/raw/us/</code>）。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>出典</th>
+<th>使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>職業ツリー</td>
+<td>SOC 2018（OEWS の階層）：大分類22・小分類94・詳細830</td>
+<td>ゲームの職業ツリー</td>
+</tr>
+<tr>
+<td>人数・自営率・典型的な学歴</td>
+<td><a target="_blank" rel="noopener" href="https://www.bls.gov/emp/tables.htm">BLS Employment Projections 2025–35 Table 1.2</a>（自営業を含む就業者数）</td>
+<td>最初の職業を引く確率、自営で始まる確率、転職の学歴条件</td>
+</tr>
+<tr>
+<td>学歴の分布</td>
+<td>同 Table 5.3（職業ごとの25歳以上の最終学歴）</td>
+<td>最初の職業に就く人の学歴</td>
+</tr>
+<tr>
+<td>年収</td>
+<td><a target="_blank" rel="noopener" href="https://www.bls.gov/oes/tables.htm">OEWS May 2025</a>（全国）</td>
+<td>OEWS には年齢別がないため、中央値×1.15（CPS の45〜54歳と全年齢の週賃金中央値の比）を働き盛りの年収、25パーセンタイル÷それを若手の水準とした</td>
+</tr>
+<tr>
+<td>女性比率</td>
+<td><a target="_blank" rel="noopener" href="https://www.bls.gov/cps/cpsaat11.htm">CPS 2025 Table 11</a></td>
+<td>職業名で照合（完全一致または単語の重なり0.65以上）。見つからない職業は同じ小分類の平均。EP の仕事数で重みづけると全体が高く出るため、全体が CPS の47.1%になるよう比で補正</td>
+</tr>
+<tr>
+<td>残業</td>
+<td>なし（統計がない）</td>
+<td>ISCO の目安×0.6（フルタイムの平均週労働時間 約42.5時間をふまえた推定）</td>
+</tr>
+<tr>
+<td>非正規</td>
+<td>なし（CPS のパートタイム比率 男性約12%・女性約23% を全職業共通で使用）</td>
+<td></td>
+</tr>
+<tr>
+<td>制度</td>
+<td>定年なし、65歳でメディケア、育休・病気休業の公的給付なし（FMLA の無給12週）、介護の平均期間 約4.5年（AARP）</td>
+<td>定年イベントなし、休業中の所得補償を低く、出産時の自動選択は短い休みが中心</td>
+</tr>
+</tbody>
+</table>
+<p>自動プレイ3,000人での結果（2025年ドル、60歳まで）: 大卒男性 約$4.1M、高卒男性 約$2.5M、大卒女性 約$3.6M、高卒女性 約$2.0M。参考の Georgetown CEW（2019年ドル）を物価で直すと大卒男性・高卒男性は近いが、女性はやや高め（職業内の男女賃金差を0.9とした推定のため）。</p>
+<h3>まだ推定のもの</h3>
+<ul>
+<li>職業内の男女賃金差（0.9）、企業規模の賃金差、役職手当、学歴による差は、アメリカではゲーム上の推定</li>
+<li>軍人（OEWS の対象外）はツリーに入っていない</li>
+<li>5職業（俳優・音楽家など時給のみ公表）は年収がないため、入職時には出ない</li>
+</ul>
+</div>
+</body>
+</html>
