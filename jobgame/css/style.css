@@ -284,3 +284,11 @@ a { color: var(--accent); }
 .share-yt { background: #ff0000; color: #fff; border-color: #ff0000; font-weight: 700; }
 .share-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
 .title .tl { display: block; }
+/* 画面下の「働きはじめる」：文字は1行のまま。スマホでは左右いっぱいの細めのバーにする */
+.start-dock { width: max-content; max-width: calc(100vw - 24px); }
+.start-dock .btn-start { white-space: nowrap; }
+@media (max-width: 560px) {
+  .start-dock { left: 12px; right: 12px; width: auto; max-width: none; transform: none; bottom: max(12px, env(safe-area-inset-bottom)); padding: 6px; border-radius: 12px; }
+  .start-dock .btn-start { display: block; width: 100%; font-size: 19px; letter-spacing: .08em; padding: 12px 16px; border-radius: 8px; animation: none; box-shadow: none; }
+  #home .wrap { padding-bottom: 96px; }
+}
