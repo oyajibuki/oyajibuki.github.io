@@ -27,8 +27,8 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"7千万分の1","alternateName":["1 in 170 million","Job Game"],"url":"https://oyajibuki.github.io/jobgame/","image":"https://oyajibuki.github.io/jobgame/img/og.png","description":"最初の仕事は選べない。国勢調査と賃金構造基本統計調査にもとづき、329の職業からランダムに決まった仕事で、就職・転職・昇進・結婚・介護・定年後まで一度きりの仕事人生を生きる無料ブラウザゲーム。「80億分の1」の職業版オマージュ。","genre":["Simulation","Life simulation"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","inLanguage":["ja","en"],"isAccessibleForFree":true,"offers":[{"@type":"Offer","price":"0","priceCurrency":"JPY","name":"プレイ"},{"@type":"Offer","price":"480","priceCurrency":"JPY","name":"職歴証明書パス"}],"author":{"@type":"Person","name":"Asagiri"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=0.3.6">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Klee+One:wght@600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=0.3.8">
 </head>
 <body>
 
@@ -246,6 +246,27 @@
       <div class="small muted" id="videoStatus"></div>
       <div id="videoOut" class="video-out"></div>
     </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="docs.h"></span> <span class="muted small">PNG × 4</span></div>
+      <p class="small muted" data-i18n="docs.note"></p>
+      <div class="docs-grid" id="docsGrid"></div>
+      <div class="cta-row"><button class="btn primary" id="docsAll" data-i18n="docs.saveAll"></button></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="short.h"></span> <span class="muted small">1080×1920 · YouTube Shorts / TikTok</span></div>
+      <p class="small muted" data-i18n="short.note"></p>
+      <div class="cta-row">
+        <button class="btn primary" id="mkShort" data-i18n="short.make"></button>
+        <button class="btn" id="dlThumb" data-i18n="short.thumb"></button>
+      </div>
+      <div class="small muted" id="shortStatus"></div>
+      <div id="shortOut" class="video-out"></div>
+      <label class="small muted" for="shortTitle" style="display:block;margin-top:12px" data-i18n="short.titleL"></label>
+      <input id="shortTitle" class="input" readonly>
+      <label class="small muted" for="shortDesc" style="display:block" data-i18n="short.descL"></label>
+      <textarea id="shortDesc" class="input" rows="6" readonly></textarea>
+      <div class="cta-row"><button class="btn" id="shortCopy" data-i18n="short.copy"></button></div>
+    </div>
   </div>
 </section>
 
@@ -284,6 +305,8 @@
       <li data-i18n="pass.buy.i1"></li>
       <li data-i18n="pass.buy.i2"></li>
       <li data-i18n="pass.buy.i3"></li>
+      <li data-i18n="pass.buy.i4"></li>
+      <li data-i18n="pass.buy.i5"></li>
     </ul>
     <p class="small muted" data-i18n="pass.buy.n1"></p>
     <p class="small muted" data-i18n-html="pass.buy.n2"></p>
@@ -313,7 +336,7 @@
 if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job")
   .catch(() => {});
 </script>
-<script src="js/i18n.js?v=0.3.6"></script>
-<script src="js/boot.js?v=0.3.6"></script>
+<script src="js/i18n.js?v=0.3.8"></script>
+<script src="js/boot.js?v=0.3.8"></script>
 </body>
 </html>

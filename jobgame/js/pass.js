@@ -48,7 +48,8 @@
     return {
       id: p.id, name: p.name, sex: p.sex,
       from: E.START_YEAR, to: p.year, startAge: p.startAge, endAge: p.age,
-      epitaph: E.epitaph(p), endReason: p.endReason,
+      epitaph: E.epitaph(p), endReason: p.endReason, firstRare: (J[p.jobsHeld[0]] || {}).share ? Math.max(1, Math.round(1 / J[p.jobsHeld[0]].share)) : null,
+      docs: docsData(p),
       firstJob: p.titles[0], titles: p.titles, edu: p.edu.name,
       home: p.home, place: p.place,
       workYears: p.workYears, lifetime: p.lifetime,
@@ -60,6 +61,227 @@
       peers: peers.map(q => ({ name: q.name, epitaph: E.epitaph(q), lifetime: q.lifetime, history: q.history.map(h => ({ age: h.age, income: h.income })) })),
     }
   }
+
+
+  // ---------- 書類セットのための材料（スナップショットに入れる） ----------
+  function docsData(p) {
+    const E = window.Engine, J = E.JOBS, R = window.RANKS, H = p.history || []
+    // いちばん長く就いていた職業（管理職の分類は除く。名刺の肩書きに使う）
+    const cnt = {}
+    H.forEach(h => { if (!E.isMgr(h.job)) cnt[h.job] = (cnt[h.job] || 0) + 1 })
+    const mainCode = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0] || p.jobsHeld[0]
+    const last = H.filter(h => h.job === mainCode).pop()
+    const peakH = p.peakRank > 0 ? H.find(h => h.rank === p.peakRank) : null
+    const f = p.family || {}
+    return {
+      firstCode: p.jobsHeld[0],
+      startSelf: !!(p.log[0] && p.log[0].text.includes(t('emp.self'))),
+      peak: peakH ? { year: peakH.year, rank: R[peakH.rank].name } : null,
+      mainTitle: (last && last.title) || J[mainCode].label,
+      mainMid: J[mainCode].midName, mainMajor: J[mainCode].major,
+      pub: !!(CT.isPublic && CT.isPublic(J[mainCode])),
+      spouse: f.spouse && !f.divorced ? f.spouse.name : null,
+      married: f.marriedYears || 0,
+      kids: (f.kids || []).map(k => k.name),
+    }
+  }
+
+  // ---------- 5. 仕事人生の書類セット（辞令・表彰状・名刺・寄せ書き） ----------
+  const HAND = '"Klee One", "Noto Sans JP", cursive'
+  // 人生ごとに同じ結果になる乱数（会社名・同僚の名前を毎回変えないため）
+  function seeded(str) {
+    let h = 2166136261
+    for (const ch of String(str)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619)
+    return () => { h += 0x6D2B79F5; let x = h; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296 }
+  }
+  const pickR = (r, a) => a[Math.floor(r() * a.length)]
+  function docsCtx(snap) {
+    const d = snap.docs || { firstCode: null, startSelf: false, peak: null, mainTitle: snap.firstJob, mainMid: '', mainMajor: '', pub: false, spouse: null, married: 0, kids: [] }
+    const r = seeded(snap.id)
+    const N = CT.names
+    const person = () => { const s = r() < 0.5 ? 'm' : 'f'; const fam = pickR(r, N.family); return { fam, full: N.full(s, fam, pickR(r, N.given[s])) } }
+    const company = d.pub ? t('docs.publicOrg', { place: snap.home, mid: d.mainMid }) : t('docs.company', { p: pickR(r, t('docs.coPrefix').split('|')), s: pickR(r, t('docs.coSuffix').split('|')) })
+    const boss = person()
+    return { d, r, company, boss, person }
+  }
+  async function docsFonts(text = '') {
+    await fontsReady()
+    try { await Promise.all([document.fonts.load(`600 32px ${HAND}`, text || 'あ'), document.fonts.load(`700 64px ${SERIF}`, text || 'あ'), document.fonts.load(`500 64px ${SERIF}`, text || 'あ')]) } catch {}
+  }
+  const docsText = (snap, k) => [snap.name, snap.firstJob, k.company, k.boss.full, k.d.mainTitle, k.d.mainMid, snap.home, snap.place, ...Object.keys(I18N[CT.lang] || {}).filter(x => x.startsWith('docs.')).map(x => t(x))].join('')
+  function paper(ctx, x, y, W, H, color = '#fbf8ef') {
+    ctx.fillStyle = color; ctx.fillRect(x, y, W, H)
+    const r = seeded(W * H)
+    ctx.fillStyle = 'rgba(120,100,60,.05)'
+    for (let i = 0; i < 900; i++) ctx.fillRect(x + r() * W, y + r() * H, 2, 2)
+  }
+  function hanko(ctx, x, y, rad, text) {
+    ctx.save()
+    ctx.strokeStyle = '#c8302c'; ctx.lineWidth = rad * 0.1
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.stroke()
+    ctx.fillStyle = '#c8302c'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+    const chars = [...text]
+    if (CT.lang === 'ja' && chars.length >= 2) {
+      ctx.font = `700 ${rad * 0.72}px ${SERIF}`
+      ctx.fillText(chars[0], x, y - rad * 0.36); ctx.fillText(chars[1], x, y + rad * 0.4)
+    } else if (CT.lang === 'ja') {
+      ctx.font = `700 ${rad}px ${SERIF}`; ctx.fillText(text, x, y + 2)
+    } else {
+      ctx.font = `700 ${rad * 0.34}px ${SERIF}`; ctx.fillText(text.slice(0, 8), x, y + 2)
+    }
+    ctx.restore()
+  }
+  // 中央ぞろえの折り返し
+  function fitText(ctx, text, x, y, weight, size, maxW, font = SERIF) {
+    let s = size; ctx.font = `${weight} ${s}px ${font}`
+    while (ctx.measureText(text).width > maxW && s > 24) { s -= 4; ctx.font = `${weight} ${s}px ${font}` }
+    ctx.fillText(text, x, y)
+  }
+  const NOHEAD = /^[、。，．」』）！？ー・…]/
+  function wrapC(ctx, text, x, y, maxW, lh, maxLines = 12) {
+    const tokens = CT.lang === 'ja' ? text.match(/[0-9A-Za-z,.%]+|./gu) || [] : text.split(/(?<= )/)
+    const lines = []; let line = ''
+    for (const tk of tokens) {
+      if (line && ctx.measureText(line + tk).width > maxW && !NOHEAD.test(tk)) { lines.push(line); line = tk.trimStart() } else line += tk
+    }
+    if (line) lines.push(line)
+    lines.slice(0, maxLines).forEach((l, i) => ctx.fillText(l.trim(), x, y + i * lh))
+    return y + Math.min(lines.length, maxLines) * lh
+  }
+
+  // 辞令（いちばん上まで昇進した日。昇進がなければ採用の日）
+  async function drawJirei(canvas, snap) {
+    const k = docsCtx(snap); await docsFonts(docsText(snap, k))
+    const W = 1240, H = 1754; canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d'); const { d, company, boss } = k
+    paper(ctx, 0, 0, W, H)
+    ctx.strokeStyle = '#2b2b2b'; ctx.lineWidth = 3; ctx.strokeRect(80, 80, W - 160, H - 160)
+    ctx.lineWidth = 1; ctx.strokeRect(96, 96, W - 192, H - 192)
+    ctx.fillStyle = '#1a1a1a'; ctx.textAlign = 'center'
+    fitText(ctx, t('docs.jirei.h'), W / 2, 330, 700, 120, W - 300)
+    ctx.textAlign = 'left'; ctx.font = `500 64px ${SERIF}`
+    ctx.fillText(t('docs.jirei.to', { name: snap.name }), 170, 520)
+    ctx.textAlign = 'center'
+    const self = d.startSelf && !d.peak
+    const year = d.peak ? d.peak.year : snap.from
+    if (d.peak) {
+      ctx.fillStyle = '#444'; fitText(ctx, t('docs.jirei.dept', { mid: d.mainMid || d.mainTitle }), W / 2, 760, 500, 44, W - 320)
+      ctx.fillStyle = '#1a1a1a'; fitText(ctx, t('docs.jirei.rank', { rank: d.peak.rank }), W / 2, 920, 700, 104, W - 300)
+    } else {
+      ctx.font = `700 76px ${SERIF}`
+      wrapC(ctx, t(self ? 'docs.jirei.self' : 'docs.jirei.hire', { job: snap.firstJob }), W / 2, 820, W - 360, 108, 3)
+    }
+    ctx.font = `500 46px ${SERIF}`; ctx.fillText(t('docs.jirei.date', { year }), W / 2, 1180)
+    ctx.textAlign = 'right'; ctx.font = `500 50px ${SERIF}`
+    ctx.fillText(self ? t('brand') : company, W - 190, 1380)
+    const sig = self ? t('docs.jirei.selfSig') : d.pub ? t('docs.jirei.pubSig') : t('docs.jirei.sig', { name: boss.full })
+    ctx.font = `500 46px ${SERIF}`; ctx.fillText(sig, W - 270, 1470)
+    hanko(ctx, W - 210, 1452, 48, self ? t('docs.seal') : d.pub ? t('docs.sealPub') : boss.fam)
+    ctx.textAlign = 'center'; ctx.fillStyle = '#999'; ctx.font = `24px ${SANS}`; wrapC(ctx, t('docs.foot'), W / 2, H - 165, W - 300, 32, 2)
+    return canvas
+  }
+
+  // 表彰状（勤続の表彰）
+  async function drawAward(canvas, snap) {
+    const k = docsCtx(snap); await docsFonts(docsText(snap, k))
+    const W = 1240, H = 1754; canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d'); const { d } = k
+    paper(ctx, 0, 0, W, H, '#fffdf6')
+    const gold = '#b48a2c'
+    ctx.strokeStyle = gold; ctx.lineWidth = 22; ctx.strokeRect(60, 60, W - 120, H - 120)
+    ctx.lineWidth = 3; ctx.strokeRect(100, 100, W - 200, H - 200)
+    ctx.fillStyle = gold
+    for (const [x, y] of [[100, 100], [W - 100, 100], [100, H - 100], [W - 100, H - 100]]) { ctx.beginPath(); ctx.arc(x, y, 18, 0, Math.PI * 2); ctx.fill() }
+    ctx.fillStyle = '#1a1a1a'; ctx.textAlign = 'center'
+    fitText(ctx, t('docs.award.h'), W / 2, 360, 700, 132, W - 320)
+    ctx.textAlign = 'left'; ctx.font = `500 66px ${SERIF}`; ctx.fillText(t('docs.award.to', { name: snap.name }), 180, 560)
+    ctx.textAlign = 'center'; ctx.font = `500 48px ${SERIF}`
+    const body = t('docs.award.body', { from: snap.from, job: snap.firstJob, n: snap.workYears, main: d.mainTitle })
+    const y = wrapC(ctx, body, W / 2, 700, W - 380, 84, 8)
+    const yd = Math.min(Math.max(y + 70, 1320), H - 360)
+    ctx.font = `500 46px ${SERIF}`; ctx.fillText(t('docs.award.date', { year: snap.to }), W / 2, yd)
+    ctx.font = `700 50px ${SERIF}`; ctx.fillText(t('docs.award.from'), W / 2 - 40, yd + 110)
+    hanko(ctx, W / 2 - 40 + ctx.measureText(t('docs.award.from')).width / 2 + 70, yd + 95, 50, t('docs.seal'))
+    ctx.textAlign = 'center'; ctx.fillStyle = '#999'; ctx.font = `24px ${SANS}`; wrapC(ctx, t('docs.foot'), W / 2, H - 165, W - 300, 32, 2)
+    return canvas
+  }
+
+  // 名刺（いちばん長く就いた職業と、いちばん上の役職）
+  async function drawCard(canvas, snap) {
+    const k = docsCtx(snap); await docsFonts(docsText(snap, k))
+    const W = 1400, H = 900; canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d'); const { d, company } = k
+    const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#3b3026'); g.addColorStop(1, '#1d1712')
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H)
+    ctx.save(); ctx.translate(W / 2, H / 2); ctx.rotate(-0.035)
+    const cw = 1050, ch = 600, x0 = -cw / 2, y0 = -ch / 2
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 18
+    ctx.fillStyle = '#fdfcf8'; ctx.fillRect(x0, y0, cw, ch)
+    ctx.shadowColor = 'transparent'
+    ctx.fillStyle = C.accent; ctx.fillRect(x0, y0, 18, ch)
+    ctx.fillStyle = '#222'; ctx.textAlign = 'left'
+    ctx.font = `700 36px ${SANS}`; ctx.fillText(d.startSelf && !d.peak ? t('docs.card.self') : company, x0 + 70, y0 + 90)
+    ctx.fillStyle = '#666'; ctx.font = `28px ${SANS}`; ctx.fillText(d.mainMid || '', x0 + 70, y0 + 140)
+    ctx.fillStyle = '#333'
+    const role = d.peak ? `${d.mainTitle}　${d.peak.rank}` : d.mainTitle
+    let s = 36; ctx.font = `500 ${s}px ${SANS}`
+    while (ctx.measureText(role).width > cw - 140 && s > 22) { s -= 2; ctx.font = `500 ${s}px ${SANS}` }
+    ctx.fillText(role, x0 + 70, y0 + 300)
+    ctx.fillStyle = '#111'; ctx.font = `700 92px ${SERIF}`; ctx.fillText(snap.name, x0 + 70, y0 + 420)
+    ctx.fillStyle = '#777'; ctx.font = `26px ${SANS}`; ctx.fillText(t('docs.card.since', { year: snap.from, place: snap.place || snap.home }), x0 + 70, y0 + ch - 60)
+    ctx.textAlign = 'right'; ctx.fillStyle = C.accent; ctx.font = `700 28px ${SERIF}`; ctx.fillText(t('brand'), x0 + cw - 50, y0 + ch - 60)
+    ctx.restore()
+    return canvas
+  }
+
+  // 寄せ書き（家族・同期・同僚から）
+  function farewellMsgs(snap, k) {
+    const { d, r, person } = k
+    const msgs = []
+    const parent = t(snap.sex === 'f' ? 'docs.fw.mom' : 'docs.fw.dad')
+    if (d.spouse) msgs.push({ from: t('docs.fw.fromSpouse', { name: d.spouse }), text: t('docs.fw.spouse', { n: d.married }) })
+    const kidPool = t('docs.fw.kid', { parent }).split('|')
+    d.kids.slice(0, 2).forEach((kid, i) => msgs.push({ from: t('docs.fw.fromKid', { name: kid }), text: kidPool[i % kidPool.length] }))
+    const peerPool = t('docs.fw.peer').split('|')
+    const pb = Math.floor(r() * peerPool.length)
+    ;(snap.peers || []).slice(0, 2).forEach((q, i) => msgs.push({ from: t('docs.fw.fromPeer', { name: q.name }), text: peerPool[(pb + i) % peerPool.length] }))
+    const pool = t('docs.fw.colleague').split('|'), roles = t('docs.fw.roles').split('|')
+    const used = new Set(msgs.map(m => m.text))
+    for (let guard = 0; msgs.length < 8 && guard < 40; guard++) {
+      const text = pickR(r, pool).replace('%job%', d.mainTitle).replace('%n%', snap.workYears)
+      if (used.has(text)) continue
+      used.add(text)
+      msgs.push({ from: t('docs.fw.fromColleague', { role: pickR(r, roles), name: person().full }), text })
+    }
+    return msgs.slice(0, 8)
+  }
+  async function drawFarewell(canvas, snap) {
+    const k = docsCtx(snap)
+    const msgs = farewellMsgs(snap, k)
+    await docsFonts(docsText(snap, k) + msgs.map(m => m.text + m.from).join(''))
+    const W = 1400, H = 1400; canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#c9a548'; ctx.fillRect(0, 0, W, H)
+    paper(ctx, 30, 30, W - 60, H - 60, '#fffaf0')
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(W / 2, H / 2, 250, 0, Math.PI * 2); ctx.fill()
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 6; ctx.stroke()
+    ctx.textAlign = 'center'; ctx.fillStyle = C.accent
+    ctx.font = `600 60px ${HAND}`; wrapC(ctx, t('docs.fw.center', { name: snap.name }), W / 2, H / 2 - 50, 420, 74, 2)
+    ctx.fillStyle = '#333'; ctx.font = `600 38px ${HAND}`; ctx.fillText(t('docs.fw.center2', { n: snap.workYears }), W / 2, H / 2 + 110)
+    const colors = ['#d9534f', '#2e6fd8', '#2a9d5c', '#e08a1e', '#8e44ad', '#c2185b', '#00838f', '#6d4c41']
+    msgs.forEach((m, i) => {
+      const a = -Math.PI / 2 + i * (Math.PI * 2 / msgs.length)
+      const cx = W / 2 + Math.cos(a) * 470, cy = H / 2 + Math.sin(a) * 450
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate((k.r() - 0.5) * 0.22)
+      ctx.fillStyle = colors[i % colors.length]; ctx.textAlign = 'center'
+      ctx.font = `600 30px ${HAND}`
+      const yEnd = wrapC(ctx, m.text, 0, -40, 330, 38, 5)
+      ctx.font = `600 24px ${HAND}`; ctx.fillText(m.from, 0, yEnd + 6)
+      ctx.restore()
+    })
+    return canvas
+  }
+  const DOCS = [['jirei', drawJirei], ['award', drawAward], ['card', drawCard], ['farewell', drawFarewell]]
 
   // ---------- 描画の共通部品 ----------
   const C = { bg: '#12171a', card: '#1b2327', line: '#2b363b', text: '#e6e9ea', muted: '#8e9a9f', accent: '#d9708a', green: '#6cc69a', yellow: '#d9b866', blue: '#6aa8d8' }
@@ -249,6 +471,174 @@
     return { blob: new Blob(chunks, { type: mime.split(';')[0] }), ext: mime.startsWith('video/mp4') ? 'mp4' : 'webm' }
   }
 
+  // ---------- 4. ショート動画（物語の型・YouTube ショート / TikTok 向け） ----------
+  // 断酒クエストのショートと同じ「年齢＋場面＋オチ」の型。冒頭1フレーム目から引きの文字を出す
+  const shortLine = s => {
+    const x = String(s).replace(/（[^）]*）|\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()
+    const m = CT.lang === 'ja' ? x.match(/^[^。]*。/) : x.match(/^[^.]*\./)
+    return (m ? m[0] : x).trim()
+  }
+  const shortRank = snap => 1 + (snap.peers || []).filter(q => q.lifetime > snap.lifetime).length
+  const shortBeats = snap => {
+    // 「何も起きなかった」系（結婚はまだ・転勤を断った など）は物語にならないので外す
+    const quiet = /まだ|断りました|見送|考えない|限定的|not yet|declined|turned down|limited/i
+    const ms = snap.milestones.slice(1).filter(m => ['change', 'life', 'up', 'bad', 'leave'].includes(m.kind) && !quiet.test(m.text))
+    // 種類が偏らないよう、転職→家族→昇進→つまずき→休職 の順に1つずつ取る（同じ文は1回だけ）
+    const order = ['change', 'life', 'up', 'bad', 'leave'], picked = [], seen = new Set()
+    for (let round = 0; picked.length < 4 && round < 4; round++) {
+      for (const k of order) {
+        if (picked.length >= 4) break
+        const m = ms.filter(x => x.kind === k && !picked.includes(x) && !seen.has(shortLine(x.text)))[round === 0 ? 0 : 0]
+        if (m) { picked.push(m); seen.add(shortLine(m.text)) }
+      }
+    }
+    return picked.sort((a, b) => a.age - b.age)
+  }
+  // 太字＋黒縁の見出し文字（サムネの定番）
+  function punch(ctx, text, x, y, size, color, maxW, font = SANS) {
+    ctx.font = `900 ${size}px ${font}`
+    let s = size
+    while (maxW && ctx.measureText(text).width > maxW && s > 30) { s -= 4; ctx.font = `900 ${s}px ${font}` }
+    ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(6, s * 0.14); ctx.strokeStyle = '#000'
+    ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y)
+  }
+  // 折り返しつきの黒縁文字
+  function punchWrap(ctx, text, x, y, size, color, maxW, lh, maxLines = 4) {
+    ctx.font = `900 ${size}px ${SANS}`
+    const tokens = CT.lang === 'ja' ? [...text] : text.split(/(?<= )/)
+    const lines = []; let line = ''
+    for (const tk of tokens) {
+      if (line && ctx.measureText(line + tk).width > maxW) { lines.push(line); line = tk.trimStart() } else line += tk
+    }
+    if (line) lines.push(line)
+    lines.slice(0, maxLines).forEach((l, i) => punch(ctx, l.trim(), x, y + i * lh, size, color))
+    return y + Math.min(lines.length, maxLines) * lh
+  }
+  const RED = '#ff4d4d', YEL = '#ffd23f'
+  function shortBg(ctx, W, H, tint) {
+    const g = ctx.createRadialGradient(W / 2, H * 0.45, 100, W / 2, H * 0.5, H * 0.8)
+    g.addColorStop(0, tint || '#2a2f36'); g.addColorStop(1, '#07090b')
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H)
+  }
+  function shortHeader(ctx, W, snap, n) {
+    ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0, 70, W, 110)
+    punch(ctx, t('short.series', { n: n || '' }), W / 2, 145, 44, '#fff', W - 120)
+  }
+  function shortText(snap) {
+    const rank = shortRank(snap)
+    const vars = { age: snap.startAge, end: snap.endAge, job: snap.firstJob, money: man(snap.lifetime), rank, rare: snap.firstRare ? snap.firstRare.toLocaleString() : '', ep: snap.epitaph, name: snap.name }
+    return {
+      title: t('short.ytTitle', vars),
+      desc: t('short.ytDesc', vars) + '\n' + 'https://oyajibuki.github.io/jobgame/' + (CT.lang === 'ja' ? '' : `?lang=${CT.lang}`) + '\n\n' + t('short.tags'),
+    }
+  }
+  // サムネイル（ショートの1フレーム目と同じ構図）
+  async function drawShortThumb(canvas, snap) {
+    await fontsReady()
+    const W = 1080, H = 1920; canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d')
+    shortBg(ctx, W, H)
+    shortHeader(ctx, W, snap)
+    ctx.textAlign = 'center'
+    punch(ctx, t('short.hook1', { age: snap.startAge }), W / 2, 560, 130, '#fff', W - 120)
+    punch(ctx, t('short.thumbJobLead'), W / 2, 720, 72, '#fff', W - 120)
+    punchWrap(ctx, t('quote', { s: snap.firstJob }), W / 2, 900, 120, YEL, W - 120, 150, 3)
+    punch(ctx, t('short.thumbMoney'), W / 2, 1380, 70, '#fff', W - 120)
+    punch(ctx, man(snap.lifetime), W / 2, 1540, 170, RED, W - 100)
+    punch(ctx, t('short.cta'), W / 2, 1760, 60, '#fff', W - 120)
+    return canvas
+  }
+  async function makeShort(snap, onProgress) {
+    await fontsReady()
+    const mime = videoMime()
+    if (!mime) throw new Error(t('pass.videoNo'))
+    const W = 1080, H = 1920, DUR = 22
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d')
+    const beats = shortBeats(snap)
+    const rank = shortRank(snap)
+    const fade = (tm, a, b) => Math.max(0, Math.min(1, (tm - a) / (b - a)))
+    const pop = (tm, a) => { const k = fade(tm, a, a + 0.25); return k <= 0 ? 0 : 1 + (1 - k) * 0.35 }
+    const B0 = 5, BL = 2.2 // 出来事は5秒目から1つ2.2秒
+    const climax = B0 + beats.length * BL
+    function frame(tm) {
+      ctx.globalAlpha = 1; ctx.setTransform(1, 0, 0, 1, 0, 0)
+      ctx.textAlign = 'center'
+      if (tm < 2.4) {
+        // 0〜2.4秒：引き（1フレーム目から見える）
+        shortBg(ctx, W, H); shortHeader(ctx, W, snap)
+        punch(ctx, t('short.hook1', { age: snap.startAge }), W / 2, 820, 170, '#fff', W - 120)
+        punch(ctx, t('short.hook2'), W / 2, 1040, 96, YEL, W - 120)
+      } else if (tm < B0) {
+        // 2.4〜5秒：職業の発表
+        shortBg(ctx, W, H, '#3a2a12'); shortHeader(ctx, W, snap)
+        punch(ctx, t('short.hook2'), W / 2, 640, 64, '#fff', W - 120)
+        const s = pop(tm, 2.4)
+        ctx.save(); ctx.translate(W / 2, 900); ctx.scale(s, s)
+        punchWrap(ctx, t('quote', { s: snap.firstJob }), 0, 0, 120, YEL, W - 140, 150, 3)
+        ctx.restore()
+        if (snap.firstRare) { ctx.globalAlpha = fade(tm, 3.3, 3.6); punch(ctx, t('short.rare', { n: snap.firstRare.toLocaleString() }), W / 2, 1400, 72, RED, W - 120) }
+      } else if (tm < climax) {
+        // 出来事：1つずつ全画面で
+        const i = Math.min(beats.length - 1, Math.floor((tm - B0) / BL))
+        const m = beats[i], a = B0 + i * BL
+        const tint = m.kind === 'bad' ? '#3a1414' : m.kind === 'life' ? '#3a1a2a' : m.kind === 'up' ? '#14301f' : '#1d2836'
+        shortBg(ctx, W, H, tint); shortHeader(ctx, W, snap)
+        const s = pop(tm, a)
+        ctx.save(); ctx.translate(W / 2, 760); ctx.scale(s, s)
+        punch(ctx, ageL(m.age), 0, 0, 180, m.kind === 'bad' ? RED : m.kind === 'up' ? '#5dffa0' : YEL, W - 120)
+        ctx.restore()
+        ctx.globalAlpha = fade(tm, a + 0.25, a + 0.5)
+        punchWrap(ctx, shortLine(m.text), W / 2, 1000, 76, '#fff', W - 140, 104, 4)
+      } else if (tm < climax + 4) {
+        // 生涯年収の発表（数字が回ってから止まる）
+        shortBg(ctx, W, H, '#2a2412'); shortHeader(ctx, W, snap)
+        punch(ctx, t('short.end1', { end: snap.endAge }), W / 2, 720, 120, '#fff', W - 120)
+        punch(ctx, t('short.end2'), W / 2, 880, 84, '#fff', W - 120)
+        const k = fade(tm, climax + 1, climax + 2.6)
+        if (k > 0) {
+          const v = k < 1 ? snap.lifetime * (0.2 + 0.8 * k) * (0.97 + Math.random() * 0.06) : snap.lifetime
+          const s = k >= 1 ? pop(tm, climax + 2.6) : 1
+          ctx.save(); ctx.translate(W / 2, 1180); ctx.scale(s, s)
+          punch(ctx, man(v), 0, 0, 190, RED, W - 100)
+          ctx.restore()
+        }
+        ctx.globalAlpha = fade(tm, climax + 2.9, climax + 3.2)
+        punch(ctx, t('short.rank', { n: rank }), W / 2, 1400, 70, YEL, W - 120)
+      } else {
+        // しめ：ひとこと＋呼びかけ
+        shortBg(ctx, W, H); shortHeader(ctx, W, snap)
+        ctx.globalAlpha = fade(tm, climax + 4, climax + 4.4)
+        punchWrap(ctx, snap.epitaph, W / 2, 700, 80, '#fff', W - 140, 108, 3)
+        punch(ctx, t('short.cta'), W / 2, 1180, 92, YEL, W - 120)
+        punch(ctx, t('short.search'), W / 2, 1330, 60, '#fff', W - 120)
+        ctx.fillStyle = '#cfd6da'; ctx.font = `36px ${SANS}`; ctx.fillText('oyajibuki.github.io/jobgame', W / 2, 1440)
+      }
+      ctx.globalAlpha = 1
+    }
+    const total = Math.max(DUR, climax + 8)
+    const stream = canvas.captureStream(30)
+    const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8_000_000 })
+    const chunks = []
+    rec.ondataavailable = e => e.data.size && chunks.push(e.data)
+    const done = new Promise(res => { rec.onstop = res })
+    frame(0)
+    rec.start(250)
+    const t0 = performance.now()
+    await new Promise(res => {
+      const tick = () => {
+        const el = (performance.now() - t0) / 1000
+        frame(Math.min(el, total))
+        onProgress && onProgress(Math.min(1, el / total))
+        if (el < total) requestAnimationFrame(tick); else res()
+      }
+      tick()
+    })
+    rec.stop(); await done
+    return { blob: new Blob(chunks, { type: mime.split(';')[0] }), ext: mime.startsWith('video/mp4') ? 'mp4' : 'webm', seconds: total }
+  }
+
   function download(blobOrUrl, filename) {
     const a = document.createElement('a')
     a.href = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl)
@@ -275,6 +665,9 @@
     $('passTitle').textContent = t('pass.works', { name: snap.name })
     $('videoStatus').textContent = ''
     $('videoOut').innerHTML = ''
+    $('shortOut').innerHTML = ''; $('shortStatus').textContent = ''; $('shortCopy').textContent = t('short.copy')
+    const st = shortText(snap); $('shortTitle').value = st.title; $('shortDesc').value = st.desc
+    renderDocs(snap)
     await drawImage($('passCanvas'), snap)
   }
   $('buyClose').addEventListener('click', () => $('buyModal').classList.add('hidden'))
@@ -306,5 +699,42 @@
     } finally { btn.disabled = false }
   })
 
-  window.Pass = { snapshot, open, isOwned, resume, drawImage, makeVideo }
+  // 書類セット：4枚を並べて、1枚ずつ／まとめて保存
+  async function renderDocs(snap) {
+    $('docsGrid').innerHTML = DOCS.map(([k]) => `<figure><canvas id="doc_${k}"></canvas><figcaption><span>${t('docs.name.' + k)}</span><button class="btn sm" data-doc="${k}">${t('docs.save')}</button></figcaption></figure>`).join('')
+    for (const [k, fn] of DOCS) await fn($('doc_' + k), snap)
+  }
+  const docFile = k => `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}_${t('docs.name.' + k)}.png`
+  $('docsGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-doc]'); if (!b) return
+    download($('doc_' + b.dataset.doc).toDataURL('image/png'), docFile(b.dataset.doc))
+  })
+  $('docsAll').addEventListener('click', async () => {
+    for (const [k] of DOCS) { download($('doc_' + k).toDataURL('image/png'), docFile(k)); await new Promise(r => setTimeout(r, 400)) }
+  })
+
+  // ショート動画（物語）
+  $('mkShort').addEventListener('click', async () => {
+    const btn = $('mkShort')
+    btn.disabled = true
+    try {
+      const { blob, ext } = await makeShort(cur, r => { $('shortStatus').textContent = t('pass.videoMaking', { p: Math.round(r * 100) }) })
+      const url = URL.createObjectURL(blob)
+      $('shortStatus').textContent = t('pass.videoDone')
+      $('shortOut').innerHTML = `<video src="${url}" controls playsinline></video><button class="btn primary" id="dlShort">${t('pass.videoSave')}</button>`
+      $('dlShort').addEventListener('click', () => download(blob, `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}_short.${ext}`))
+    } catch (e) {
+      $('shortStatus').textContent = e.message
+    } finally { btn.disabled = false }
+  })
+  $('dlThumb').addEventListener('click', async () => {
+    const c = await drawShortThumb(document.createElement('canvas'), cur)
+    download(c.toDataURL('image/png'), `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}_thumb.png`)
+  })
+  $('shortCopy').addEventListener('click', async () => {
+    const s = shortText(cur)
+    try { await navigator.clipboard.writeText(`${s.title}\n\n${s.desc}`); $('shortCopy').textContent = t('short.copied') } catch {}
+  })
+
+  window.Pass = { snapshot, open, isOwned, resume, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
 })()
