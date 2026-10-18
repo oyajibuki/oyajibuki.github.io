@@ -272,5 +272,118 @@
     return { hire: () => spawn(1), leave: () => spawn(-1) }
   }
 
-  window.Pixel = { scene, cast, lookFor, live }
+
+  // ---------- プレイ中の「働いている様子」（職場ごとに少しずつ動く） ----------
+  function interior(ctx, wall, floor) { px(ctx, 0, 0, W, 44, wall); px(ctx, 0, 44, W, 20, floor); px(ctx, 0, 44, W, 1, 'rgba(0,0,0,.15)') }
+  function windowBox(ctx, x, y, f) {
+    px(ctx, x, y, 34, 22, '#bcd8e8'); cloud(ctx, x + ((f / 6) % 40) - 6, y + 6)
+    px(ctx, x - 1, y - 1, 36, 1, '#8a6a4a'); px(ctx, x - 1, y + 22, 36, 1, '#8a6a4a'); px(ctx, x - 1, y, 1, 22, '#8a6a4a'); px(ctx, x + 34, y, 1, 22, '#8a6a4a'); px(ctx, x + 16, y, 1, 22, '#8a6a4a')
+  }
+  function seated(ctx, x, y, o, f) { // 机の向こうに座っている上半身（手が動く）
+    const out = OUT[o.outfit] || OUT.casual, L = x - 3, T = y - 10
+    px(ctx, L + 1, T, 5, 2, o.hair); px(ctx, L + 1, T + 2, 5, 3, o.skin); px(ctx, L + 1, T + 2, 5, 1, o.hair)
+    if (o.sex === 'f') { px(ctx, L, T + 1, 1, 5, o.hair); px(ctx, L + 6, T + 1, 1, 5, o.hair) }
+    px(ctx, L + 2, T + 3, 1, 1, '#2b2420'); px(ctx, L + 4, T + 3, 1, 1, '#2b2420')
+    px(ctx, L, T + 5, 7, 5, out.body)
+    const k = f % 4 < 2 ? 0 : 1
+    px(ctx, L - 1 + k, T + 9, 2, 1, o.skin); px(ctx, L + 6 - k, T + 9, 2, 1, o.skin)
+  }
+  const WORKS = {
+    office(ctx, o, f) {
+      interior(ctx, '#e9e2d4', '#b9a888'); windowBox(ctx, 18, 8, f); windowBox(ctx, 140, 8, f + 30)
+      px(ctx, 100, 6, 8, 8, '#ffffff'); px(ctx, 103, 8, 1, 3, '#333'); px(ctx, 103, 10, 2 + (f % 8 < 4 ? 1 : 0), 1, '#333')
+      px(ctx, 72, 30, 14, 11, '#2b3440'); px(ctx, 73, 31, 12, 8, f % 6 < 3 ? '#86b6d8' : '#9fc7e3'); px(ctx, 78, 41, 2, 3, '#2b3440')
+      for (let i = 0; i < 3; i++) px(ctx, 74, 32 + i * 2, 4 + ((f + i * 3) % 7), 1, '#e9f2f8')
+      seated(ctx, 100, 44, o, f)
+      px(ctx, 66, 44, 56, 4, '#8a6a4a'); px(ctx, 68, 48, 2, 10, '#6b4a2e'); px(ctx, 118, 48, 2, 10, '#6b4a2e')
+      px(ctx, 108, 41, 6, 3, '#f4f4f4'); px(ctx, 88, 42, 6, 2, '#d8d8d8')
+      const cx = (f * 1.5) % (W + 40) - 20
+      person(ctx, W - cx, 58, { sex: 'f', outfit: 'suit', skin: '#f3cba5', hair: '#3b2a1e', step: f % 4 < 2 })
+    },
+    hospital(ctx, o, f) {
+      interior(ctx, '#eef3f4', '#cfd8d6'); windowBox(ctx, 14, 8, f)
+      px(ctx, 120, 36, 46, 6, '#ffffff'); px(ctx, 120, 42, 46, 3, '#9fb3c4'); px(ctx, 122, 45, 2, 10, '#7d8b96'); px(ctx, 162, 45, 2, 10, '#7d8b96')
+      px(ctx, 156, 32, 8, 5, '#f3cba5'); px(ctx, 126, 34, 30, 3, '#cfe2ec')
+      px(ctx, 168, 18, 16, 12, '#2b3440'); for (let i = 0; i < 14; i++) { const v = (i + f) % 7 === 0 ? -4 : (i + f) % 7 === 1 ? 2 : 0; px(ctx, 169 + i, 24 + v, 1, 1, '#6fe08a') }
+      const x = 70 + Math.sin(f / 10) * 30
+      person(ctx, x, 58, { ...o, step: f % 4 < 2 })
+    },
+    shop(ctx, o, f) {
+      interior(ctx, '#f2ead9', '#c9b79a')
+      for (let i = 0; i < 4; i++) { px(ctx, 10, 12 + i * 8, 60, 1, '#8a6a4a'); for (let j = 0; j < 8; j++) px(ctx, 12 + j * 7, 7 + i * 8, 5, 5, ['#e8902f', '#d9708a', '#6f9e5a', '#5b8bb0'][(i + j) % 4]) }
+      px(ctx, 100, 38, 50, 10, '#8a6a4a'); px(ctx, 136, 32, 10, 6, '#2b3440'); px(ctx, 137, 33, 8, 3, f % 10 < 5 ? '#6fe08a' : '#3b7a4a')
+      seated(ctx, 124, 38, o, f)
+      const cx = 200 - (f * 1.2) % 120
+      person(ctx, cx, 58, { sex: 'm', outfit: 'casual', skin: '#eec09a', hair: '#2b2420', step: f % 4 < 2 })
+    },
+    factory(ctx, o, f) {
+      interior(ctx, '#d8d2c4', '#8f8a7c')
+      px(ctx, 0, 40, W, 6, '#4b5563'); for (let x = -(f * 2) % 10; x < W; x += 10) px(ctx, x, 41, 5, 1, '#9aa3ad')
+      for (let x = -(f * 2) % 40; x < W; x += 40) px(ctx, x + 6, 32, 10, 8, '#c9a26b'), px(ctx, x + 6, 35, 10, 1, '#8a6a4a')
+      const g = f % 4; px(ctx, 150, 8, 14, 14, '#7d8b96'); px(ctx, 155 + (g % 2), 6, 4, 18, '#7d8b96'); px(ctx, 148, 13 + (g >> 1), 18, 4, '#7d8b96'); px(ctx, 154, 12, 6, 6, '#d8d2c4')
+      person(ctx, 90, 58, { ...o, step: false })
+      if (f % 6 < 3) px(ctx, 94, 44, 3, 1, o.skin)
+    },
+    farm(ctx, o, f) {
+      sky(ctx, 'day'); sun(ctx, 170, 10, 'day'); cloud(ctx, (f / 4) % W - 10, 10); mountains(ctx, rng('farmwork')); ground(ctx, 'grass')
+      for (let r = 0; r < 3; r++) for (let x = 6; x < W; x += 8) { const hgt = 2 + ((x + r * 3 + Math.floor(f / 8)) % 4); px(ctx, x, 60 - r * 3 - hgt, 2, hgt, '#4f8a3a') }
+      person(ctx, 96, 52, { ...o, step: false })
+      const up = f % 6 < 3
+      px(ctx, 101, up ? 36 : 40, 1, up ? 12 : 10, '#8a6a4a'); px(ctx, 100, up ? 46 : 49, 4, 2, '#9aa3ad')
+    },
+    site(ctx, o, f) {
+      sky(ctx, 'day'); sun(ctx, 30, 10, 'day'); city(ctx, rng('sitework')); ground(ctx, 'road')
+      px(ctx, 150, 6, 3, 46, '#e8b23a'); px(ctx, 100, 6, 60, 3, '#e8b23a')
+      const hy = 14 + Math.abs(((f * 0.6) % 28) - 14)
+      px(ctx, 120, 9, 1, hy, '#555'); px(ctx, 110, 9 + hy, 22, 3, '#9a8f7e')
+      for (let yy = 34; yy < 52; yy += 6) px(ctx, 40, yy, 40, 1, '#9a8f7e'); px(ctx, 40, 34, 1, 18, '#9a8f7e'); px(ctx, 79, 34, 1, 18, '#9a8f7e')
+      person(ctx, 60, 52, { ...o, step: false })
+      const up = f % 4 < 2; px(ctx, 64, up ? 38 : 41, 4, 2, '#7d8b96'); px(ctx, 65, up ? 40 : 43, 1, 3, '#8a6a4a')
+    },
+    road(ctx, o, f) {
+      sky(ctx, 'day'); sun(ctx, 160, 10, 'day'); cloud(ctx, (f / 3) % W - 10, 8)
+      for (let x = -((f * 2) % 24); x < W; x += 24) px(ctx, x, 30, 14, 16, '#b9c7d2')
+      px(ctx, 0, 46, W, 18, '#8f8a7c'); for (let x = -((f * 3) % 14); x < W; x += 14) px(ctx, x, 55, 7, 1, '#d8d3c4')
+      if (o.outfit === 'police' || o.outfit === 'army' || o.outfit === 'work') { person(ctx, 96, 54, { ...o, step: f % 4 < 2 }); px(ctx, 103, f % 6 < 3 ? 42 : 45, 1, 5, '#f2d14b') }
+      else { truck(ctx, 80); px(ctx, 103, 46, 3, 3, o.skin) }
+    },
+    school(ctx, o, f) {
+      interior(ctx, '#e9e2d4', '#b9a888')
+      px(ctx, 40, 8, 90, 28, '#2f5a46'); px(ctx, 40, 36, 90, 2, '#8a6a4a')
+      const n = Math.floor(f / 3) % 30; for (let i = 0; i < n; i++) px(ctx, 46 + (i % 15) * 5, 14 + Math.floor(i / 15) * 8, 3, 1, '#e9f2f8')
+      person(ctx, 140, 54, { ...o, step: false }); px(ctx, 133, f % 8 < 4 ? 40 : 42, 6, 1, o.skin)
+      for (let i = 0; i < 4; i++) { person(ctx, 30 + i * 22, 64, { sex: i % 2 ? 'f' : 'm', outfit: i % 2 ? 'kid2' : 'kid', age: 'kid', skin: '#f3cba5', hair: '#2b2420' }); px(ctx, 24 + i * 22, 58, 12, 2, '#8a6a4a') }
+    },
+    seek(ctx, o, f) {
+      sky(ctx, 'dusk'); city(ctx, rng('seek')); ground(ctx, 'road')
+      px(ctx, 140, 26, 34, 22, '#f4efe4'); px(ctx, 140, 26, 34, 4, '#d9708a'); for (let i = 0; i < 4; i++) px(ctx, 144, 33 + i * 4, 24, 1, '#9aa3ad'); px(ctx, 156, 48, 2, 4, '#6b5a4a')
+      const x = 20 + (f * 0.8) % 110
+      person(ctx, x, 58, { ...o, outfit: 'suit', step: f % 4 < 2 })
+    },
+    rest(ctx, o, f) {
+      sky(ctx, 'day'); sun(ctx, 160, 10, 'day'); cloud(ctx, (f / 5) % W - 10, 10); mountains(ctx, rng('rest')); ground(ctx, 'grass'); house(ctx, 14); tree(ctx, 60)
+      px(ctx, 90, 46, 24, 2, '#8a6a4a'); px(ctx, 92, 48, 2, 4, '#6b4a2e'); px(ctx, 110, 48, 2, 4, '#6b4a2e')
+      seated(ctx, 101, 47, { ...o, outfit: 'home' }, f % 20 < 10 ? 0 : 2)
+    },
+  }
+  function work(canvas) {
+    canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d'); ctx.imageSmoothingEnabled = false
+    let cur = null, f = 0, last = 0
+    function draw(ts) {
+      if (cur && ts - last > 110) {
+        last = ts; f++
+        const fn = WORKS[cur.mode] || WORKS[cur.look.place] || WORKS.office
+        ctx.clearRect(0, 0, W, H); fn(ctx, cur.p, f)
+      }
+      if (canvas.isConnected) requestAnimationFrame(draw)
+    }
+    requestAnimationFrame(draw)
+    return {
+      // look: lookFor(isco) の結果、p: 見た目（sex/skin/hair/outfit）、mode: 'seek'（求職中）/'rest'（休職・引退）
+      set(look, p, mode) { cur = { look, p: { ...p, outfit: look.outfit }, mode } },
+    }
+  }
+
+  window.Pixel = { scene, cast, lookFor, live, work }
 })()

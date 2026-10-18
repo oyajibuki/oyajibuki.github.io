@@ -10,7 +10,7 @@ window.I18N = {
     'ev.seniorIdle': '{age}歳。いまは仕事をしていません。地域の仕事を探すか、このまま引退するかを選びます。',
     'ev.seniorIdle.t': '{age}歳、仕事を探しますか',
     // 共通
-    'unit.age': '{n}歳', 'unit.years': '{n}年', 'unit.yearsOf': '{n}年目', 'unit.count': '{n}個', 'unit.hours': '{n}時間',
+    'unit.age': '{n}歳', 'chart.drop': '{age}歳で↓', 'unit.years': '{n}年', 'unit.yearsOf': '{n}年目', 'unit.count': '{n}個', 'unit.hours': '{n}時間',
     'about': '約{v}', 'sep': '・', 'list.sep': '、', 'quote': '「{s}」', 'paren': '（{s}）',
     'sex.m': '男性', 'sex.f': '女性',
     'emp.regular': '正社員', 'emp.irregular': '非正規', 'emp.public': '公務員', 'emp.self': '自営業', 'emp.rehired': '再雇用', 'emp.senior': 'シニア',
@@ -101,7 +101,7 @@ window.I18N = {
 
     // 決断（エンジン）
     'ev.senior.t': '{age}歳からの働き方', 'ev.seniorCheck.t': '{age}歳、まだ働きますか',
-    'ev.senior.cont': 'いまの仕事を続ける', 'ev.senior.contRehired': '継続雇用で70歳まで働く', 'ev.senior.retire': '引退する',
+    'ev.senior.cont': 'いまの仕事を続ける', 'ev.senior.contRehired': '継続雇用で70歳まで働く', 'ev.senior.contMore': 'いまの職場であと5年（{age}歳まで）働く', 'ev.senior.retire': '引退する',
     'ev.senior.familyBiz': '家業', 'ev.senior.partTime': '週3〜4日', 'ev.incomeSub': '年収 約{money}',
     'ev.promo.t': '{rank}への昇進の打診', 'ev.promo': '{title}としての働きが認められ、{rank}に推されています。責任と残業は増えますが、収入も上がります。',
     'ev.promo.yes': '引き受ける', 'ev.promo.no': '今のままでいい',
@@ -213,7 +213,7 @@ window.I18N = {
     'ev.seniorIdle.t': 'At {age}, look for work?',
     'ev.hunt.one': 'One offer came in.',
     'unit.years.one': '1 year',
-    'unit.age': 'age {n}', 'unit.years': '{n} years', 'unit.yearsOf': 'year {n}', 'unit.count': '{n}', 'unit.hours': '{n} hours',
+    'unit.age': 'age {n}', 'chart.drop': '↓ at {age}', 'unit.years': '{n} years', 'unit.yearsOf': 'year {n}', 'unit.count': '{n}', 'unit.hours': '{n} hours',
     'about': '~{v}', 'sep': ' · ', 'list.sep': ', ', 'quote': '"{s}"', 'paren': ' ({s})',
     'sex.m': 'Male', 'sex.f': 'Female',
     'emp.regular': 'Full-time', 'emp.irregular': 'Part-time / temp', 'emp.public': 'Government', 'emp.self': 'Self-employed', 'emp.rehired': 'Phased retirement', 'emp.senior': 'Part-time, senior',
@@ -297,7 +297,7 @@ window.I18N = {
     'end.retire': 'Retired at {age}', 'end.leave': 'Left work at {age}', 'end.mandatory': 'Retired at the mandatory age of {age}',
 
     'ev.senior.t': 'Work after {age}?', 'ev.seniorCheck.t': 'At {age}, keep working?',
-    'ev.senior.cont': 'Keep the current job', 'ev.senior.contRehired': 'Stay on until 70', 'ev.senior.retire': 'Retire',
+    'ev.senior.cont': 'Keep the current job', 'ev.senior.contRehired': 'Stay on until 70', 'ev.senior.contMore': 'Stay 5 more years (until {age})', 'ev.senior.retire': 'Retire',
     'ev.senior.familyBiz': 'family business', 'ev.senior.partTime': '3–4 days a week', 'ev.incomeSub': '~{money} a year',
     'ev.promo.t': 'Promotion offer: {rank}', 'ev.promo': 'Your work as {aTitle} has been noticed, and you are being considered for promotion to {rank}. More responsibility and overtime, but more pay.',
     'ev.promo.yes': 'Accept', 'ev.promo.no': 'Stay as I am',

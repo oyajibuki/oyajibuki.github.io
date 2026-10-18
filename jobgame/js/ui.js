@@ -150,6 +150,12 @@
     $('money').innerHTML = [['m.income', p.income], ['m.household', window.Life.householdIncome(p)], ['m.savings', p.savings], ['m.lifetime', p.lifetime]].map(([k, v]) => `<div><span>${t(k)}</span><b>${money(v)}</b></div>`).join('')
     $('lics').innerHTML = p.licenses.length ? p.licenses.map(k => `<span class="chip">${esc(LIC[k].name)}</span>`).join('') : `<span class="muted small">${t('p.noLics')}</span>`
     $('sceneIcon').textContent = icon(j)
+    // 働いている様子のドット絵（求職中は職探し、休職中・引退後は家で）
+    if (window.Pixel) {
+      if (!S.work) S.work = window.Pixel.work($('workScene'))
+      if (!S.look || S.look.id !== p.id) { const c = window.Pixel.cast({ seed: p.id, sex: p.sex, outfit: 'casual', country: C.code })[0]; S.look = { id: p.id, skin: c.skin, hair: c.hair } }
+      S.work.set(window.Pixel.lookFor(j.isco), { sex: p.sex, skin: S.look.skin, hair: S.look.hair, age: p.age >= 65 ? 'old' : 'adult' }, p.unemployed ? 'seek' : p.leave > 0 || p.ended ? 'rest' : null)
+    }
     $('sceneJob').textContent = p.unemployed ? t('p.seekingJob') : `${E.title(p)}${p.rank ? t('paren', { s: RANKS[p.rank].name }) : ''}`
     $('sceneMeta').textContent = t('p.scene', { major: `${t('z.majorPrefix', { code: j.major })}${C.majorLabel(j.majorName)}`, mid: j.midName, where: p.unemployed ? t('p.seeking') : `${p.size.name} · ${E.empName(p.emp)}`, ot: Math.round(j.ot) })
     $('peers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}${q.ended ? t('p.retired') : ''}</span><span class="r">${esc(E.title(q))}${q.rank ? t('sep') + RANKS[q.rank].name : ''}<br>${money(q.income)}</span></div>`).join('')
@@ -207,12 +213,21 @@
     const a0 = Math.min(...all.map(q => q.startAge)), a1 = Math.max(70, ...all.map(q => q.age))
     const vmax = Math.max(C.money.ticks[0] * 0.8, ...all.flatMap(q => q.history.map(h => h.income))) * 1.1
     const x = a => pad + (a - a0) / (a1 - a0) * (W - pad * 2)
-    const y = v => H - pad - v / vmax * (H - pad * 2)
+    const y = v => H - 16 - v / vmax * (H - pad - 16) // 下は年齢の目盛りのぶん空ける
     const line = q => q.history.map((h, i) => `${i ? 'L' : 'M'}${x(h.age).toFixed(1)},${y(h.income).toFixed(1)}`).join(' ')
     let s = ''
     for (const v of C.money.ticks) if (v < vmax) s += `<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${W - 4}" y="${y(v) - 3}" fill="var(--muted)" font-size="10" text-anchor="end">${v}</text>`
+    // 年齢の目盛り（10歳ごと）。何歳で年収が変わったかを読めるように
+    for (let a = Math.ceil(a0 / 10) * 10; a <= a1; a += 10) {
+      const xa = x(a), anchor = xa < 20 ? 'start' : xa > W - 20 ? 'end' : 'middle'
+      s += `<line x1="${xa}" x2="${xa}" y1="${pad}" y2="${H - 14}" stroke="var(--line)" stroke-width="1"/><text x="${xa}" y="${H - 2}" fill="var(--muted)" font-size="10" text-anchor="${anchor}">${t('unit.age', { n: a })}</text>`
+    }
     for (const q of peers) if (q.history.length) s += `<path d="${line(q)}" fill="none" stroke="var(--muted)" stroke-opacity=".45" stroke-width="1.2"/>`
     if (p.history.length) s += `<path d="${line(p)}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>`
+    // いちばん大きく年収が下がった年に印（前の年より15%以上下がったときだけ）
+    let drop = null
+    p.history.forEach((h, i) => { if (i && p.history[i - 1].income > 0) { const r = h.income / p.history[i - 1].income; if (r < 0.85 && (!drop || r < drop.r)) drop = { r, h } } })
+    if (drop) s += `<circle cx="${x(drop.h.age)}" cy="${y(drop.h.income)}" r="4" fill="var(--red)"/><text x="${x(drop.h.age)}" y="${Math.max(12, y(drop.h.income) - 8)}" fill="var(--red)" font-size="11" font-weight="700" text-anchor="middle" stroke="var(--card)" stroke-width="3" paint-order="stroke">${t('chart.drop', { age: drop.h.age })}</text>`
     svg.innerHTML = s
   }
 

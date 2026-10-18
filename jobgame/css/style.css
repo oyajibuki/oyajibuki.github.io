@@ -251,3 +251,6 @@ a { color: var(--accent); }
 .btn-start.float:hover { transform: translateX(-50%) translateY(-2px) scale(1.03); }
 @keyframes floatPulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
 #home .wrap { padding-bottom: 120px; }
+.work-scene { border-radius: 10px; border: 1px solid var(--line); margin-bottom: 12px; aspect-ratio: 3 / 1; }
+.work-wrap { padding-bottom: 0; padding-top: 12px; }
+.work-wrap .work-scene { max-height: 240px; margin: 0 auto; width: 100%; object-fit: contain; }

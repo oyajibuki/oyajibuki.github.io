@@ -425,7 +425,7 @@
           title: t(kind + '.t', { age: p.age }),
           text: t(kind, { age: p.age, health: Math.round(p.health) }),
           choices: [
-            ...(canStay ? [{ key: 'cont', label: t(p.emp === 'rehired' ? 'ev.senior.contRehired' : 'ev.senior.cont'), sub: t('ev.incomeSub', { money: money(p.emp === 'rehired' ? p.income * 0.85 : p.income) }) }] : []),
+            ...(canStay ? [{ key: 'cont', label: p.emp !== 'rehired' ? t('ev.senior.cont') : p.age < 70 ? t('ev.senior.contRehired') : t('ev.senior.contMore', { age: p.age + 5 }), sub: t('ev.incomeSub', { money: money(p.emp === 'rehired' ? p.income * 0.85 : p.income) }) }] : []),
             ...ev.offers.map((o, i) => ({ key: 'o' + i, label: JOBS[o.job].label, sub: [o.note, t(o.emp === 'self' ? 'ev.senior.familyBiz' : 'ev.senior.partTime'), t('ev.incomeSub', { money: money(o.income) })].join(t('sep')) })),
             { key: 'retire', label: t('ev.senior.retire') },
           ],
