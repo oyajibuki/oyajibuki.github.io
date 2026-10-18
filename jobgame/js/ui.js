@@ -51,6 +51,7 @@
     window.scrollTo(0, 0)
     if (id === 'zukan') renderZukan()
     if (id === 'memorial') renderMemorial()
+    if (id === 'home') renderHomeMem()
     if (id !== 'play') S.playing = false
   }
   document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) go(g.dataset.go) })
@@ -95,6 +96,7 @@
     const p = S.p, j = JOBS[p.job]
     $('cNo').textContent = `No. ${C.code.toUpperCase()}-${E.START_YEAR}-${p.id.toUpperCase()}`
     $('cName').textContent = p.name
+    lifeScene($('cScene'), { id: p.id, sex: p.sex, isco: j.isco, home: false })
     $('cLead').textContent = t('c.lead', { year: E.START_YEAR, age: p.age, place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: E.empName(p.emp), title: E.title(p) })
     const kv = [
       ['kv.major', `${j.major} ${j.majorName}`], ['kv.mid', `${j.mid} ${j.midName}`], ['kv.job', `${j.code} ${j.name}`], ...(p.variant ? [['kv.variant', p.variant]] : []),
@@ -293,6 +295,7 @@
       .map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p) })
     S.snap = window.Pass.snapshot(p, S.peers)
+    snapScene($('eScene'), S.snap)
     $('eWord').value = ''
     go('ending')
   }
@@ -343,16 +346,87 @@
   // ---------- メモリアル ----------
   function renderMemorial() {
     const list = store.get('memorial', [])
-    $('mList').innerHTML = list.length ? list.map((m, i) => `<div class="mcard"><div class="n">${esc(m.name)}</div><div class="muted small">${m.from} – ${m.to}</div><div class="e">${esc(m.epitaph)}</div><div class="muted small">${esc(t('mem.lifetime', { money: money(m.lifetime) }))}</div>${m.family ? `<div class="muted small">${esc(m.family)}</div>` : ''}${m.word ? `<div class="small" style="margin-top:6px">${esc(t('quote', { s: m.word }))}</div>` : ''}${m.snap ? `<button class="btn sm" data-pass="${i}" style="margin-top:8px">${t(window.Pass.isOwned(m.snap.id) ? 'mem.view' : 'mem.make')}</button>` : ''}</div>`).join('') : `<p class="muted">${t('mem.empty')}</p>`
+    $('mList').innerHTML = list.length ? list.map((m, i) => `<div class="mcard">${m.snap ? `<canvas class="pix doc-scene" data-scene="${i}"></canvas>` : ''}<div class="n">${esc(m.name)}</div><div class="muted small">${m.from} – ${m.to}</div><div class="e">${esc(m.epitaph)}</div><div class="muted small">${esc(t('mem.lifetime', { money: money(m.lifetime) }))}</div>${m.family ? `<div class="muted small">${esc(m.family)}</div>` : ''}${m.word ? `<div class="small" style="margin-top:6px">${esc(t('quote', { s: m.word }))}</div>` : ''}${m.snap ? `<button class="btn sm" data-pass="${i}" style="margin-top:8px">${t(window.Pass.isOwned(m.snap.id) ? 'mem.view' : 'mem.make')}</button>` : ''}</div>`).join('') : `<p class="muted">${t('mem.empty')}</p>`
+    drawMemScenes()
   }
+  function drawMemScenes() { document.querySelectorAll('#mList [data-scene]').forEach(c => { const m = store.get('memorial', [])[+c.dataset.scene]; if (m && m.snap) snapScene(c, m.snap) }) }
   $('mList').addEventListener('click', e => {
     const b = e.target.closest('[data-pass]'); if (!b) return
     const m = store.get('memorial', [])[+b.dataset.pass]
     if (m && m.snap) window.Pass.open(m.snap, 'memorial')
   })
 
+  // ---------- ドット絵（職場・家族） ----------
+  function lifeScene(canvas, o) {
+    if (!window.Pixel || !canvas) return
+    const look = window.Pixel.lookFor(o.isco)
+    const fam = !!(o.spouse || o.kids)
+    window.Pixel.scene(canvas, {
+      seed: o.id, place: look.place, home: o.home ?? fam,
+      people: window.Pixel.cast({ seed: o.id, sex: o.sex, outfit: look.outfit, spouse: o.spouse, kids: o.kids, country: C.code }),
+      dog: o.dog,
+    })
+  }
+  function snapScene(canvas, s) {
+    const d = s.docs || {}
+    lifeScene(canvas, { id: s.id, sex: s.sex, isco: d.mainIsco, spouse: !!d.spouse, kids: (d.kids || []).length, dog: String(s.id).charCodeAt(0) % 3 === 0 })
+  }
+
+  // ---------- ホームの「いま」：今日働きはじめた人・仕事を離れた人（推計） ----------
+  const F = C.flow
+  let heroLive = null, lastSpawn = 0
+  function secondsToday() {
+    const now = new Date()
+    const [h, m, s] = now.toLocaleTimeString('en-GB', { timeZone: F.tz, hour12: false }).split(':').map(Number)
+    return (h % 24) * 3600 + m * 60 + s + now.getMilliseconds() / 1000
+  }
+  const YEAR = 365 * 86400
+  const fmtWait = v => (F.hire / YEAR > 0.5 ? Math.max(0.1, v).toFixed(1) : String(Math.max(1, Math.ceil(v))))
+  const prev = { h: -1, s: -1 }
+  function bump(id) { const el = $(id); el.classList.add('bump'); setTimeout(() => el.classList.remove('bump'), 500) }
+  function tickLive() {
+    if (!F || !$('home').classList.contains('active')) return
+    const sec = secondsToday(), rh = F.hire / YEAR, rs = F.sep / YEAR
+    const h = Math.floor(sec * rh), s = Math.floor(sec * rs)
+    $('liveHire').textContent = h.toLocaleString(); $('liveSep').textContent = s.toLocaleString()
+    $('liveHireNext').textContent = t('home.live.hireNext', { s: fmtWait((h + 1) / rh - sec) })
+    $('liveSepNext').textContent = t('home.live.sepNext', { s: fmtWait((s + 1) / rs - sec) })
+    const now = performance.now()
+    if (prev.h >= 0 && h > prev.h) { bump('liveHire'); if (heroLive && now - lastSpawn > 1200) { heroLive.hire(); lastSpawn = now } }
+    if (prev.s >= 0 && s > prev.s) { bump('liveSep'); if (heroLive && now - lastSpawn > 1200) { heroLive.leave(); lastSpawn = now } }
+    prev.h = h; prev.s = s
+  }
+  function initLive() {
+    if (!F) return
+    $('liveNow').innerHTML = t('home.live.now', { n: `<b>${F.workers}</b>` })
+    $('liveRate').textContent = t('home.live.rate', { s: (YEAR / F.hire).toFixed(1) })
+    if (window.Pixel) heroLive = window.Pixel.live($('heroScene'), C.code)
+    tickLive(); setInterval(tickLive, 100)
+  }
+
+  // ---------- ホームのメモリアル：納めた人生＋同じ春に働きはじめた人たち ----------
+  let others = []
+  function makeOthers() {
+    others = Array.from({ length: 6 }, () => { const q = E.create({ auto: true }); let g = 0; while (!q.ended && g++ < 90) E.step(q); return window.Pass.snapshot(q, []) })
+  }
+  function renderHomeMem() {
+    const mine = store.get('memorial', []).filter(m => m.snap).slice(0, 6)
+    if (!others.length) makeOthers()
+    const cards = [...mine.map((m, i) => ({ s: m.snap, mine: i })), ...others.map(s => ({ s }))]
+    $('homeMem').innerHTML = cards.map((c, k) => `<div class="mc${c.mine != null ? ' mine' : ''}" ${c.mine != null ? `data-mine="${c.mine}"` : ''}><canvas class="pix" data-k="${k}"></canvas><div class="b"><div class="n">${esc(c.s.name)}</div><div class="y">${c.s.from} – ${c.s.to} · ${esc(c.s.home || '')}</div><div class="e">${esc(c.s.epitaph)}</div><span class="tag">${t(c.mine != null ? 'home.mem.mine' : 'home.mem.other')}</span></div></div>`).join('')
+    $('homeMem').querySelectorAll('canvas[data-k]').forEach(cv => snapScene(cv, cards[+cv.dataset.k].s))
+  }
+  $('homeMem').addEventListener('click', e => {
+    const c = e.target.closest('[data-mine]'); if (!c) return
+    const m = store.get('memorial', []).filter(x => x.snap)[+c.dataset.mine]
+    if (m) window.Pass.open(m.snap, 'home')
+  })
+  $('btnMoreLives').addEventListener('click', () => { makeOthers(); renderHomeMem(); $('homeMem').scrollLeft = 0 })
+
   applyText()
   renderHome()
+  renderHomeMem()
+  initLive()
   // Stripe から戻ってきたら、その人生をメモリアルに納めて（まだなら）作品を開く
   const paidSnap = window.Pass.resume()
   if (paidSnap) {

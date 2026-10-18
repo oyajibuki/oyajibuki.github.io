@@ -77,7 +77,7 @@
       firstCode: p.jobsHeld[0],
       startSelf: !!(p.log[0] && p.log[0].text.includes(t('emp.self'))),
       peak: peakH ? { year: peakH.year, rank: R[peakH.rank].name } : null,
-      mainTitle: (last && last.title) || J[mainCode].label,
+      mainTitle: (last && last.title) || J[mainCode].label, mainIsco: J[mainCode].isco || '',
       mainMid: J[mainCode].midName, mainMajor: J[mainCode].major,
       pub: !!(CT.isPublic && CT.isPublic(J[mainCode])),
       spouse: f.spouse && !f.divorced ? f.spouse.name : null,

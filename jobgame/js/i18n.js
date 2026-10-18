@@ -27,7 +27,7 @@ window.I18N = {
     'c.rare': 'この仕事に就いているのは<b>{people}</b>。働く人の<b>およそ{n}人に1人</b>です。',
 
     // ホーム
-    'home.start': '働きはじめる', 'home.zukan': '職業図鑑', 'home.memorial': 'メモリアル',
+    'home.startSub': "どの職業になるかは、統計どおりのくじで決まります。", 'home.live.hire': "今日、日本で新しい職場で働きはじめた人（推計）", 'home.live.sep': "今日、日本で仕事を離れた人（定年・退職を含む・推計）", 'home.live.hireNext': "次の「働きはじめる」まで あと{s}秒", 'home.live.sepNext': "次の「仕事を離れる」まで あと{s}秒", 'home.live.now': "いま日本では、約{n}人がそれぞれの仕事人生を生きています。", 'home.live.rate': "日本では、約{s}秒に1人が新しい職場で働きはじめています（厚生労働省「雇用動向調査」令和7年）", 'home.mem.h': "メモリアル", 'home.mem.d': "働き終えた仕事人生を、残しておく場所です。あなたが納めた人生と、同じ春に働きはじめた人たちの人生が並びます。", 'home.mem.all': "メモリアルを見る", 'home.mem.more': "ほかの人生と出会う", 'home.mem.mine': "あなたが納めた人生", 'home.mem.other': "同じ春に働きはじめた人", 'home.start': '働きはじめる', 'home.zukan': '職業図鑑', 'home.memorial': 'メモリアル',
     'home.name': '名前', 'home.name.ph': '空欄ならランダム', 'home.sex': '性別', 'home.sex.any': 'ランダム（統計どおり）', 'home.sex.f': '女性', 'home.sex.m': '男性', 'home.len': 'ひとつの仕事人生の長さ', 'home.len.short': '約2分', 'home.len.mid': '約5分', 'home.len.long': '約10分',
     'home.dist': 'いま働きはじめる人だったら', 'home.other': 'その他',
     'home.c1.h': '今年の重点', 'home.c1': '毎年、仕事以外の時間を何に使うかを選びます。休養・娯楽・資格の勉強・学び直し・副業・転職活動。可処分時間は残業に削られます。',
@@ -228,7 +228,7 @@ window.I18N = {
     'log.promo.toMgr': '', 'ev.birth': 'How will you handle work?', 'ev.care': '{who} is {age}. How will you handle it?',
     'c.rare': '<b>{people}</b> people hold this job — roughly <b>1 in {n}</b> workers.',
 
-    'home.start': 'Start working', 'home.zukan': 'Job encyclopedia', 'home.memorial': 'Memorial',
+    'home.startSub': "Your job is drawn by lottery, weighted by real statistics.", 'home.live.hire': "People in the US who started a new job today (est.)", 'home.live.sep': "People in the US who left a job today (incl. retirement, est.)", 'home.live.hireNext': "Next new hire in {s} s", 'home.live.sepNext': "Next departure in {s} s", 'home.live.now': "About {n} people are living their working lives in the US right now.", 'home.live.rate': "In the US, someone starts a new job about every {s} seconds (BLS JOLTS, 2025)", 'home.mem.h': "Memorial", 'home.mem.d': "A place to keep working lives that have ended — the ones you saved, and the people who started out the same spring.", 'home.mem.all': "Open memorial", 'home.mem.more': "Meet other lives", 'home.mem.mine': "A life you saved", 'home.mem.other': "Started the same spring", 'home.start': 'Start working', 'home.zukan': 'Job encyclopedia', 'home.memorial': 'Memorial',
     'home.name': 'Name', 'home.name.ph': 'Leave blank for a random name', 'home.sex': 'Gender', 'home.sex.any': 'Random (by the stats)', 'home.sex.f': 'Woman', 'home.sex.m': 'Man', 'home.len': 'Length of one working life', 'home.len.short': '~2 min', 'home.len.mid': '~5 min', 'home.len.long': '~10 min',
     'home.dist': 'If you started working today', 'home.other': 'Other',
     'home.c1.h': 'This year\'s focus', 'home.c1': 'Each year you decide what to do with your time outside work: rest, have fun, study for a license, reskill, take on a side gig, or look for a new job. Overtime eats into all of it.',

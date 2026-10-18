@@ -4,6 +4,8 @@
 
 window.COUNTRY = {
   code: 'us', lang: 'en', name: 'United States',
+  // Annual hires and total separations, BLS JOLTS 2025 (not seasonally adjusted)
+  flow: { hire: 63000000, sep: 62800000, tz: 'America/New_York', workers: '170 million' },
   startYear: 2026, aiYear: 2031,
   // Money is in thousands of dollars. Constants in the engine are written in Japanese 万円 and scaled by money.scale
   // (US median pay ~$51k vs Japan ~450万円 → 0.113).

@@ -206,3 +206,42 @@ a { color: var(--accent); }
   .doc-name { font-size: 30px; }
   .passbox { flex-direction: column; align-items: flex-start; }
 }
+
+/* ===== ホーム（本家と同じ並び：絵 → 見出し → いまの数字 → 設定 → 働きはじめる → メモリアル） ===== */
+.pix { image-rendering: pixelated; image-rendering: crisp-edges; display: block; width: 100%; height: auto; }
+.hero-scene { border-radius: 12px; border: 1px solid var(--line); margin: 6px 0 22px; aspect-ratio: 3 / 1; }
+.hero2 { text-align: center; max-width: 760px; margin: 0 auto; }
+.hero2 .title { margin: 4px 0 14px; }
+.hero2 .lead { margin: 0 auto; }
+.live { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; text-align: left; margin: 28px 0 10px; }
+.live-col { display: flex; flex-direction: column; gap: 2px; }
+.live-n { font-family: var(--serif); font-size: clamp(40px, 7vw, 64px); line-height: 1.05; font-variant-numeric: tabular-nums; transition: color .3s; }
+.live-n.bump { color: var(--accent); }
+.live-col span { color: var(--muted); font-size: 14px; }
+.live-col em { font-style: normal; color: var(--green); font-size: 14px; font-variant-numeric: tabular-nums; }
+.live-now { display: flex; gap: 12px; align-items: flex-start; text-align: left; margin: 14px 0 24px; font-size: 16px; }
+.live-now small { color: var(--green); font-size: 13px; }
+.live-now .dot { flex: 0 0 auto; width: 14px; height: 14px; margin-top: 5px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 0 rgba(217,112,102,.6); animation: pulseDot 1.6s infinite; }
+@keyframes pulseDot { 0% { box-shadow: 0 0 0 0 rgba(217,112,102,.55); } 70% { box-shadow: 0 0 0 12px rgba(217,112,102,0); } 100% { box-shadow: 0 0 0 0 rgba(217,112,102,0); } }
+.setup { display: grid; gap: 10px; justify-items: center; margin: 8px 0 4px; }
+.setup .setting { justify-content: center; }
+.start-wrap { margin: 26px 0 8px; display: grid; justify-items: center; gap: 10px; }
+.btn-start { font: inherit; font-family: var(--serif); font-weight: 700; font-size: clamp(24px, 4.4vw, 34px); letter-spacing: .12em; color: var(--accent-ink); background: var(--accent); border: 0; border-radius: 999px; padding: 22px 64px; cursor: pointer; box-shadow: 0 10px 30px rgba(217,112,138,.35); animation: startPulse 2.2s ease-in-out infinite; transition: transform .15s; }
+.btn-start:hover { transform: translateY(-2px) scale(1.03); animation-play-state: paused; }
+.btn-start:active { transform: scale(.97); }
+@keyframes startPulse { 0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(217,112,138,.35); } 50% { transform: scale(1.05); box-shadow: 0 14px 44px rgba(217,112,138,.55); } }
+.cta-row.center { justify-content: center; }
+.mem-home { margin: 48px 0 24px; }
+.mem-home .h2 { font-family: var(--serif); }
+.mrow { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 6px 2px 14px; margin-top: 12px; }
+.mc { flex: 0 0 280px; scroll-snap-align: start; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; cursor: default; }
+.mc.mine { cursor: pointer; }
+.mc canvas { aspect-ratio: 3 / 1; border-bottom: 1px solid var(--line); }
+.mc .b { padding: 12px 14px 14px; }
+.mc .n { font-family: var(--serif); font-size: 20px; font-weight: 700; }
+.mc .y { color: var(--muted); font-size: 13px; }
+.mc .e { font-size: 14px; margin-top: 6px; }
+.mc .tag { display: inline-block; font-size: 11px; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 0 8px; margin-top: 8px; }
+.hero-data { max-width: 760px; margin: 0 auto 16px; }
+.doc-scene { margin: -2px -2px 14px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+@media (max-width: 560px) { .live { grid-template-columns: 1fr 1fr; gap: 10px; } .btn-start { padding: 18px 44px; } .mc { flex-basis: 240px; } }

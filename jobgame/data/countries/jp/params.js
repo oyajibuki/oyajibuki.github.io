@@ -4,6 +4,8 @@
 
 window.COUNTRY = {
   code: 'jp', lang: 'ja', name: '日本',
+  // 1年間に新しい職場で働きはじめた人・仕事を離れた人（厚生労働省「令和7年雇用動向調査」。常用労働者5人以上の事業所）
+  flow: { hire: 7526800, sep: 7052600, tz: 'Asia/Tokyo', workers: '6,781万' },
   startYear: 2026, aiYear: 2031,
   // お金の単位は万円（ほかの国はこの単位を基準に money.scale で換算）
   money: {
