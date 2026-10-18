@@ -57,7 +57,7 @@ window.COUNTRY = {
   text: {
     'brand': '1 in 170 million',
     'brandHtml': '<span class="accent">1</span> in 170M',
-    'home.title': '<span class="accent">1</span> in<br>170 million',
+    'home.title': '<span class="tl"><span class="accent">1</span> in </span><span class="tl">170 million</span>',
     'home.topline': 'v0.2 POC · career edition · 830 SOC occupations · based on official statistics',
     'home.lead': 'The US economy has about 170 million jobs. Take one of them and live a single working life to the end. You do not get to choose your first job — just as you didn\'t.',
     'home.distNote': 'BLS Employment Projections 2025 · 170 million jobs by major group',

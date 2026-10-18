@@ -283,3 +283,4 @@ a { color: var(--accent); }
 .share-tt { background: #111; color: #fff; border-color: #111; font-weight: 700; }
 .share-yt { background: #ff0000; color: #fff; border-color: #ff0000; font-weight: 700; }
 .share-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.title .tl { display: block; }

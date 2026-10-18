@@ -49,7 +49,7 @@ window.COUNTRY = {
   text: {
     'brand': '7千万分の1',
     'brandHtml': '7千万分の<span class="accent">1</span>',
-    'home.title': '7千万<br>分の<span class="accent">1</span>',
+    'home.title': '<span class="tl">7千万</span><span class="tl">分の<span class="accent">1</span></span>',
     'home.topline': 'v0.2 POC · 職業版 · 日本標準職業分類 329職業 · 公的統計にもとづく',
     'home.lead': 'いまこの国で、約7千万人（6,781万人）が働いています。そのひとりになって、たった一度の仕事人生を最後まで働いてみます。最初にどんな仕事に就くかは選べません。あなたがそうだったように。',
     'home.distNote': '労働力調査 2024年平均 · 就業者 6,781万人の職業大分類',

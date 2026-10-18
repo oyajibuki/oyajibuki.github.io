@@ -16,7 +16,7 @@ window.I18N = {
     'emp.regular': '正社員', 'emp.irregular': '非正規', 'emp.public': '公務員', 'emp.self': '自営業', 'emp.rehired': '再雇用', 'emp.senior': 'シニア',
     'rel.mother': '母', 'rel.father': '父',
     'back': 'もどる', 'cancel': 'やめる',
-    'title.suffix': '職業シミュレーション',
+    'title.suffix': '職業シミュレーションゲーム',
     'pass.v.title1': '7千万', 'pass.v.title2': '分の1',
     // 国ごとに上書きされる文言の既定値
     'brand': '職業シミュレーション', 'brandHtml': '職業シミュレーション',
