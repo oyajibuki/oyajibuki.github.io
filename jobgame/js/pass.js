@@ -522,8 +522,8 @@
   }
   function shortHeader(ctx, W, snap, n) {
     ctx.textAlign = 'center'
-    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0, 70, W, 110)
-    punch(ctx, t('short.series', { n: n || '' }), W / 2, 145, 44, '#fff', W - 120)
+    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0, 66, W, 120)
+    punch(ctx, t('short.series', { n: n || '' }), W / 2, 148, 52, '#fff', W - 100)
   }
   function shortText(snap) {
     const rank = shortRank(snap)
@@ -549,9 +549,59 @@
     punch(ctx, t('short.cta'), W / 2, 1760, 60, '#fff', W - 120)
     return canvas
   }
+  // ショート動画の音：素材ファイルを使わず、ブラウザの中で合成する（著作権の心配がない）
+  function shortMime() {
+    const cands = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus']
+    return cands.find(c => window.MediaRecorder && MediaRecorder.isTypeSupported(c)) || videoMime()
+  }
+  function shortAudio(ac, out, T0, total, cues) {
+    const at = s => T0 + s
+    const env = (g, t, a, peak, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d) }
+    const tone = (type, f, t, a, peak, d, dest = out) => {
+      const o = ac.createOscillator(), g = ac.createGain()
+      o.type = type; o.frequency.setValueAtTime(f, t); o.connect(g); g.connect(dest)
+      env(g, t, a, peak, d); o.start(t); o.stop(t + a + d + 0.05)
+      return o
+    }
+    const noise = (t, d, peak, hp = 1000) => {
+      const b = ac.createBuffer(1, Math.ceil(ac.sampleRate * d), ac.sampleRate), ch = b.getChannelData(0)
+      for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1
+      const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain()
+      f.type = 'highpass'; f.frequency.value = hp
+      s.buffer = b; s.connect(f); f.connect(g); g.connect(out); env(g, t, 0.005, peak, d); s.start(t)
+    }
+    // BGM：やさしいピアノ風の分散和音（C - Am - F - G を2秒ずつ）
+    const bgm = ac.createGain(); bgm.gain.value = 0.55; bgm.connect(out)
+    const chords = [[261.6, 329.6, 392.0], [220.0, 261.6, 329.6], [174.6, 220.0, 261.6], [196.0, 246.9, 293.7]]
+    for (let s = 0, i = 0; s < total - 0.5; s += 2, i++) {
+      const c = chords[i % 4]
+      tone('sine', c[0] / 2, at(s), 0.02, 0.10, 1.9, bgm)
+      ;[0, 1, 2, 1, 0, 1, 2, 1].forEach((k, j) => tone('triangle', c[k] * (j >= 4 ? 2 : 1), at(s + j * 0.25), 0.01, 0.045, 0.5, bgm))
+    }
+    // 効果音
+    const hit = t => { // 〇〇歳：ドン＋キラッ
+      const o = ac.createOscillator(), g = ac.createGain()
+      o.type = 'sine'; o.frequency.setValueAtTime(150, at(t)); o.frequency.exponentialRampToValueAtTime(45, at(t) + 0.25)
+      o.connect(g); g.connect(out); env(g, at(t), 0.005, 0.9, 0.35); o.start(at(t)); o.stop(at(t) + 0.45)
+      noise(at(t), 0.08, 0.25, 2500)
+      tone('triangle', 1318.5, at(t) + 0.03, 0.005, 0.12, 0.35)
+    }
+    const reveal = t => { // 職業の発表：ジャン
+      ;[523.3, 659.3, 784.0].forEach(f => tone('sawtooth', f, at(t), 0.01, 0.07, 0.6))
+      noise(at(t), 0.15, 0.15, 3000)
+    }
+    const ticks = (a, b) => { for (let s = a; s < b; s += 0.07) tone('square', 1800, at(s), 0.002, 0.03, 0.03) }
+    const fanfare = t => { // 生涯年収が止まる：ジャーン
+      ;[[523.3, 0], [659.3, 0], [784.0, 0], [1046.5, 0.12]].forEach(([f, d]) => { tone('sawtooth', f, at(t + d), 0.01, 0.08, 1.4); tone('triangle', f * 2, at(t + d), 0.01, 0.05, 1.2) })
+      noise(at(t), 0.9, 0.18, 4000)
+      hit(t)
+    }
+    const chime = t => [880, 1108.7, 1318.5, 1760].forEach((f, i) => tone('triangle', f, at(t + i * 0.12), 0.005, 0.12, 0.8))
+    cues.forEach(([kind, t, b]) => ({ hit, reveal, fanfare, chime })[kind] ? ({ hit, reveal, fanfare, chime })[kind](t) : kind === 'ticks' && ticks(t, b))
+  }
   async function makeShort(snap, onProgress) {
     await fontsReady()
-    const mime = videoMime()
+    const mime = shortMime()
     if (!mime) throw new Error(t('pass.videoNo'))
     const W = 1080, H = 1920, DUR = 22
     const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H
@@ -562,23 +612,24 @@
     const pop = (tm, a) => { const k = fade(tm, a, a + 0.25); return k <= 0 ? 0 : 1 + (1 - k) * 0.35 }
     const B0 = 5, BL = 2.2 // 出来事は5秒目から1つ2.2秒
     const climax = B0 + beats.length * BL
+    const MW = W - 80 // 文字の最大幅（画面いっぱいに大きく）
     function frame(tm) {
       ctx.globalAlpha = 1; ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.textAlign = 'center'
       if (tm < 2.4) {
         // 0〜2.4秒：引き（1フレーム目から見える）
         shortBg(ctx, W, H); shortHeader(ctx, W, snap)
-        punch(ctx, t('short.hook1', { age: snap.startAge }), W / 2, 820, 170, '#fff', W - 120)
-        punch(ctx, t('short.hook2'), W / 2, 1040, 96, YEL, W - 120)
+        punch(ctx, t('short.hook1', { age: snap.startAge }), W / 2, 860, 230, '#fff', MW)
+        punch(ctx, t('short.hook2'), W / 2, 1120, 128, YEL, MW)
       } else if (tm < B0) {
         // 2.4〜5秒：職業の発表
         shortBg(ctx, W, H, '#3a2a12'); shortHeader(ctx, W, snap)
-        punch(ctx, t('short.hook2'), W / 2, 640, 64, '#fff', W - 120)
+        punch(ctx, t('short.hook2'), W / 2, 600, 84, '#fff', MW)
         const s = pop(tm, 2.4)
-        ctx.save(); ctx.translate(W / 2, 900); ctx.scale(s, s)
-        punchWrap(ctx, t('quote', { s: snap.firstJob }), 0, 0, 120, YEL, W - 140, 150, 3)
+        ctx.save(); ctx.translate(W / 2, 880); ctx.scale(s, s)
+        punchWrap(ctx, t('quote', { s: snap.firstJob }), 0, 0, 150, YEL, W - 100, 180, 3)
         ctx.restore()
-        if (snap.firstRare) { ctx.globalAlpha = fade(tm, 3.3, 3.6); punch(ctx, t('short.rare', { n: snap.firstRare.toLocaleString() }), W / 2, 1400, 72, RED, W - 120) }
+        if (snap.firstRare) { ctx.globalAlpha = fade(tm, 3.3, 3.6); punch(ctx, t('short.rare', { n: snap.firstRare.toLocaleString() }), W / 2, 1460, 96, RED, MW) }
       } else if (tm < climax) {
         // 出来事：1つずつ全画面で
         const i = Math.min(beats.length - 1, Math.floor((tm - B0) / BL))
@@ -586,46 +637,58 @@
         const tint = m.kind === 'bad' ? '#3a1414' : m.kind === 'life' ? '#3a1a2a' : m.kind === 'up' ? '#14301f' : '#1d2836'
         shortBg(ctx, W, H, tint); shortHeader(ctx, W, snap)
         const s = pop(tm, a)
-        ctx.save(); ctx.translate(W / 2, 760); ctx.scale(s, s)
-        punch(ctx, ageL(m.age), 0, 0, 180, m.kind === 'bad' ? RED : m.kind === 'up' ? '#5dffa0' : YEL, W - 120)
+        ctx.save(); ctx.translate(W / 2, 740); ctx.scale(s, s)
+        punch(ctx, ageL(m.age), 0, 0, 250, m.kind === 'bad' ? RED : m.kind === 'up' ? '#5dffa0' : YEL, MW)
         ctx.restore()
         ctx.globalAlpha = fade(tm, a + 0.25, a + 0.5)
-        punchWrap(ctx, shortLine(m.text), W / 2, 1000, 76, '#fff', W - 140, 104, 4)
+        punchWrap(ctx, shortLine(m.text), W / 2, 1010, 96, '#fff', W - 100, 128, 4)
       } else if (tm < climax + 4) {
         // 生涯年収の発表（数字が回ってから止まる）
         shortBg(ctx, W, H, '#2a2412'); shortHeader(ctx, W, snap)
-        punch(ctx, t('short.end1', { end: snap.endAge }), W / 2, 720, 120, '#fff', W - 120)
-        punch(ctx, t('short.end2'), W / 2, 880, 84, '#fff', W - 120)
+        punch(ctx, t('short.end1', { end: snap.endAge }), W / 2, 700, 160, '#fff', MW)
+        punch(ctx, t('short.end2'), W / 2, 900, 112, '#fff', MW)
         const k = fade(tm, climax + 1, climax + 2.6)
         if (k > 0) {
           const v = k < 1 ? snap.lifetime * (0.2 + 0.8 * k) * (0.97 + Math.random() * 0.06) : snap.lifetime
           const s = k >= 1 ? pop(tm, climax + 2.6) : 1
-          ctx.save(); ctx.translate(W / 2, 1180); ctx.scale(s, s)
-          punch(ctx, man(v), 0, 0, 190, RED, W - 100)
+          ctx.save(); ctx.translate(W / 2, 1230); ctx.scale(s, s)
+          punch(ctx, man(v), 0, 0, 250, RED, MW)
           ctx.restore()
         }
         ctx.globalAlpha = fade(tm, climax + 2.9, climax + 3.2)
-        punch(ctx, t('short.rank', { n: rank }), W / 2, 1400, 70, YEL, W - 120)
+        punch(ctx, t('short.rank', { n: rank }), W / 2, 1460, 100, YEL, MW)
       } else {
         // しめ：ひとこと＋呼びかけ
         shortBg(ctx, W, H); shortHeader(ctx, W, snap)
         ctx.globalAlpha = fade(tm, climax + 4, climax + 4.4)
-        punchWrap(ctx, snap.epitaph, W / 2, 700, 80, '#fff', W - 140, 108, 3)
-        punch(ctx, t('short.cta'), W / 2, 1180, 92, YEL, W - 120)
-        punch(ctx, t('short.search'), W / 2, 1330, 60, '#fff', W - 120)
-        ctx.fillStyle = '#cfd6da'; ctx.font = `36px ${SANS}`; ctx.fillText('oyajibuki.github.io/jobgame', W / 2, 1440)
+        punchWrap(ctx, snap.epitaph, W / 2, 640, 100, '#fff', W - 100, 132, 3)
+        punch(ctx, t('short.cta'), W / 2, 1180, 120, YEL, MW)
+        punch(ctx, t('short.search'), W / 2, 1360, 80, '#fff', MW)
+        ctx.fillStyle = '#cfd6da'; ctx.font = `44px ${SANS}`; ctx.fillText('oyajibuki.github.io/jobgame', W / 2, 1480)
       }
       ctx.globalAlpha = 1
     }
     const total = Math.max(DUR, climax + 8)
-    const stream = canvas.captureStream(30)
-    const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8_000_000 })
+    // 音のきっかけ：〇〇歳（冒頭と出来事ごと）、職業の発表、数字が回る音、生涯年収が止まる音、しめ
+    const cues = [['hit', 0.05], ['reveal', 2.4], ...beats.map((m, i) => ['hit', B0 + i * BL]), ['hit', climax], ['ticks', climax + 1, climax + 2.6], ['fanfare', climax + 2.6], ['chime', climax + 4]]
+    const video = canvas.captureStream(30)
+    let ac = null, tracks = [...video.getVideoTracks()]
+    try {
+      ac = new (window.AudioContext || window.webkitAudioContext)()
+      await ac.resume()
+      const dest = ac.createMediaStreamDestination()
+      const master = ac.createGain(); master.gain.value = 0.8; master.connect(dest)
+      tracks = [...tracks, ...dest.stream.getAudioTracks()]
+      ac.__out = master
+    } catch { ac = null }
+    const rec = new MediaRecorder(new MediaStream(tracks), { mimeType: mime, videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 160_000 })
     const chunks = []
     rec.ondataavailable = e => e.data.size && chunks.push(e.data)
     const done = new Promise(res => { rec.onstop = res })
     frame(0)
     rec.start(250)
     const t0 = performance.now()
+    if (ac) shortAudio(ac, ac.__out, ac.currentTime + 0.02, total, cues)
     await new Promise(res => {
       const tick = () => {
         const el = (performance.now() - t0) / 1000
@@ -636,6 +699,7 @@
       tick()
     })
     rec.stop(); await done
+    if (ac) ac.close()
     return { blob: new Blob(chunks, { type: mime.split(';')[0] }), ext: mime.startsWith('video/mp4') ? 'mp4' : 'webm', seconds: total }
   }
 
