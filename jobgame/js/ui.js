@@ -380,14 +380,16 @@
     $('btnShareMore').classList.remove('hidden')
     $('btnShareMore').addEventListener('click', () => navigator.share({ text: S.shareText, url: SHARE_URL }).catch(() => {}))
   }
-  $('btnSave').addEventListener('click', () => {
+  // メモリアルに納める（もう一度働く／ホームに戻る の両方から）
+  function saveLife() {
     const p = S.p
     const list = store.get('memorial', [])
     // 作品はあとからメモリアルからもつくれるよう、スナップショットごと納める
     list.unshift({ name: p.name, epitaph: E.epitaph(p), honor: S.snap.honor, from: E.START_YEAR, to: p.year, lifetime: p.lifetime, origin: p.origin, jobs: p.jobsHeld, word: $('eWord').value.trim(), sex: p.sex, family: window.Life.summary(p), snap: S.snap })
     store.set('memorial', list.slice(0, 100))
-    newLife()
-  })
+  }
+  $('btnSave').addEventListener('click', () => { saveLife(); newLife() })
+  $('btnSaveHome').addEventListener('click', () => { saveLife(); go('home') })
 
   // ---------- 職業図鑑 ----------
   $('zSearch').addEventListener('input', renderZukan)

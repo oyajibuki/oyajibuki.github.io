@@ -195,7 +195,7 @@ window.I18N = {
     'e.years': '働いた年数', 'e.lifetime': '生涯収入（退職金込み）', 'e.peak': '最高年収', 'e.rank': '最高の役職', 'e.lics': '取った資格', 'e.savings': '最終貯蓄',
     'e.jobs': '歩いた職業', 'e.manager': '🏛️ 管理職', 'e.peers': '同期のその後', 'e.peerLife': '{ep} · 生涯 {money}',
     'e.pass.h': 'この仕事人生を、作品に残す', 'e.pass.d': '職歴証明書パスで、SNS用の画像・職歴書のPDF・ショート動画と、辞令・表彰状・名刺・寄せ書きの書類セットがつくれます。人生の中身は変わりません。', 'e.pass.btn': '職歴証明書パス',
-    'e.word': 'この人にひとこと', 'e.wordPh': 'おつかれさまでした', 'e.toZukan': '職業図鑑を見る', 'e.save': 'メモリアルに納めて、もう一度働く',
+    'e.word': 'この人にひとこと', 'e.wordPh': 'おつかれさまでした', 'e.toZukan': '職業図鑑を見る', 'e.save': 'メモリアルに納めて、もう一度働く', 'e.saveHome': 'メモリアルに納めてホームへ',
 
     // 図鑑・メモリアル
     'z.title': '職業図鑑', 'z.count': '{total}職業中 {n}職業に就いた', 'z.search': '職業名で探す',
@@ -418,7 +418,7 @@ window.I18N = {
     'e.years': 'Years worked', 'e.lifetime': 'Lifetime earnings', 'e.peak': 'Peak pay', 'e.rank': 'Highest level', 'e.lics': 'Licenses earned', 'e.savings': 'Final savings',
     'e.jobs': 'Jobs held', 'e.manager': '🏛️ Management', 'e.peers': 'What became of the others', 'e.peerLife': '{ep} · lifetime {money}',
     'e.pass.h': 'Keep this working life', 'e.pass.d': 'With a Career Pass you can make a social image, a résumé PDF, videos for social media, and a paperwork set (appointment letter, award, business card, farewell card). The life itself does not change.', 'e.pass.btn': 'Career Pass',
-    'e.word': 'Leave a few words for them', 'e.wordPh': 'Well done.', 'e.toZukan': 'Job encyclopedia', 'e.save': 'Save to the memorial and live another life',
+    'e.word': 'Leave a few words for them', 'e.wordPh': 'Well done.', 'e.toZukan': 'Job encyclopedia', 'e.save': 'Save to the memorial and live another life', 'e.saveHome': 'Save to the memorial and go home',
 
     'z.title': 'Job encyclopedia', 'z.count': '{n} of {total} occupations worked', 'z.search': 'Search occupations',
     'z.h.code': 'Code', 'z.h.job': 'Occupation', 'z.h.people': 'Workers', 'z.h.inc': 'Prime-age pay', 'z.h.female': 'Women', 'z.h.ot': 'Overtime', 'z.h.ai': 'AI',
