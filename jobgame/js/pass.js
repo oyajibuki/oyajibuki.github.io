@@ -41,14 +41,14 @@
 
   // ---------- 人生のスナップショット ----------
   // 作品づくりに必要なものだけを、メモリアルにも保存できる形で抜き出す
-  function snapshot(p, peers = []) {
+  function snapshot(p, peers = [], extra = {}) {
     const E = window.Engine, J = E.JOBS, R = window.RANKS
     const keep = ['change', 'up', 'life', 'bad', 'ai', 'end', 'leave', 'reflect']
     const milestones = p.log.filter((l, i) => i === 0 || keep.includes(l.kind)).map(l => ({ age: l.age, year: l.year, text: l.text, kind: l.kind }))
     return {
       id: p.id, name: p.name, sex: p.sex,
       from: E.START_YEAR, to: p.year, startAge: p.startAge, endAge: p.age,
-      epitaph: E.epitaph(p), endReason: p.endReason, firstRare: (J[p.jobsHeld[0]] || {}).share ? Math.max(1, Math.round(1 / J[p.jobsHeld[0]].share)) : null,
+      epitaph: E.epitaph(p), honor: extra.honor || E.honor(p), endReason: p.endReason, firstRare: (J[p.jobsHeld[0]] || {}).share ? Math.max(1, Math.round(1 / J[p.jobsHeld[0]].share)) : null,
       docs: docsData(p),
       firstJob: p.titles[0], titles: p.titles, edu: p.edu.name,
       home: p.home, place: p.place,
@@ -342,7 +342,10 @@
     ctx.font = `24px ${SANS}`; ctx.textAlign = 'right'; ctx.fillText(`${snap.from} – ${snap.to}`, W - 56, 60); ctx.textAlign = 'left'
     ctx.fillStyle = C.muted; ctx.font = `24px ${SANS}`; ctx.fillText(t('pass.card.name'), 56, 160)
     ctx.fillStyle = C.text; ctx.font = `700 84px ${SERIF}`; ctx.fillText(snap.name, 56, 250)
-    ctx.font = `500 40px ${SERIF}`; let y = wrap(ctx, snap.epitaph, 56, 320, W - 112, 54, 2)
+    // 称号（古いメモリアルには無い）
+    let ey = 320
+    if (snap.honor) { ctx.fillStyle = C.accent; ctx.font = `700 32px ${SANS}`; ctx.fillText(t('honor.label', { s: snap.honor }), 56, 318); ctx.fillStyle = C.text; ey = 382 }
+    ctx.font = `500 40px ${SERIF}`; let y = wrap(ctx, snap.epitaph, 56, ey, W - 112, 54, 2)
     ctx.fillStyle = C.muted; ctx.font = `26px ${SANS}`
     y = wrap(ctx, t('pass.card.lead', { age: snap.startAge, job: snap.firstJob, reason: snap.endReason, places: `${snap.home}${snap.place !== snap.home ? ` → ${snap.place}` : ''}` }), 56, y + 16, W - 112, 38, 2)
     // 数字
@@ -384,7 +387,7 @@
       <table class="pr-head"><tr><th>${t('pass.pdf.name')}</th><td class="pr-name">${esc(snap.name)}</td></tr>
         <tr><th>${t('pass.pdf.edu')}</th><td>${esc(CT.lang === 'ja' ? snap.edu : snap.edu.charAt(0).toUpperCase() + snap.edu.slice(1))}</td></tr>
         <tr><th>${t('pass.pdf.place')}</th><td>${esc(snap.home)}${snap.place !== snap.home ? ` → ${esc(snap.place)}` : ''}</td></tr></table>
-      <p class="pr-epitaph">${esc(snap.epitaph)}</p>
+      ${snap.honor ? `<p class="pr-honor">${esc(t('honor.label', { s: snap.honor }))}</p>` : ''}<p class="pr-epitaph">${esc(snap.epitaph)}</p>
       <h2>${t('pass.pdf.history')}</h2>
       <table class="pr-table"><thead><tr><th>${t('pass.pdf.year')}</th><th>${t('pass.pdf.age')}</th><th>${t('pass.pdf.item')}</th></tr></thead><tbody>${rows}</tbody></table>
       <h2>${t('pass.pdf.lics')}</h2><p>${snap.licenses.length ? snap.licenses.map(esc).join(t('list.sep')) : t('pass.pdf.none')}</p>
@@ -444,6 +447,7 @@
       // 15.5-20秒: ひとこと
       ctx.globalAlpha = fade(tm, 15.8, 16.8)
       ctx.textAlign = 'center'
+      if (snap.honor) { ctx.fillStyle = C.accent; ctx.font = `700 44px ${SANS}`; wrap(ctx, t('honor.label', { s: snap.honor }), W / 2, 590, W - 160, 58, 2) }
       ctx.fillStyle = C.text; ctx.font = `700 64px ${SERIF}`
       wrap(ctx, snap.epitaph, W / 2, 760, W - 160, 88, 3)
       ctx.fillStyle = C.muted; ctx.font = `38px ${SANS}`; ctx.fillText(t('pass.v.end', { money: man(snap.lifetime), n: snap.workYears }), W / 2, 1060)
@@ -527,7 +531,7 @@
   }
   function shortText(snap) {
     const rank = shortRank(snap)
-    const vars = { age: snap.startAge, end: snap.endAge, job: snap.firstJob, money: man(snap.lifetime), rank, rare: snap.firstRare ? snap.firstRare.toLocaleString() : '', ep: snap.epitaph, name: snap.name }
+    const vars = { age: snap.startAge, end: snap.endAge, job: snap.firstJob, money: man(snap.lifetime), rank, rare: snap.firstRare ? snap.firstRare.toLocaleString() : '', ep: snap.epitaph, name: snap.name, honor: snap.honor || snap.epitaph }
     return {
       title: t('short.ytTitle', vars),
       desc: t('short.ytDesc', vars) + '\n' + 'https://oyajibuki.github.io/jobgame/' + (CT.lang === 'ja' ? '' : `?lang=${CT.lang}`) + '\n\n' + t('short.tags'),
@@ -661,6 +665,7 @@
         // しめ：ひとこと＋呼びかけ
         shortBg(ctx, W, H); shortHeader(ctx, W, snap)
         ctx.globalAlpha = fade(tm, climax + 4, climax + 4.4)
+        if (snap.honor) punchWrap(ctx, t('honor.label', { s: snap.honor }), W / 2, 330, 70, YEL, W - 100, 92, 2)
         punchWrap(ctx, snap.epitaph, W / 2, 640, 100, '#fff', W - 100, 132, 3)
         punch(ctx, t('short.cta'), W / 2, 1180, 120, YEL, MW)
         punch(ctx, t('short.search'), W / 2, 1360, 80, '#fff', MW)

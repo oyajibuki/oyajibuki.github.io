@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Klee+One:wght@600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=0.4.10">
+<link rel="stylesheet" href="css/style.css?v=0.5.0">
 </head>
 <body>
 
@@ -227,6 +227,7 @@
         <canvas id="eScene" class="pix doc-scene" aria-hidden="true"></canvas>
         <div class="muted small" data-i18n="c.name"></div>
         <h2 class="doc-name" id="eName"></h2>
+        <div class="honor" id="eHonor"></div>
         <p class="epitaph" id="eEpitaph"></p>
         <p id="eSummary" class="lead2"></p>
         <p id="eFamily" class="lead2 muted"></p>
@@ -370,6 +371,7 @@
     <div class="modal-k" id="mKind"></div>
     <h3 id="mTitle"></h3>
     <p id="mText"></p>
+    <div id="mData" class="m-data hidden"></div>
     <textarea id="mInput" class="input hidden" rows="2" maxlength="80" data-i18n-ph="ask.note"></textarea>
     <div id="mChoices" class="choices"></div>
   </div>
@@ -380,7 +382,7 @@
 if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job&ref=" + encodeURIComponent(document.referrer))
   .catch(() => {});
 </script>
-<script src="js/i18n.js?v=0.4.10"></script>
-<script src="js/boot.js?v=0.4.10"></script>
+<script src="js/i18n.js?v=0.5.0"></script>
+<script src="js/boot.js?v=0.5.0"></script>
 </body>
 </html>

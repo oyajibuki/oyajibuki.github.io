@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アップデート情報 — 7千万分の1</title>
+<meta name="description" content="職業シミュレーションゲーム「7千万分の1」の更新履歴です。">
+<link rel="canonical" href="https://oyajibuki.github.io/jobgame/updates.html">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css?v=0.5.0">
+<style>
+  .upd h1 { font-family: var(--serif); font-size: 26px; margin: 8px 0 4px; }
+  .upd .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; }
+  .upd article { padding: 18px 0; border-top: 1px solid var(--line); }
+  .upd article:first-of-type { border-top: 0; }
+  .upd time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .upd h2 { font-size: 17px; margin: 2px 0 8px; }
+  .upd ul { margin: 0; padding-left: 1.2em; }
+  .upd li { font-size: 14px; line-height: 1.7; }
+  .upd .new { display: inline-block; margin-left: 8px; padding: 0 7px; border-radius: 999px; background: var(--accent); color: #2a1118; font-size: 11px; font-weight: 700; vertical-align: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap narrow upd">
+  <div class="top"><a id="back" href="./">← ゲームに戻る</a><a id="other" href="?lang=en">English</a></div>
+  <h1 id="h"></h1>
+  <p class="muted small" id="lead"></p>
+  <div id="list"></div>
+</div>
+
+<script>
+// 更新履歴。新しいものを上に足していく（日本語・英語の両方を書く）
+var UPDATES = [
+  { date: '2026-10-19',
+    ja: { t: '節目の「ひと息」と人生の称号', items: [
+      '働きはじめて1・10・20・30・40年目の「ひと息」に、そのときの年収と、同じ春に働きはじめた人の中での位置・同期5人の中での順位を表示するようにしました。',
+      '30年目のひと息で「20歳に戻れたら、もう一度この仕事を選ぶか」を選んで答えられるようにしました。答えは職歴に残ります。',
+      'その人生でいちばん珍しかったことから「称号」を自動で付けるようにしました（例：「係長まで上りつめた叩き上げ」「ひとつの仕事を40年守り抜いた職人」）。引退画面・メモリアル・シェア文・SNS用画像・動画・職歴書に入ります。',
+      '配属・初任給・後輩・介護・子育て・役職の板挟みなど、その年の様子を一言で残す「場面」が職歴に出るようにしました。数字（年収など）は変わりません。',
+      'このアップデート情報のページをつくりました。'] },
+    en: { t: 'Milestone pauses and life titles', items: [
+      'The pauses at 1, 10, 20, 30 and 40 years now show your current pay, where it sits within your starting class, and your rank among your 5 peers.',
+      'At 30 years, you now answer "If you could go back to 20, would you choose this job again?" Your answer is kept in your work history.',
+      'Every life now gets an automatic title based on what was rarest about it (e.g. "Worked their way up to Manager", "40 years at one craft"). It appears on the retirement screen, the memorial, share text, the social image, videos and the PDF.',
+      'Short scenes from each year (first placement, a first mentee, caregiving, being caught between bosses and the team) now appear in the work history. They do not change any numbers.',
+      'Added this updates page.'] } },
+  { date: '2026-10-18',
+    ja: { t: 'ホームの作り直し・ドット絵・作品の追加', items: [
+      'ホームを本家「80億分の1」と同じ並びに作り直しました（左にタイトルとカウンター、右にドット絵と職業の割合、下にメモリアル）。',
+      'ページを開いてから働きはじめた人・仕事を離れた人の数を数えるカウンターを付けました（雇用動向調査より）。',
+      '契約書・プレイ中・引退画面・メモリアルに、職業に合わせたドット絵を入れました。',
+      '年収グラフに年齢の目盛り・凡例・大きく下がった年の印と理由を付けました。',
+      '職歴証明書パスに「書類セット」（辞令・表彰状・名刺・寄せ書き）と、BGM・効果音つきのショート動画を足しました。',
+      '引退画面に、同期の中の順位・同じ年に働きはじめた人の中の位置・最初の職業の希少さを出し、X・LINE・Facebook・Threads へのシェアを付けました。',
+      '75歳を過ぎてから「70歳まで続ける」と出ていた選択肢を直しました。'] },
+    en: { t: 'New home, pixel art and more keepsakes', items: [
+      'Rebuilt the home screen in the same layout as "1 in 8 Billion" (title and counters on the left, pixel scene and job shares on the right, memorial below).',
+      'Added live counters of people starting and leaving work since you opened the page (BLS JOLTS).',
+      'Added job-specific pixel art to the contract, the play screen, the retirement screen and the memorial.',
+      'The pay chart now has age ticks, a legend, and a marker with the reason for the biggest drop.',
+      'The Career Pass now includes a paperwork set (appointment letter, award, business card, farewell card) and a short video with music and sound effects.',
+      'The retirement screen shows your rank among peers, your position in your starting class and the rarity of your first job, with sharing to X, LINE, Facebook and Threads.',
+      'Fixed the "keep working until 70" option appearing after age 75.'] } },
+  { date: '2026-10-18',
+    ja: { t: '公開', items: [
+      '「7千万分の1」を公開しました。国勢調査と賃金統計をもとに最初の職業が決まり、一度きりの仕事人生を生きる職業シミュレーションです。',
+      '名前と性別を選んで、自分として遊べるようにしました。',
+      '英語版「1 in 170 million」（アメリカの統計）も公開しました。'] },
+    en: { t: 'Launch', items: [
+      'Launched "1 in 170 million": your first job is drawn from official labor statistics, and you live one working life to the end.',
+      'You can enter your name and choose a sex to play as yourself.',
+      'The Japanese version, "7千万分の1", uses Japanese census and wage statistics.'] } },
+]
+
+;(function () {
+  var q = new URLSearchParams(location.search).get('lang')
+  var saved = null
+  try { saved = localStorage.getItem('jg_lang') } catch (e) {}
+  var lang = q || saved || ((navigator.language || '').indexOf('ja') === 0 ? 'ja' : 'en')
+  if (lang !== 'ja') lang = 'en'
+  var ja = lang === 'ja'
+  document.documentElement.lang = lang
+  document.title = ja ? 'アップデート情報 — 7千万分の1' : 'Updates — 1 in 170 million'
+  document.getElementById('h').textContent = ja ? 'アップデート情報' : 'Updates'
+  document.getElementById('lead').textContent = ja ? '「7千万分の1」の更新履歴です。' : 'What has changed in "1 in 170 million".'
+  var back = document.getElementById('back'), other = document.getElementById('other')
+  back.href = './?lang=' + lang; back.textContent = ja ? '← ゲームに戻る' : '← Back to the game'
+  other.href = '?lang=' + (ja ? 'en' : 'ja'); other.textContent = ja ? 'English' : '日本語'
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] }) }
+  var fmt = function (d) { var p = d.split('-'); return ja ? (p[0] + '年' + (+p[1]) + '月' + (+p[2]) + '日') : new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }
+  document.getElementById('list').innerHTML = UPDATES.map(function (u, i) {
+    var c = u[lang]
+    return '<article><time datetime="' + u.date + '">' + fmt(u.date) + '</time><h2>' + esc(c.t) + (i === 0 ? '<span class="new">NEW</span>' : '') + '</h2><ul>' + c.items.map(function (x) { return '<li>' + esc(x) + '</li>' }).join('') + '</ul></article>'
+  }).join('')
+})()
+</script>
+</body>
+</html>

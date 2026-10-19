@@ -93,6 +93,7 @@
   $('btnStart').addEventListener('click', newLife)
   function newLife() {
     S.p = E.create({ sex: S.sex, name: S.name })
+    S.ref = null
     S.peers = Array.from({ length: 4 }, () => E.create({ auto: true }))
     const p = S.p, j = JOBS[p.job]
     $('cNo').textContent = `No. ${C.code.toUpperCase()}-${E.START_YEAR}-${p.id.toUpperCase()}`
@@ -251,7 +252,28 @@
     if (S.acc >= S.secPerYear) { S.acc = 0; advance() }
   }, 100)
 
-  const PAUSE_AT = [1, 10, 20, 30]
+  // ひと息：節目で止まり、数字で自分の位置を見せてから問いかける
+  // 30年目だけは「もう一度この仕事を選ぶか」を選んで答える
+  const PAUSE_AT = [1, 10, 20, 30, 40]
+  const PAUSE_CHOICES = { 30: ['again', 'other'] }
+  // 比べる相手：統計どおりに引いた200人の仕事人生（同じ年に働きはじめた人たち）。引退画面の「上位◯%」にも使う
+  function refLives() {
+    if (!S.ref) S.ref = Array.from({ length: 200 }, () => { const q = E.create({ auto: true }); let g = 0; while (!q.ended && g++ < 90) E.step(q); return q })
+    return S.ref
+  }
+  function pauseData(p) {
+    const inc = refLives().map(q => (q.history.find(h => h.age === p.age) || {}).income).filter(v => v > 0).sort((a, b) => a - b)
+    const rows = []
+    if (inc.length >= 20 && p.income > 0) {
+      const above = inc.filter(v => v > p.income).length / inc.length * 100
+      rows.push([t('pause.d.inc', { age: p.age }), money(p.income)])
+      rows.push([t('pause.d.med', { age: p.age }), money(inc[Math.floor(inc.length / 2)])])
+      rows.push([t('pause.d.pos'), above <= 50 ? t('e.hi.topV', { n: Math.max(1, Math.round(above)) }) : t('e.hi.botV', { n: Math.max(1, Math.round(100 - above)) })])
+    }
+    const all = [p, ...S.peers].map(q => q.lifetime)
+    rows.push([t('pause.d.peers'), t('e.hi.rankV', { n: 1 + all.filter(v => v > p.lifetime).length })])
+    return rows
+  }
   async function advance() {
     const p = S.p
     S.busy = true
@@ -268,8 +290,12 @@
       renderPlay()
     }
     if (PAUSE_AT.includes(p.workYears) && !p.ended && !p.auto) {
-      const r = await ask({ title: t('ask.pause'), text: t('pause.' + p.workYears), choices: [{ key: 'ok', label: t('ask.continue') }] }, age(p.age), true)
-      if (r.note) { p.log.push({ age: p.age, year: p.year, text: t('quote', { s: r.note }), kind: 'reflect' }); renderPlay() }
+      const keys = PAUSE_CHOICES[p.workYears]
+      const choices = keys ? keys.map(k => ({ key: k, label: t(`pause.${p.workYears}.${k}`) })) : [{ key: 'ok', label: t('ask.continue') }]
+      const r = await ask({ title: t('ask.pause'), text: t('pause.' + p.workYears), choices, data: pauseData(p) }, age(p.age), true)
+      if (keys) p.log.push({ age: p.age, year: p.year, text: t(`pause.${p.workYears}.${r.key}.log`, { job: E.title(p) }), kind: 'reflect' })
+      if (r.note) p.log.push({ age: p.age, year: p.year, text: t('quote', { s: r.note }), kind: 'reflect' })
+      if (keys || r.note) renderPlay()
     }
     if (p.ended) { finish(); return }
     S.busy = false
@@ -280,6 +306,8 @@
       $('mKind').textContent = kind
       $('mTitle').textContent = opt.title
       $('mText').textContent = opt.text
+      $('mData').innerHTML = (opt.data || []).map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')
+      $('mData').classList.toggle('hidden', !(opt.data || []).length)
       $('mInput').value = ''
       $('mInput').classList.toggle('hidden', !withInput)
       $('mChoices').innerHTML = opt.choices.map(c => `<button data-k="${c.key}">${esc(c.label)}${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</button>`).join('')
@@ -315,15 +343,17 @@
     $('eFamily').textContent = window.Life.summary(p)
     // シェアしたくなる数字：同期の中の順位、同じ年に働きはじめた人の中の位置、最初の職業の希少さ
     const rank = 1 + S.peers.filter(q => q.lifetime > p.lifetime).length
-    const ref = Array.from({ length: 200 }, () => { const q = E.create({ auto: true }); let g = 0; while (!q.ended && g++ < 90) E.step(q); return q.lifetime })
+    const ref = refLives().map(q => q.lifetime)
     const above = ref.filter(v => v > p.lifetime).length / ref.length * 100
     const top = above <= 50 ? t('e.hi.topV', { n: Math.max(1, Math.round(above)) }) : t('e.hi.botV', { n: Math.max(1, Math.round(100 - above)) })
     const first = JOBS[p.jobsHeld[0]]
     const rare = Math.max(1, Math.round(1 / first.share)).toLocaleString()
     $('eHi').innerHTML = [['e.hi.rank', t('e.hi.rankV', { n: rank })], ['e.hi.top', top], ['e.hi.rare', t('e.hi.rareV', { n: rare })]]
       .map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
-    S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p) })
-    S.snap = window.Pass.snapshot(p, S.peers)
+    const honor = E.honor(p, above)
+    $('eHonor').textContent = honor
+    S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
+    S.snap = window.Pass.snapshot(p, S.peers, { honor })
     snapScene($('eScene'), S.snap)
     $('eWord').value = ''
     go('ending')
@@ -350,7 +380,7 @@
     const p = S.p
     const list = store.get('memorial', [])
     // 作品はあとからメモリアルからもつくれるよう、スナップショットごと納める
-    list.unshift({ name: p.name, epitaph: E.epitaph(p), from: E.START_YEAR, to: p.year, lifetime: p.lifetime, origin: p.origin, jobs: p.jobsHeld, word: $('eWord').value.trim(), sex: p.sex, family: window.Life.summary(p), snap: S.snap })
+    list.unshift({ name: p.name, epitaph: E.epitaph(p), honor: S.snap.honor, from: E.START_YEAR, to: p.year, lifetime: p.lifetime, origin: p.origin, jobs: p.jobsHeld, word: $('eWord').value.trim(), sex: p.sex, family: window.Life.summary(p), snap: S.snap })
     store.set('memorial', list.slice(0, 100))
     newLife()
   })
@@ -383,7 +413,7 @@
   // ---------- メモリアル ----------
   function renderMemorial() {
     const list = store.get('memorial', [])
-    $('mList').innerHTML = list.length ? list.map((m, i) => `<div class="mcard">${m.snap ? `<canvas class="pix doc-scene" data-scene="${i}"></canvas>` : ''}<div class="n">${esc(m.name)}</div><div class="muted small">${m.from} – ${m.to}</div><div class="e">${esc(m.epitaph)}</div><div class="muted small">${esc(t('mem.lifetime', { money: money(m.lifetime) }))}</div>${m.family ? `<div class="muted small">${esc(m.family)}</div>` : ''}${m.word ? `<div class="small" style="margin-top:6px">${esc(t('quote', { s: m.word }))}</div>` : ''}${m.snap ? `<button class="btn sm" data-pass="${i}" style="margin-top:8px">${t(window.Pass.isOwned(m.snap.id) ? 'mem.view' : 'mem.make')}</button>` : ''}</div>`).join('') : `<p class="muted">${t('mem.empty')}</p>`
+    $('mList').innerHTML = list.length ? list.map((m, i) => `<div class="mcard">${m.snap ? `<canvas class="pix doc-scene" data-scene="${i}"></canvas>` : ''}<div class="n">${esc(m.name)}</div><div class="muted small">${m.from} – ${m.to}</div>${m.honor ? `<div class="honor sm">${esc(m.honor)}</div>` : ''}<div class="e">${esc(m.epitaph)}</div><div class="muted small">${esc(t('mem.lifetime', { money: money(m.lifetime) }))}</div>${m.family ? `<div class="muted small">${esc(m.family)}</div>` : ''}${m.word ? `<div class="small" style="margin-top:6px">${esc(t('quote', { s: m.word }))}</div>` : ''}${m.snap ? `<button class="btn sm" data-pass="${i}" style="margin-top:8px">${t(window.Pass.isOwned(m.snap.id) ? 'mem.view' : 'mem.make')}</button>` : ''}</div>`).join('') : `<p class="muted">${t('mem.empty')}</p>`
     drawMemScenes()
   }
   function drawMemScenes() { document.querySelectorAll('#mList [data-scene]').forEach(c => { const m = store.get('memorial', [])[+c.dataset.scene]; if (m && m.snap) snapScene(c, m.snap) }) }
@@ -448,7 +478,7 @@
     const mine = store.get('memorial', []).filter(m => m.snap).slice(0, 6)
     if (!others.length) makeOthers()
     const cards = [...mine.map((m, i) => ({ s: m.snap, mine: i })), ...others.map(s => ({ s }))]
-    $('homeMem').innerHTML = cards.map((c, k) => `<div class="mc${c.mine != null ? ' mine' : ''}" ${c.mine != null ? `data-mine="${c.mine}"` : ''}><canvas class="pix" data-k="${k}"></canvas><div class="b"><div class="n">${esc(c.s.name)}</div><div class="y">${c.s.from} – ${c.s.to} · ${esc(c.s.home || '')}</div><div class="e">${esc(c.s.epitaph)}</div><span class="tag">${t(c.mine != null ? 'home.mem.mine' : 'home.mem.other')}</span></div></div>`).join('')
+    $('homeMem').innerHTML = cards.map((c, k) => `<div class="mc${c.mine != null ? ' mine' : ''}" ${c.mine != null ? `data-mine="${c.mine}"` : ''}><canvas class="pix" data-k="${k}"></canvas><div class="b"><div class="n">${esc(c.s.name)}</div><div class="y">${c.s.from} – ${c.s.to} · ${esc(c.s.home || '')}</div>${c.s.honor ? `<div class="honor sm">${esc(c.s.honor)}</div>` : ''}<div class="e">${esc(c.s.epitaph)}</div><span class="tag">${t(c.mine != null ? 'home.mem.mine' : 'home.mem.other')}</span></div></div>`).join('')
     $('homeMem').querySelectorAll('canvas[data-k]').forEach(cv => snapScene(cv, cards[+cv.dataset.k].s))
   }
   $('homeMem').addEventListener('click', e => {

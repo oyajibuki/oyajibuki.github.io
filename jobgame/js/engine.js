@@ -366,6 +366,7 @@
       ])
       ev[1](); addLog(p, t(ev[0]))
     }
+    episode(p)
 
     // 倒産・リストラ・自営の廃業
     if (p.emp === 'self') {
@@ -615,14 +616,85 @@
   }
 
   // 人生をひとことで（メモリアル用）
+  function epitaphKey(p) {
+    if (p.flags.senior && p.age >= 75) return 'senior'
+    if (p.peakRank >= 3) return 'rank'
+    if (p.titles.length >= 4) return 'many'
+    if (p.emp === 'self') return 'self'
+    return 'plain'
+  }
   function epitaph(p) {
     const main = mainJob(p)
-    if (p.flags.senior && p.age >= 75) return t('ep.senior', { age: p.age })
-    if (p.peakRank >= 3) return t('ep.rank', { n: p.workYears, rank: window.RANKS[p.peakRank].name })
-    if (p.titles.length >= 4) return t('ep.many', { n: p.titles.length })
-    if (p.emp === 'self') return t('ep.self', { job: main })
-    return t('ep.plain', { job: main, n: p.workYears })
+    switch (epitaphKey(p)) {
+      case 'senior': return t('ep.senior', { age: p.age })
+      case 'rank': return t('ep.rank', { n: p.workYears, rank: window.RANKS[p.peakRank].name })
+      case 'many': return t('ep.many', { n: p.titles.length })
+      case 'self': return t('ep.self', { job: main })
+      default: return t('ep.plain', { job: main, n: p.workYears })
+    }
   }
+  // 人生の称号：その人生でいちばん珍しかったことを一言にする（top は同じ年に働きはじめた人の中の上位%）
+  function honor(p, top) {
+    const R = window.RANKS, f = p.family || { kids: [], history: [] }
+    const careYears = [...(f.history || []).filter(h => h.who), ...(f.care ? [f.care] : [])].reduce((a, c) => a + (c.years || 0), 0)
+    const had = k => p.log.some(l => l.kind === k)
+    const c = []
+    if (top != null && top <= 3) c.push([95, 'honor.top', { n: Math.max(1, Math.round(top)) }])
+    // 叩き上げ：大卒ではないのに管理職まで上りつめた
+    if (p.peakRank >= 3 && p.edu.lv < 2) c.push([90, 'honor.climb', { rank: R[p.peakRank].name }])
+    else if (p.peakRank >= 3) c.push([80, 'honor.rank', { rank: R[p.peakRank].name }])
+    if (p.flags.senior && p.age >= 75) c.push([85, 'honor.lifelong', { age: p.age }])
+    if (p.titles.length === 1 && p.workYears >= 35) c.push([82, 'honor.loyal', { n: p.workYears }])
+    if (p.emp === 'self' && p.selfYears >= 15) c.push([78, 'honor.boss', {}])
+    if (p.titles.length >= 5) c.push([75, 'honor.wander', { n: p.titles.length }])
+    if (careYears >= 3) c.push([72, 'honor.care', { n: careYears }])
+    if (had('leave') && p.workYears >= 25) c.push([70, 'honor.rise', {}])
+    if (p.aiMult <= 0.85) c.push([66, 'honor.aiDown', {}])
+    else if (p.aiMult >= 1.08) c.push([65, 'honor.aiUp', {}])
+    if (had('bad') && p.workYears >= 30) c.push([42, 'honor.tough', {}])
+    if (p.licenses.length >= 3) c.push([60, 'honor.lic', { n: p.licenses.length }])
+    if ((f.kids || []).length) c.push([f.kids.length >= 3 ? 58 : 40, 'honor.kids', { n: f.kids.length }])
+    if (p.place !== p.home) c.push([45, 'honor.away', { home: p.home }])
+    // 墓碑銘（epitaph）と同じことを言う称号は避ける
+    const same = { senior: ['honor.lifelong'], rank: ['honor.rank', 'honor.climb'], many: ['honor.wander'], self: ['honor.boss'], plain: ['honor.plain', 'honor.loyal'] }[epitaphKey(p)]
+    const cand = c.filter(x => !same.includes(x[1]))
+    if (!cand.length) cand.push(p.titles.length <= 2 && !same.includes('honor.plain') ? [10, 'honor.plain', { job: mainJob(p) }] : [10, 'honor.steady', {}])
+    const [, key, vars] = cand.sort((a, b) => b[0] - a[0])[0]
+    return t(key, vars)
+  }
+
+  // 一言の場面：統計の数字は動かさず、その年の様子を短い文で残す
+  // 文の候補は i18n の epi.* に | 区切り。同じ文は一生で一度だけ
+  function episode(p) {
+    if (p.unemployed || p.leave > 0 || p.parental > 0) return
+    const first = p.workYears === 1
+    if (!first && rnd() >= 0.18) return
+    const f = p.family || { kids: [] }
+    const pools = []
+    if (first) pools.push(p.emp === 'self' ? 'epi.firstSelf' : 'epi.first')
+    else {
+      if (p.yearsInJob === 1 && p.jobsHeld.length > 1) pools.push('epi.newJob')
+      if (p.age < 35) pools.push('epi.young')
+      if (p.age >= 35 && p.age < 50) pools.push('epi.mid')
+      if (p.age >= 50 && p.age < 65) pools.push('epi.late')
+      if (p.age >= 65) pools.push('epi.senior')
+      if (p.rank >= 2) pools.push('epi.mgr')
+      if (p.emp === 'irregular') pools.push('epi.irr')
+      if (p.emp === 'self') pools.push('epi.self')
+      if (p.emp === 'public') pools.push('epi.pub')
+      if ((f.kids || []).some(k => p.year - k.born < 12)) pools.push('epi.kids')
+      if (f.care) pools.push('epi.care')
+      if (p.mental < 35) pools.push('epi.low')
+      if (p.skill >= 80) pools.push('epi.skill')
+    }
+    const used = (p.flags.epi ||= [])
+    const lines = pools.flatMap(k => t(k).split('|')).filter(x => x && !used.includes(x))
+    if (!lines.length) return
+    const line = pick(lines)
+    used.push(line)
+    addLog(p, line.replace(/%job%/g, title(p)), 'scene')
+  }
+
   // いちばん長く就いていた職業名
   function mainJob(p) {
     const cnt = {}
@@ -630,5 +702,5 @@
     return Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]?.[0] || p.titles[0]
   }
 
-  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, calcIncome, eligible, START_YEAR, AI_YEAR }
+  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, calcIncome, eligible, START_YEAR, AI_YEAR }
 })()

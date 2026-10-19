@@ -129,6 +129,15 @@ a { color: var(--accent); }
 .log li.life { color: var(--accent); }
 .dl.fam { grid-template-columns: 5.5em 1fr; margin: 0; }
 .log li.reflect { font-family: var(--serif); font-style: italic; }
+.log li.scene { color: var(--muted); }
+/* 称号 */
+.honor { display: inline-block; margin: 6px 0 2px; padding: 3px 12px; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); font-weight: 700; font-size: 14px; }
+.honor:empty { display: none; }
+.honor.sm { font-size: 11px; padding: 1px 8px; margin: 4px 0 2px; }
+/* ひと息の数字 */
+.m-data { display: grid; gap: 6px; margin: 4px 0 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+.m-data div { display: flex; justify-content: space-between; gap: 12px; }
+.m-data span { color: var(--muted); }
 
 /* modal */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; z-index: 20; padding: 16px; }
@@ -176,6 +185,7 @@ a { color: var(--accent); }
   /* 見出しの th は width:1% なので、事項の列だけは残りの幅を全部使う */
   #printArea .pr-table th:last-child { width: auto; white-space: normal; }
   html, body.printing { background: #fff !important; }
+  #printArea .pr-honor { font-size: 10.5pt; font-weight: 700; margin: 12px 0 0; }
   #printArea .pr-epitaph { font-size: 13pt; margin: 12px 0; }
   #printArea .pr-note { font-size: 8pt; color: #555; margin-top: 16px; }
   #printArea tr { page-break-inside: avoid; }
