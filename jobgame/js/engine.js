@@ -44,6 +44,12 @@
       { key: 'normal', w: 73, drain: 1, start: 0, sick: 0 },
       { key: 'frail', w: 15, drain: 1.3, start: -8, sick: 0.05 },
     ],
+    // 仕事への向き合い方。真面目な人は腕が上がり昇進しやすいが抱え込みやすい。不真面目な人はその逆
+    work: [
+      { key: 'diligent', w: 20, skill: 1.25, promo: 1.35, stress: 1.1, rel: 1, pay: 1.03 },
+      { key: 'normal', w: 60, skill: 1, promo: 1, stress: 1, rel: 0, pay: 1 },
+      { key: 'lax', w: 20, skill: 0.7, promo: 0.45, stress: 0.8, rel: -1, pay: 0.93 },
+    ],
   }
   const traitFx = (p, k) => TRAITS[k].find(x => x.key === ((p.trait || {})[k] || 'normal'))
 
@@ -136,7 +142,7 @@
       ended: false, endReason: null, flags: {}, peakRank: 0, auto: !!opts.auto,
       sideJob: null, leave: 0, unemployed: false, selfYears: 0,
     }
-    p.trait = { mind: weighted(TRAITS.mind, x => x.w).key, body: weighted(TRAITS.body, x => x.w).key }
+    p.trait = { mind: weighted(TRAITS.mind, x => x.w).key, body: weighted(TRAITS.body, x => x.w).key, work: weighted(TRAITS.work, x => x.w).key }
     p.mental = clamp(p.mental + traitFx(p, 'mind').start); p.health = clamp(p.health + traitFx(p, 'body').start)
     p.flags.familyBiz = (C.familyBiz && (job.code === C.familyBiz.job || rnd() < C.familyBiz.rate)) || false
     p.variant = pickVariant(job.code, p.meta)
@@ -169,6 +175,7 @@
     if (p.emp === 'rehired') base *= 0.6
     if (p.emp === 'senior') base = j.inc * 0.45 * (p.age < 70 ? 1 : 0.85)
     if (p.shortTime > 0) base *= 0.8 // 時短勤務
+    base *= traitFx(p, 'work').pay // 査定・賞与の差
     base *= window.RANKS[p.rank].mult
     return Math.round(base * 10) / 10 >= 100 ? Math.round(base) : Math.round(base * 10) / 10
   }
@@ -310,16 +317,16 @@
     ot *= window.Life.otMult(p)
     p.lastOt = ot
     const ageDrain = (p.age > 45 ? (p.age - 45) * 0.12 : 0) + (p.age >= 65 ? (p.age - 64) * 0.6 : 0)
-    const fxB = traitFx(p, 'body'), fxM = traitFx(p, 'mind')
+    const fxB = traitFx(p, 'body'), fxM = traitFx(p, 'mind'), fxW = traitFx(p, 'work')
     p.health = clamp(p.health - (j.phys * 0.08 + ot * 0.12 + ageDrain) * fxB.drain + 5 + (f === 'rest' ? 9 : 0) - (f === 'side' || f === 'study' ? 3 : 0))
     let stress = j.st * 0.11 + ot * 0.16 + (p.rel < 35 ? 4 : 0) + (p.emp === 'irregular' ? 3 : 0) + (p.emp === 'self' ? 2 : 0)
     if ((C.itMids || []).includes(j.mid)) stress += 1.5 // 情報通信業はメンタル不調の休業率が高い
-    p.mental = clamp(p.mental - stress * fxM.stress + 4 + fxM.rec + (f === 'rest' ? 6 : 0) + (f === 'play' ? 11 : 0) - (f === 'study' ? 2 : 0))
+    p.mental = clamp(p.mental - stress * fxM.stress * fxW.stress + 4 + fxM.rec + (f === 'rest' ? 6 : 0) + (f === 'play' ? 11 : 0) - (f === 'study' ? 2 : 0))
 
     // スキル・メタスキル・人間関係
-    p.skill = clamp(p.skill + 7 * (1 - p.skill / 110) * (f === 'work' ? 1.4 : 1))
+    p.skill = clamp(p.skill + 7 * (1 - p.skill / 110) * (f === 'work' ? 1.4 : 1) * fxW.skill)
     p.meta = clamp(p.meta + (f === 'meta' ? 7 : f === 'side' ? 3 : 0.8) - (p.age > 50 && f !== 'meta' ? 0.5 : 0))
-    p.rel = clamp(p.rel + (rnd() - 0.45) * 12 + (f === 'work' ? 3 : 0))
+    p.rel = clamp(p.rel + (rnd() - 0.45) * 12 + (f === 'work' ? 3 : 0) + fxW.rel)
 
     // 収入
     p.income = calcIncome(p)
@@ -355,7 +362,7 @@
       const needAge = [0, 26, 31, 38, 45, 52][p.rank + 1]
       const base = [0, 0.2, 0.07, 0.016, 0.02, 0.006][p.rank + 1]
       const sizeOk = p.rank + 1 < 5 || ['xl', 'l', 'gov'].includes(p.size.key)
-      const chance = base * Math.min(1.25, p.skill / 60) * (0.5 + p.rel / 100) * (f === 'work' ? 1.6 : 1) * (p.emp === 'public' ? 1.1 : 1) * window.Life.promoMult(p)
+      const chance = base * Math.min(1.25, p.skill / 60) * (0.5 + p.rel / 100) * (f === 'work' ? 1.6 : 1) * (p.emp === 'public' ? 1.1 : 1) * window.Life.promoMult(p) * fxW.promo
       if (p.age >= needAge && sizeOk && rnd() < chance) events.push({ type: 'promo', to: p.rank + 1 })
     }
 
@@ -673,6 +680,9 @@
     const leaves = p.log.some(l => l.kind === 'leave')
     if ((p.trait || {}).mind === 'steel' && !leaves && p.workYears >= 30) c.push([56, 'honor.steel', {}])
     if ((p.trait || {}).body === 'frail' && p.workYears >= 35) c.push([57, 'honor.frail', { n: p.workYears }])
+    const wk = (p.trait || {}).work
+    if (wk === 'lax' && !leaves && p.workYears >= 30) c.push([50, 'honor.lax', {}])
+    if (wk === 'diligent' && p.peakRank >= 2) c.push([48, 'honor.diligent', {}])
     if (careYears >= 3) c.push([72, 'honor.care', { n: careYears }])
     if (had('leave') && p.workYears >= 25) c.push([70, 'honor.rise', {}])
     if (p.aiMult <= 0.85) c.push([66, 'honor.aiDown', {}])
@@ -712,6 +722,8 @@
       if (f.care) pools.push('epi.care')
       if (p.mental < 35) pools.push('epi.low')
       if (p.skill >= 80) pools.push('epi.skill')
+      if ((p.trait || {}).work === 'diligent') pools.push('epi.diligent')
+      if ((p.trait || {}).work === 'lax') pools.push('epi.lax')
     }
     const used = (p.flags.epi ||= [])
     const lines = pools.flatMap(k => t(k).split('|')).filter(x => x && !used.includes(x))

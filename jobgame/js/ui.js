@@ -9,7 +9,7 @@
   const fmtPeople = j => j.workers == null ? '—' : C.fmtPeople(j.workers, j.split)
   const cap = s => (C.lang === 'ja' ? s : s.charAt(0).toUpperCase() + s.slice(1))
   // 生まれつきの気質・体質（ふつうの人は出さない）
-  const traitRows = p => [['kv.mind', 'mind'], ['kv.body', 'body']].filter(([, k]) => p.trait && p.trait[k] !== 'normal').map(([l, k]) => [l, t('trait.' + p.trait[k])])
+  const traitRows = p => [['kv.work', 'work'], ['kv.mind', 'mind'], ['kv.body', 'body']].filter(([, k]) => p.trait && p.trait[k] !== 'normal').map(([l, k]) => [l, t('trait.' + p.trait[k])])
 
   // ---------- 保存（国ごとに分ける） ----------
   const K = k => `jg_${C.code}_${k}`
