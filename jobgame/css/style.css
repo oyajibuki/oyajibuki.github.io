@@ -145,7 +145,7 @@ a { color: var(--accent); }
 .m-data span { color: var(--muted); }
 
 /* modal */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; z-index: 20; padding: 16px; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; z-index: 60; padding: 16px; }
 .modal-box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; max-width: 520px; width: 100%; padding: 22px; }
 .modal-k { font-size: 12px; color: var(--accent); font-weight: 700; }
 .modal-box h3 { font-family: var(--serif); font-size: 22px; margin: 4px 0 8px; }
@@ -172,6 +172,12 @@ a { color: var(--accent); }
 .video-out video { width: 100%; max-width: 300px; display: block; margin: 12px auto; border-radius: 8px; }
 .video-out .btn { display: block; margin: 0 auto; }
 .buy-list { margin: 8px 0 12px; padding-left: 1.2em; }
+/* 購入前の見本（透かし入り・保存不可） */
+.buy-box { max-width: 640px; max-height: calc(100vh - 32px); overflow-y: auto; }
+.buy-preview { display: flex; gap: 10px; overflow-x: auto; padding: 8px 0 6px; margin: 4px 0 6px; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.buy-preview figure { margin: 0; flex: none; text-align: center; }
+.buy-preview canvas { display: block; height: 150px; width: auto; border-radius: 6px; border: 1px solid var(--line); pointer-events: none; background: var(--bg2); min-width: 90px; }
+.buy-preview figcaption { font-size: 11px; color: var(--muted); margin-top: 4px; }
 .choices button b { float: right; color: var(--accent); }
 #printArea { display: none; }
 @media print {

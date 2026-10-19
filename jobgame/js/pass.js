@@ -727,7 +727,41 @@
     $('buyTitle').textContent = t('pass.buy.t', { name: snap.name })
     $('buyPrice').textContent = window.PASS_CONFIG.price
     $('buyModal').classList.remove('hidden')
+    renderBuyPreview(snap)
   }
+
+  // 購入前の見本：その人生で実際につくれるものを、小さく・透かし入りで見せる（保存はできない）
+  let prevToken = 0
+  async function renderBuyPreview(snap) {
+    const box = $('buyPreview'), token = ++prevToken
+    const items = [['img', drawImage, 'pass.prev.img'], ...DOCS.map(([k, fn]) => [k, fn, 'docs.name.' + k]), ['short', drawShortThumb, 'pass.prev.short']]
+    box.innerHTML = items.map(([k, , l]) => `<figure data-prev="${k}"><canvas></canvas><figcaption>${t(l)}</figcaption></figure>`).join('')
+    for (const [k, fn] of items) {
+      if (token !== prevToken) return
+      const fig = box.querySelector(`[data-prev="${k}"]`)
+      try {
+        const src = document.createElement('canvas')
+        await fn(src, snap)
+        if (token !== prevToken) return
+        watermark(fig.querySelector('canvas'), src)
+      } catch { fig.remove() } // 古いメモリアルなど、材料が足りないものは出さない
+    }
+  }
+  // 縮小して（印刷やSNSに使えない解像度）、斜めに「SAMPLE」を敷き詰める
+  function watermark(dst, src) {
+    const h = 260, w = Math.round(src.width * h / src.height)
+    dst.width = w; dst.height = h
+    const g = dst.getContext('2d')
+    g.drawImage(src, 0, 0, w, h)
+    g.save(); g.translate(w / 2, h / 2); g.rotate(-Math.PI / 7)
+    const label = t('pass.sample')
+    g.font = `800 ${Math.round(h / 9)}px ${SANS}`; g.textAlign = 'center'; g.textBaseline = 'middle'
+    g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,.35)'; g.fillStyle = 'rgba(255,255,255,.6)'
+    const step = g.measureText(label).width + h / 6
+    for (let y = -h; y <= h; y += h / 3.4) for (let x = -w - (y / 2 % step); x <= w; x += step) { g.strokeText(label, x, y); g.fillText(label, x, y) }
+    g.restore()
+  }
+  $('buyPreview').addEventListener('contextmenu', e => e.preventDefault())
   async function showWorks(snap) {
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'pass'))
     window.scrollTo(0, 0)
@@ -739,7 +773,7 @@
     renderDocs(snap)
     await drawImage($('passCanvas'), snap)
   }
-  $('buyClose').addEventListener('click', () => $('buyModal').classList.add('hidden'))
+  $('buyClose').addEventListener('click', () => { prevToken++; $('buyModal').classList.add('hidden') })
   $('buyGo').addEventListener('click', () => {
     const url = window.PASS_CONFIG.checkoutUrl
     if (url) {
