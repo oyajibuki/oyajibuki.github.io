@@ -130,6 +130,11 @@ a { color: var(--accent); }
 .dl.fam { grid-template-columns: 5.5em 1fr; margin: 0; }
 .log li.reflect { font-family: var(--serif); font-style: italic; }
 .log li.scene { color: var(--muted); }
+/* 画面上部の体力・メンタル */
+.vitals { display: inline-flex; gap: 10px; font-size: 11px; color: var(--muted); align-items: center; }
+.vitals span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.vitals i { display: inline-block; width: 44px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.vitals b { display: block; height: 100%; transition: width .4s; }
 /* 称号 */
 .honor { display: inline-block; margin: 6px 0 2px; padding: 3px 12px; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); font-weight: 700; font-size: 14px; }
 .honor:empty { display: none; }
@@ -214,6 +219,7 @@ a { color: var(--accent); }
 @media (max-width: 860px) {
   .hero, .grid3, .play { grid-template-columns: 1fr; }
   .bar { grid-template-columns: 1fr; gap: 6px; }
+  .bar-l { flex-wrap: wrap; row-gap: 4px; }
   .kv { grid-template-columns: repeat(2, 1fr); }
   .jobrow { grid-template-columns: 2.6em 1fr 5em 4em; }
   .jobrow .hide-sm { display: none; }

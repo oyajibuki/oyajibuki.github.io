@@ -8,6 +8,8 @@
   const icon = j => C.icons.mid[j.mid] || C.icons.major[j.major] || '•'
   const fmtPeople = j => j.workers == null ? '—' : C.fmtPeople(j.workers, j.split)
   const cap = s => (C.lang === 'ja' ? s : s.charAt(0).toUpperCase() + s.slice(1))
+  // 生まれつきの気質・体質（ふつうの人は出さない）
+  const traitRows = p => [['kv.mind', 'mind'], ['kv.body', 'body']].filter(([, k]) => p.trait && p.trait[k] !== 'normal').map(([l, k]) => [l, t('trait.' + p.trait[k])])
 
   // ---------- 保存（国ごとに分ける） ----------
   const K = k => `jg_${C.code}_${k}`
@@ -102,7 +104,7 @@
     $('cLead').textContent = t('c.lead', { year: E.START_YEAR, age: p.age, place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: E.empName(p.emp), title: E.title(p) })
     const kv = [
       ['kv.major', `${j.major} ${j.majorName}`], ['kv.mid', `${j.mid} ${j.midName}`], ['kv.job', `${j.code} ${j.name}`], ...(p.variant ? [['kv.variant', p.variant]] : []),
-      ['kv.sex', t('sex.' + p.sex)], ['kv.edu', cap(p.edu.name)], ['kv.emp', E.empName(p.emp)],
+      ['kv.sex', t('sex.' + p.sex)], ...traitRows(p), ['kv.edu', cap(p.edu.name)], ['kv.emp', E.empName(p.emp)],
       ['kv.size', p.size.name], ['kv.firstInc', money(p.income)], ['kv.peakInc', `${money(j.inc)}${j.incSrc === 'est' ? t('estParen') : ''}`],
       ['kv.ot', t('unit.hours', { n: j.ot })], ['kv.female', `${Math.round(j.female * 100)}%`], ['kv.ai', `${Math.round(j.ai * 100)}%`],
       ...(j.isco ? [['kv.isco', `${j.isco} ${(window.ISCO.subMajors[j.isco] || {})[C.lang] || ''}`]] : []),
@@ -136,13 +138,15 @@
     const span = Math.max(65, p.age) - p.startAge
     $('pAge').textContent = age(p.age)
     $('pSub').textContent = t('p.sub', { year: p.year, name: p.name, n: p.workYears })
+    // 画面上部の小さなゲージ（体力・メンタル）
+    $('pVitals').innerHTML = [['st.health', p.health, 'var(--green)'], ['st.mental', p.mental, 'var(--yellow)']].map(([k, v, c]) => `<span title="${t(k)} ${Math.round(v)}">${t(k)}<i><b style="width:${v}%;background:${v < 25 ? 'var(--red)' : c}"></b></i></span>`).join('')
     $('pProg').style.width = Math.min(100, (p.age - p.startAge) / span * 100) + '%'
     $('idYear').textContent = p.year
     $('idAvatar').textContent = icon(j)
     $('idName').textContent = p.name
     const dl = [
       ['dl.job', E.title(p)], ...(p.variant && !E.isMgr(p.job) ? [['kv.job', j.name]] : []), ['dl.class', C.classLabel(j)], ['dl.size', p.unemployed ? '—' : p.size.name],
-      ['dl.emp', p.unemployed ? t('p.seeking') : p.leave > 0 ? t('p.onLeave', { emp: E.empName(p.emp) }) : E.empName(p.emp)], ['dl.rank', RANKS[p.rank].name], ['dl.edu', cap(p.edu.name)],
+      ['dl.emp', p.unemployed ? t('p.seeking') : p.leave > 0 ? t('p.onLeave', { emp: E.empName(p.emp) }) : E.empName(p.emp)], ['dl.rank', RANKS[p.rank].name], ['dl.edu', cap(p.edu.name)], ...traitRows(p),
     ]
     $('idDl').innerHTML = dl.map(([k, v]) => `<dt>${t(k)}</dt><dd>${esc(v)}</dd>`).join('')
     const st = [['st.health', p.health, 'var(--green)'], ['st.mental', p.mental, 'var(--yellow)'], ['st.skill', p.skill, 'var(--blue)'], ['st.meta', p.meta, 'var(--blue)'], ['st.rel', p.rel, 'var(--accent)'], ...(p.family.spouse ? [['st.bond', p.family.bond, 'var(--accent)']] : [])]

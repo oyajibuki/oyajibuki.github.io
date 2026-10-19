@@ -30,6 +30,23 @@
     const isco = (window.ISCO_MAP || {})[code]
     return { w: 10, inc: 0, self: 0.05, edu: 0, ...(window.ISCO_PARAMS[isco] || {}), ...(MP[code] || {}), isco }
   }
+  // 生まれつきの気質（メンタル）と体質（体力）。ゲーム上のばらつきで、統計の数字ではない
+  // stress / drain は消耗の倍率、rec は毎年の回復の上乗せ、start は最初の値の上乗せ
+  const TRAITS = {
+    mind: [
+      { key: 'steel', w: 8, stress: 0.45, rec: 3, start: 15 },
+      { key: 'tough', w: 17, stress: 0.75, rec: 1, start: 8 },
+      { key: 'normal', w: 55, stress: 1, rec: 0, start: 0 },
+      { key: 'sensitive', w: 20, stress: 1.2, rec: 0, start: -5 },
+    ],
+    body: [
+      { key: 'robust', w: 12, drain: 0.6, start: 8, sick: 0 },
+      { key: 'normal', w: 73, drain: 1, start: 0, sick: 0 },
+      { key: 'frail', w: 15, drain: 1.3, start: -8, sick: 0.05 },
+    ],
+  }
+  const traitFx = (p, k) => TRAITS[k].find(x => x.key === ((p.trait || {})[k] || 'normal'))
+
   const JOBS = {}
   for (const Mj of J.majors) {
     const mids = Mj.mids.map(c => J.mids[c])
@@ -119,6 +136,8 @@
       ended: false, endReason: null, flags: {}, peakRank: 0, auto: !!opts.auto,
       sideJob: null, leave: 0, unemployed: false, selfYears: 0,
     }
+    p.trait = { mind: weighted(TRAITS.mind, x => x.w).key, body: weighted(TRAITS.body, x => x.w).key }
+    p.mental = clamp(p.mental + traitFx(p, 'mind').start); p.health = clamp(p.health + traitFx(p, 'body').start)
     p.flags.familyBiz = (C.familyBiz && (job.code === C.familyBiz.job || rnd() < C.familyBiz.rate)) || false
     p.variant = pickVariant(job.code, p.meta)
     p.titles = [title(p)]
@@ -291,10 +310,11 @@
     ot *= window.Life.otMult(p)
     p.lastOt = ot
     const ageDrain = (p.age > 45 ? (p.age - 45) * 0.12 : 0) + (p.age >= 65 ? (p.age - 64) * 0.6 : 0)
-    p.health = clamp(p.health - j.phys * 0.08 - ot * 0.12 - ageDrain + 5 + (f === 'rest' ? 9 : 0) - (f === 'side' || f === 'study' ? 3 : 0))
+    const fxB = traitFx(p, 'body'), fxM = traitFx(p, 'mind')
+    p.health = clamp(p.health - (j.phys * 0.08 + ot * 0.12 + ageDrain) * fxB.drain + 5 + (f === 'rest' ? 9 : 0) - (f === 'side' || f === 'study' ? 3 : 0))
     let stress = j.st * 0.11 + ot * 0.16 + (p.rel < 35 ? 4 : 0) + (p.emp === 'irregular' ? 3 : 0) + (p.emp === 'self' ? 2 : 0)
     if ((C.itMids || []).includes(j.mid)) stress += 1.5 // 情報通信業はメンタル不調の休業率が高い
-    p.mental = clamp(p.mental - stress + 4 + (f === 'rest' ? 6 : 0) + (f === 'play' ? 11 : 0) - (f === 'study' ? 2 : 0))
+    p.mental = clamp(p.mental - stress * fxM.stress + 4 + fxM.rec + (f === 'rest' ? 6 : 0) + (f === 'play' ? 11 : 0) - (f === 'study' ? 2 : 0))
 
     // スキル・メタスキル・人間関係
     p.skill = clamp(p.skill + 7 * (1 - p.skill / 110) * (f === 'work' ? 1.4 : 1))
@@ -365,6 +385,9 @@
         ['rand.sick', () => { p.health = clamp(p.health - 10) }],
       ])
       ev[1](); addLog(p, t(ev[0]))
+    } else if (rnd() < fxB.sick) {
+      // 病弱な体質は、ほかの出来事とは別に体調を崩しやすい
+      p.health = clamp(p.health - 10); addLog(p, t('rand.sick'))
     }
     episode(p)
 
@@ -647,6 +670,9 @@
     if (p.titles.length === 1 && p.workYears >= 35) c.push([82, 'honor.loyal', { n: p.workYears }])
     if (p.emp === 'self' && p.selfYears >= 15) c.push([78, 'honor.boss', {}])
     if (p.titles.length >= 5) c.push([75, 'honor.wander', { n: p.titles.length }])
+    const leaves = p.log.some(l => l.kind === 'leave')
+    if ((p.trait || {}).mind === 'steel' && !leaves && p.workYears >= 30) c.push([56, 'honor.steel', {}])
+    if ((p.trait || {}).body === 'frail' && p.workYears >= 35) c.push([57, 'honor.frail', { n: p.workYears }])
     if (careYears >= 3) c.push([72, 'honor.care', { n: careYears }])
     if (had('leave') && p.workYears >= 25) c.push([70, 'honor.rise', {}])
     if (p.aiMult <= 0.85) c.push([66, 'honor.aiDown', {}])
@@ -702,5 +728,5 @@
     return Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]?.[0] || p.titles[0]
   }
 
-  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, calcIncome, eligible, START_YEAR, AI_YEAR }
+  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
 })()
