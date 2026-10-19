@@ -376,8 +376,8 @@
 </div>
 
 <script>
-// アクセスカウンター（ページ表示時に1回だけ送信）。手元（localhost）での確認は数えない
-if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job")
+// アクセスカウンター（ページ表示時に1回だけ送信。参照元も添える）。手元（localhost）での確認は数えない
+if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job&ref=" + encodeURIComponent(document.referrer))
   .catch(() => {});
 </script>
 <script src="js/i18n.js?v=0.4.10"></script>
