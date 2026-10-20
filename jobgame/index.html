@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Klee+One:wght@600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=0.5.8">
+<link rel="stylesheet" href="css/style.css?v=0.6.1">
 </head>
 <body>
 
@@ -102,6 +102,14 @@
         <button class="btn" data-go="memorial" data-i18n="home.mem.all"></button>
         <button class="btn" id="btnMoreLives" data-i18n="home.mem.more"></button>
       </div>
+    </section>
+
+    <section class="rank-home hidden" id="ranking">
+      <h2 class="h2 serif" data-i18n="rank.h"></h2>
+      <p class="muted small" data-i18n="rank.d"></p>
+      <div class="seg rank-tabs" id="rankTabs"></div>
+      <ol class="rank-list" id="rankList"></ol>
+      <p class="muted small" id="rankNote"></p>
     </section>
 
     <div class="grid3">
@@ -239,6 +247,31 @@
           <button class="btn share-fb" data-share="fb">Facebook</button>
           <button class="btn share-th" data-share="threads">Threads</button>
           <button class="btn hidden" id="btnShareMore" data-i18n="e.share.more"></button>
+        </div>
+        <div class="rankbox hidden" id="eRank">
+          <div class="card-h" data-i18n="rank.e.h"></div>
+          <div class="hi rank-mine" id="rankMine"></div>
+          <div id="rankForm">
+            <label class="small muted" for="rankName" data-i18n="rank.e.name"></label>
+            <div class="rank-form">
+              <input id="rankName" class="input" maxlength="12" data-i18n-ph="rank.e.namePh">
+              <button class="btn primary" id="rankSend" data-i18n="rank.e.send"></button>
+            </div>
+            <div class="small muted" id="rankStatus"></div>
+            <p class="small muted" data-i18n="rank.e.note"></p>
+          </div>
+          <div id="rankResult" class="hidden">
+            <div class="hi rank-ranks"></div>
+            <p class="rank-share-text" id="rankShareText"></p>
+            <div class="share-row">
+              <button class="btn share-x" data-rshare="x" data-i18n="e.share.x"></button>
+              <button class="btn share-line" data-rshare="line">LINE</button>
+              <button class="btn share-fb" data-rshare="fb">Facebook</button>
+              <button class="btn share-th" data-rshare="threads">Threads</button>
+              <button class="btn" data-rshare="more" data-i18n="e.share.more"></button>
+            </div>
+            <a class="small" href="#ranking" data-go="home" data-i18n="rank.e.see"></a>
+          </div>
         </div>
         <div class="kv" id="eKv"></div>
         <svg id="eChart" viewBox="0 0 600 170"></svg>
@@ -386,7 +419,7 @@
 if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job&ref=" + encodeURIComponent(document.referrer))
   .catch(() => {});
 </script>
-<script src="js/i18n.js?v=0.5.8"></script>
-<script src="js/boot.js?v=0.5.8"></script>
+<script src="js/i18n.js?v=0.6.1"></script>
+<script src="js/boot.js?v=0.6.1"></script>
 </body>
 </html>

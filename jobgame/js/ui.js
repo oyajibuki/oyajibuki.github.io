@@ -53,7 +53,7 @@
     window.scrollTo(0, 0)
     if (id === 'zukan') renderZukan()
     if (id === 'memorial') renderMemorial()
-    if (id === 'home') renderHomeMem()
+    if (id === 'home') { renderHomeMem(); if (window.Rank) window.Rank.renderHome() }
     if (id !== 'play') S.playing = false
     if (window.__syncFloat) setTimeout(window.__syncFloat, 0)
   }
@@ -358,6 +358,8 @@
     $('eHonor').textContent = honor
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
     S.snap = window.Pass.snapshot(p, S.peers, { honor })
+    // ランキングに載せられるよう、この人生の数字を渡す（名前はホームで入れたものだけを初期値にする）
+    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: S.name || '', lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor })
     snapScene($('eScene'), S.snap)
     $('eWord').value = ''
     go('ending')
@@ -497,6 +499,7 @@
   applyText()
   renderHome()
   renderHomeMem()
+  if (window.Rank) window.Rank.renderHome()
   initLive()
   // Stripe から戻ってきたら、その人生をメモリアルに納めて（まだなら）作品を開く
   const paidSnap = window.Pass.resume()

@@ -258,6 +258,25 @@ a { color: var(--accent); }
 @keyframes startPulse { 0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(217,112,138,.35); } 50% { transform: scale(1.05); box-shadow: 0 14px 44px rgba(217,112,138,.55); } }
 .cta-row.center { justify-content: center; }
 .mem-home { margin: 48px 0 24px; }
+/* ランキング */
+.rankbox { margin: 16px 0 6px; padding: 14px 16px; border: 1px solid var(--accent); border-radius: 12px; background: var(--bg2); }
+.rankbox .hi { margin: 10px 0; }
+.rank-form { display: flex; gap: 8px; margin: 4px 0 6px; }
+.rank-form .input { flex: 1; min-width: 0; }
+.rank-ranks div.best { border-color: var(--accent); }
+.rank-ranks small { display: block; font-size: 11px; color: var(--muted); }
+.rank-share-text { white-space: pre-line; font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.rank-home { margin: 40px 0 24px; }
+.rank-tabs { margin: 10px 0 8px; }
+.rank-list { list-style: none; padding: 0; margin: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+.rank-list li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }
+.rank-list li:first-child { border-top: 0; }
+.rank-list li.me { background: rgba(200, 80, 110, .08); }
+.rank-list li.empty { display: block; color: var(--muted); font-size: 14px; }
+.rank-list .rk { font-family: var(--serif); font-size: 20px; color: var(--accent); text-align: center; }
+.rank-list .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-list .nm small { display: block; font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+.rank-list b { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .mem-home .h2 { font-family: var(--serif); }
 .mrow { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 6px 2px 14px; margin-top: 12px; }
 .mc { flex: 0 0 280px; scroll-snap-align: start; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; cursor: default; }
