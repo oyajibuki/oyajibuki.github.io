@@ -358,8 +358,8 @@
     $('eHonor').textContent = honor
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
     S.snap = window.Pass.snapshot(p, S.peers, { honor })
-    // ランキングに載せられるよう、この人生の数字を渡す（名前はホームで入れたものだけを初期値にする）
-    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: S.name || '', lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor })
+    // ランキングに載せられるよう、この人生の数字を渡す（名前は、この人生を過ごした名前）
+    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor })
     snapScene($('eScene'), S.snap)
     $('eWord').value = ''
     go('ending')
@@ -368,15 +368,9 @@
   // 結果をシェア（URL は公開版に固定。英語は英語版へ）
   const SHARE_URL = 'https://oyajibuki.github.io/jobgame/' + (C.lang === 'ja' ? '' : `?lang=${C.lang}`)
   // SNS ごとの共有画面（Instagram・TikTok・YouTube は文章とURLだけの共有ができないので、作品画面の画像・動画から共有する）
-  const shareTo = {
-    x: (tx, u) => `https://x.com/intent/post?text=${encodeURIComponent(tx)}&url=${encodeURIComponent(u)}`,
-    line: (tx, u) => `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(u)}&text=${encodeURIComponent(tx)}`,
-    fb: (tx, u) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}`,
-    threads: (tx, u) => `https://www.threads.net/intent/post?text=${encodeURIComponent(tx + '\n' + u)}`,
-  }
   document.querySelector('#ending .share-row').addEventListener('click', e => {
     const b = e.target.closest('[data-share]'); if (!b) return
-    window.open(shareTo[b.dataset.share](S.shareText, SHARE_URL), '_blank', 'noopener')
+    window.Share.open(b.dataset.share, S.shareText, SHARE_URL)
   })
   if (navigator.share) {
     $('btnShareMore').classList.remove('hidden')

@@ -265,6 +265,20 @@ a { color: var(--accent); }
 .rank-form .input { flex: 1; min-width: 0; }
 .rank-ranks div.best { border-color: var(--accent); }
 .rank-ranks small { display: block; font-size: 11px; color: var(--muted); }
+@media (max-width: 560px) {
+  .rankbox .hi { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .rankbox .hi div { padding: 8px; }
+  .rankbox .hi span { font-size: 10px; }
+  .rankbox .hi b { font-size: 16px; }
+  .rank-form { flex-direction: column; }
+}
+.rank-anon { display: inline-flex; gap: 6px; align-items: center; margin: 2px 0 4px; cursor: pointer; }
+.rank-anon input { margin: 0; }
+.rank-form .input:disabled { opacity: .5; }
+.rank-more { margin-top: 8px; }
+.rank-more summary { cursor: pointer; font-size: 14px; color: var(--accent); padding: 6px 2px; }
+.rank-more .rank-list { margin-top: 6px; }
+.toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 80; background: #222; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13px; max-width: calc(100vw - 32px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
 .rank-share-text { white-space: pre-line; font-size: 13px; color: var(--muted); margin: 6px 0 0; }
 .rank-home { margin: 40px 0 24px; }
 .rank-tabs { margin: 10px 0 8px; }
