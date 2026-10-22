@@ -85,11 +85,11 @@ window.Share = (function () {
   })
 
   // ---------- 引退画面：載せる → 順位 → シェア ----------
-  let cur = null, shareText = ''
-  function offer(entry) {
+  let cur = null, shareText = '', cardOf = null, rankCard = null
+  function offer(entry, makeCard) {
     const box = $('eRank')
     if (!RANK_URL || !box) return
-    cur = entry
+    cur = entry; cardOf = makeCard || null; rankCard = null
     box.classList.remove('hidden')
     $('rankMine').innerHTML = BOARDS.map(b => `<div><span>${t('rank.b.' + b)}</span><b>${esc(fmt(b, entry[{ money: 'lifetime', moves: 'moves', rare: 'rare' }[b]]))}</b></div>`).join('')
     $('rankName').value = entry.name || ''
@@ -107,6 +107,8 @@ window.Share = (function () {
     const key = { money: 'lifetime', moves: 'moves', rare: 'rare' }[best]
     shareText = t('rank.share', { board: t('rank.b.' + best), n: r.ranks[best], total: r.total.toLocaleString(), value: fmt(best, cur[key]), job: cur.job })
     $('rankShareText').textContent = shareText
+    // 順位入りのカード画像も先につくっておく
+    if (cardOf) cardOf(t('rank.badge', { board: t('rank.b.' + best), n: r.ranks[best] })).then(b => { rankCard = b })
   }
   $('rankSend') && $('rankSend').addEventListener('click', async () => {
     const btn = $('rankSend')
@@ -124,9 +126,15 @@ window.Share = (function () {
       $('rankStatus').textContent = t('rank.fail'); btn.disabled = false
     }
   })
-  document.addEventListener('click', e => {
+  document.addEventListener('click', async e => {
     const b = e.target.closest('#rankResult [data-rshare]'); if (!b) return
     const k = b.dataset.rshare
+    if (k === 'img') {
+      if (!cardOf) return
+      const blob = rankCard || await cardOf('')
+      window.Pass.shareCard(blob, shareText, SHARE_URL + '#ranking', `${t('brand')}_ranking.png`)
+      return
+    }
     if (k === 'more' && navigator.share) { navigator.share({ text: shareText, url: SHARE_URL + '#ranking' }).catch(() => {}); return }
     window.Share.open(k, shareText, SHARE_URL + '#ranking')
   })

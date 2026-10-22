@@ -359,8 +359,14 @@
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
     S.snap = window.Pass.snapshot(p, S.peers, { honor })
     // ランキングに載せられるよう、この人生の数字を渡す（名前は、この人生を過ごした名前）
-    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor })
+    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor }, badge => S.cardOf(badge))
     snapScene($('eScene'), S.snap)
+    // シェア用のカード画像は先につくっておく（スマホの共有シートは、ボタンを押した直後に呼ばないと開けない）
+    S.card = null
+    const cardOf = badge => window.Pass.drawShareCard(document.createElement('canvas'), S.snap, { scene: $('eScene'), top, peer: rank, badge })
+      .then(cv => new Promise(r => cv.toBlob(r, 'image/png')))
+    S.cardOf = cardOf
+    cardOf().then(b => { S.card = b })
     $('eWord').value = ''
     go('ending')
   }
@@ -368,6 +374,11 @@
   // 結果をシェア（URL は公開版に固定。英語は英語版へ）
   const SHARE_URL = 'https://oyajibuki.github.io/jobgame/' + (C.lang === 'ja' ? '' : `?lang=${C.lang}`)
   // SNS ごとの共有画面（Instagram・TikTok・YouTube は文章とURLだけの共有ができないので、作品画面の画像・動画から共有する）
+  const cardFile = () => `${t('brand')}_${S.p.name.replace(/\s+/g, '_')}.png`
+  $('btnShareImg').addEventListener('click', async () => {
+    const blob = S.card || await S.cardOf()
+    window.Pass.shareCard(blob, S.shareText, SHARE_URL, cardFile())
+  })
   document.querySelector('#ending .share-row').addEventListener('click', e => {
     const b = e.target.closest('[data-share]'); if (!b) return
     window.Share.open(b.dataset.share, S.shareText, SHARE_URL)

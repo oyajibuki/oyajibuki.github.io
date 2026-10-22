@@ -306,13 +306,13 @@
     if (line) { ctx.fillText(line, x, y); y += lh }
     return y
   }
-  function chart(ctx, snap, x, y, w, h, progress = 1) {
+  function chart(ctx, snap, x, y, w, h, progress = 1, labels = true) {
     const all = [snap.history, ...snap.peers.map(q => q.history)]
     const a0 = Math.min(...all.map(hs => hs[0] ? hs[0].age : 99)), a1 = Math.max(70, ...all.map(hs => hs.length ? hs[hs.length - 1].age : 0))
     const vmax = Math.max(CT.money.ticks[0] * 0.8, ...all.flat().map(h => h.income)) * 1.1
     const X = a => x + (a - a0) / (a1 - a0) * w, Y = v => y + h - v / vmax * h
     ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.setLineDash([6, 8])
-    for (const v of CT.money.ticks.slice(0, 3)) if (v < vmax) { ctx.beginPath(); ctx.moveTo(x, Y(v)); ctx.lineTo(x + w, Y(v)); ctx.stroke(); ctx.fillStyle = C.muted; ctx.font = `22px ${SANS}`; ctx.fillText(man(v), x + w - 110, Y(v) - 8) }
+    for (const v of CT.money.ticks.slice(0, 3)) if (v < vmax) { ctx.beginPath(); ctx.moveTo(x, Y(v)); ctx.lineTo(x + w, Y(v)); ctx.stroke(); if (labels) { ctx.fillStyle = C.muted; ctx.font = `22px ${SANS}`; ctx.fillText(man(v), x + w - 110, Y(v) - 8) } }
     ctx.setLineDash([])
     const line = (hs, color, lw, part) => {
       const n = Math.max(1, Math.floor(hs.length * part))
@@ -802,6 +802,85 @@
     } finally { btn.disabled = false }
   })
 
+  // ---------- 0. 無料のシェア用カード（1080×1350） ----------
+  // 引退画面・ランキングから、画像つきで投稿するためのカード。
+  // 有料の SNS 用画像（年収グラフ・歩み入り）と差をつけて、結果の要点だけを載せる。
+  // extra: { scene: 描画済みのドット絵 canvas, top: '上位12%', peer: 同期内の順位, badge: ランキングの順位の一言 }
+  async function drawShareCard(canvas, snap, extra = {}) {
+    await fontsReady()
+    const W = 1080, H = 1350, M = 64
+    canvas.width = W; canvas.height = H
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H)
+    // 見出しの帯
+    ctx.fillStyle = C.accent; ctx.fillRect(0, 0, W, 110)
+    ctx.fillStyle = '#2a1118'; ctx.font = `700 46px ${SERIF}`; ctx.fillText(t('brand'), M, 72)
+    ctx.font = `24px ${SANS}`; ctx.textAlign = 'right'; ctx.fillText(`${CT.code.toUpperCase()}-${snap.from}-${String(snap.id).toUpperCase()}`, W - M, 70); ctx.textAlign = 'left'
+    // ドット絵（ぼかさずに拡大）
+    let y = 140
+    if (extra.scene && extra.scene.width) {
+      // 空の上のほうを切って、地面と人物が入る横長の帯にする
+      const sh = 220, sw = extra.scene.width, srcH = Math.min(extra.scene.height, Math.round(sw * sh / (W - M * 2)))
+      ctx.imageSmoothingEnabled = false
+      ctx.drawImage(extra.scene, 0, extra.scene.height - srcH, sw, srcH, M, y, W - M * 2, sh)
+      ctx.imageSmoothingEnabled = true
+      ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(M, y, W - M * 2, sh)
+      y += sh + 50
+    } else y += 40
+    // 名前・期間・称号
+    ctx.fillStyle = C.accent; ctx.font = `700 26px ${SANS}`; ctx.fillText(t('card.rec'), M, y)
+    if (extra.badge) { ctx.textAlign = 'right'; ctx.fillStyle = C.yellow; ctx.font = `700 30px ${SANS}`; ctx.fillText(extra.badge, W - M, y); ctx.textAlign = 'left' }
+    ctx.fillStyle = C.text; fitText(ctx, snap.name, M, y + 82, 700, 76, W - M * 2)
+    ctx.fillStyle = C.muted; ctx.font = `28px ${SANS}`
+    ctx.fillText(t('card.meta', { from: snap.from, to: snap.to, n: snap.workYears, place: snap.place || snap.home || '' }), M, y + 128)
+    if (snap.honor) { ctx.fillStyle = C.accent; ctx.font = `700 32px ${SANS}`; wrap(ctx, t('honor.label', { s: snap.honor }), M, y + 176, W - M * 2, 40, 1) }
+    y += 210
+    // 6つの数字（2列×3段）
+    const d = snap.docs || {}
+    const cells = [
+      [t('card.first'), snap.firstJob], [t('card.main'), d.mainTitle || snap.firstJob],
+      [t('card.money'), man(snap.lifetime)], [t('card.rank'), snap.peakRank],
+      [t('card.rare'), snap.firstRare ? t('e.hi.rareV', { n: snap.firstRare.toLocaleString() }) : '—'], [t('card.end'), t('card.endV', { age: snap.endAge })],
+    ]
+    const cw = (W - M * 2) / 2
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(M, y); ctx.lineTo(W - M, y); ctx.stroke()
+    cells.forEach(([k, v], i) => {
+      const x = M + (i % 2) * cw, cy = y + 46 + Math.floor(i / 2) * 96
+      ctx.fillStyle = C.muted; ctx.font = `22px ${SANS}`; ctx.fillText(k, x, cy)
+      ctx.fillStyle = C.text; fitText(ctx, String(v), x, cy + 46, 700, 36, cw - 24, SANS)
+    })
+    y += 46 + 3 * 96
+    // 大きな数字：同じ年に働きはじめた人の中の位置
+    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(M, y - 20); ctx.lineTo(W - M, y - 20); ctx.stroke()
+    if (extra.top) {
+      ctx.fillStyle = C.accent; ctx.font = `700 104px ${SERIF}`; ctx.fillText(extra.top, M, y + 100)
+      ctx.fillStyle = C.muted; ctx.font = `24px ${SANS}`
+      ctx.fillText(t('card.topCap'), M, y + 142)
+      if (extra.peer) ctx.fillText(t('card.peers', { n: extra.peer }), M, y + 176)
+    }
+    // 年収の推移（小さく）
+    if (snap.history && snap.history.length > 1) chart(ctx, { ...snap, peers: snap.peers || [] }, W / 2 + 20, y + 10, W / 2 - M - 20, 160, 1, false)
+    // 墓碑銘と呼びかけ
+    ctx.fillStyle = C.text; ctx.font = `500 30px ${SERIF}`; wrap(ctx, `“${snap.epitaph}”`, M, H - 120, W - M * 2, 40, 1)
+    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(M, H - 90); ctx.lineTo(W - M, H - 90); ctx.stroke()
+    ctx.fillStyle = C.accent; ctx.textAlign = 'right'; ctx.font = `700 26px ${SANS}`; ctx.fillText('oyajibuki.github.io/jobgame', W - M, H - 44); ctx.textAlign = 'left'
+    const urlW = ctx.measureText('oyajibuki.github.io/jobgame').width
+    ctx.fillStyle = C.text; fitText(ctx, t('card.cta'), M, H - 44, 700, 26, W - M * 2 - urlW - 24, SANS)
+    return canvas
+  }
+  // カードを画像つきで共有する。スマホは共有シートに画像と文章を渡す。
+  // 共有シートが使えない（主にパソコン）ときは、画像を保存して、文章入りの X の投稿画面を開く
+  async function shareCard(blob, text, url, fname) {
+    const file = new File([blob], fname, { type: 'image/png' })
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], text: `${text}\n${url}` }); return 'shared' } catch (e) { if (e && e.name === 'AbortError') return 'cancel' }
+    }
+    download(blob, fname)
+    window.Share.open('x', text, url)
+    window.Share.toast(t('card.pcNote'))
+    return 'saved'
+  }
+
   // ---------- 画像・動画を SNS へ ----------
   // スマホでは共有シート（Instagram・TikTok・LINE などを選べる）にファイルごと渡す。
   // パソコンなど共有シートが使えないときは、保存してから各サービスの投稿画面を開き、文章はコピーしておく
@@ -862,5 +941,5 @@
     try { await navigator.clipboard.writeText(`${s.title}\n\n${s.desc}`); $('shortCopy').textContent = t('short.copied') } catch {}
   })
 
-  window.Pass = { snapshot, open, isOwned, resume, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
+  window.Pass = { snapshot, open, isOwned, resume, drawShareCard, shareCard, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
 })()
