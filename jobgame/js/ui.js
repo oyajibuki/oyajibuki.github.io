@@ -359,7 +359,7 @@
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
     S.snap = window.Pass.snapshot(p, S.peers, { honor })
     // ランキングに載せられるよう、この人生の数字を渡す（名前は、この人生を過ごした名前）
-    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor }, badge => S.cardOf(badge))
+    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor, card: JSON.stringify(window.Pass.cardData(S.snap, { top, peer: rank })) }, badge => S.cardOf(badge))
     snapScene($('eScene'), S.snap)
     // シェア用のカード画像は先につくっておく（スマホの共有シートは、ボタンを押した直後に呼ばないと開けない）
     S.card = null

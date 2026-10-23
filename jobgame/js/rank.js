@@ -54,19 +54,20 @@ window.Share = (function () {
 
   // ---------- ホームのランキング表 ----------
   let board = 'money', top = null
+  const SHOW = 5
   function drawHome() {
     const box = $('rankList')
     if (!top) return
     $('rankTabs').innerHTML = BOARDS.map(b => `<button class="${b === board ? 'on' : ''}" data-b="${b}">${t('rank.b.' + b)}</button>`).join('')
     const rows = top[board] || []
     const my = mine()
-    const li = (e, i) => `<li class="${my[e.id] ? 'me' : ''}"><span class="rk">${i + 1}</span><span class="nm">${esc(who(e.name))}<small>${esc(e.job || '')}${e.honor ? ' · ' + esc(e.honor) : ''}</small></span><b>${esc(fmt(board, e.value))}</b></li>`
-    // 10位までは見せて、11位から先はたたむ
-    box.innerHTML = rows.length ? rows.slice(0, 10).map(li).join('') : `<li class="empty">${t('rank.empty')}</li>`
-    const rest = rows.slice(10)
+    const li = (e, i) => `<li class="${my[e.id] ? 'me' : ''} pick" data-id="${esc(e.id)}" data-name="${esc(who(e.name))}"><span class="rk">${i + 1}</span><span class="nm">${esc(who(e.name))}<small>${esc(e.job || '')}${e.honor ? ' · ' + esc(e.honor) : ''}</small></span><b>${esc(fmt(board, e.value))}</b></li>`
+    // 5位までは見せて、6位から先はたたむ
+    box.innerHTML = rows.length ? rows.slice(0, SHOW).map(li).join('') : `<li class="empty">${t('rank.empty')}</li>`
+    const rest = rows.slice(SHOW)
     $('rankMoreBox').classList.toggle('hidden', !rest.length)
     $('rankMoreSum').textContent = t('rank.more', { n: rows.length })
-    $('rankMore').innerHTML = rest.map((e, i) => li(e, i + 10)).join('')
+    $('rankMore').innerHTML = rest.map((e, i) => li(e, i + SHOW)).join('')
     $('rankNote').textContent = t('rank.note', { n: (top.total || 0).toLocaleString() })
   }
   async function renderHome() {
@@ -79,6 +80,26 @@ window.Share = (function () {
     } catch { sec.classList.add('hidden') }
   }
   $('rankAnon') && $('rankAnon').addEventListener('change', e => { $('rankName').disabled = e.target.checked })
+
+  // ランキングの人を押すと、その人生のカード画像を出す
+  const cards = {}
+  async function showCard(id, name) {
+    $('cardModal').classList.remove('hidden')
+    $('cardImg').removeAttribute('src'); $('cardImg').alt = name
+    $('cardStatus').textContent = t('rank.cardLoading')
+    try {
+      const c = cards[id] || (cards[id] = (await (await fetch(`${RANK_URL}?country=${C.code}&life=${encodeURIComponent(id)}`)).json()).card || null)
+      if (!c) { $('cardStatus').textContent = t('rank.cardNone'); return }
+      const cv = await window.Pass.drawCardFromData(document.createElement('canvas'), c, name)
+      $('cardImg').src = cv.toDataURL('image/png')
+      $('cardStatus').textContent = ''
+    } catch { $('cardStatus').textContent = t('rank.fail') }
+  }
+  document.addEventListener('click', e => {
+    const li = e.target.closest('.rank-list li.pick'); if (li) showCard(li.dataset.id, li.dataset.name)
+  })
+  $('cardClose') && $('cardClose').addEventListener('click', () => $('cardModal').classList.add('hidden'))
+  $('cardModal') && $('cardModal').addEventListener('click', e => { if (e.target.id === 'cardModal') $('cardModal').classList.add('hidden') })
   document.addEventListener('click', e => {
     const b = e.target.closest('#rankTabs [data-b]'); if (!b) return
     board = b.dataset.b; drawHome()
@@ -116,7 +137,10 @@ window.Share = (function () {
     try {
       // 匿名にチェックしたときだけ名前を送らない
       const name = $('rankAnon').checked ? '' : $('rankName').value.replace(/[<>&"'`\\]/g, '').trim().slice(0, 12)
-      const r = await post({ ...cur, name })
+      // カード用データの名前も、載せる名前（匿名なら空）にそろえる
+      let card = ''
+      try { card = JSON.stringify({ ...JSON.parse(cur.card), name }) } catch {}
+      const r = await post({ ...cur, name, card })
       if (!r.ok) throw new Error(r.error || 'error')
       const res = { ranks: r.ranks, total: r.total }
       remember(cur.id, res)

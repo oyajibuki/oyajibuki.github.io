@@ -322,6 +322,7 @@
     }
     ctx.globalAlpha = 0.4; for (const q of snap.peers) line(q.history, C.muted, 2, progress); ctx.globalAlpha = 1
     line(snap.history, C.accent, 6, progress)
+    return { X, Y }
   }
   const keyMilestones = (snap, n) => {
     const pri = { change: 3, up: 3, life: 2, end: 3, bad: 2, ai: 1, leave: 1, reflect: 0 }
@@ -859,7 +860,16 @@
       if (extra.peer) ctx.fillText(t('card.peers', { n: extra.peer }), M, y + 176)
     }
     // 年収の推移（小さく）
-    if (snap.history && snap.history.length > 1) chart(ctx, { ...snap, peers: snap.peers || [] }, W / 2 + 20, y + 10, W / 2 - M - 20, 160, 1, false)
+    if (snap.history && snap.history.length > 1) {
+      const gx = W / 2 + 20, gw = W / 2 - M - 20
+      const { X, Y } = chart(ctx, { ...snap, peers: snap.peers || [] }, gx, y + 40, gw, 140, 1, false)
+      // いちばん年収が高かった年に印をつけ、グラフの上に「最高 ◯◯（◯歳）」
+      const pk = snap.history.reduce((a, h) => (h.income > a.income ? h : a), snap.history[0])
+      ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(X(pk.age), Y(pk.income), 9, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = C.bg; ctx.lineWidth = 3; ctx.stroke()
+      ctx.fillStyle = C.text; ctx.font = `700 26px ${SANS}`; ctx.textAlign = 'right'
+      ctx.fillText(t('card.peak', { money: man(pk.income), age: pk.age }), gx + gw, y + 18); ctx.textAlign = 'left'
+    }
     // 墓碑銘と呼びかけ
     ctx.fillStyle = C.text; ctx.font = `500 30px ${SERIF}`; wrap(ctx, `“${snap.epitaph}”`, M, H - 120, W - M * 2, 40, 1)
     ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(M, H - 90); ctx.lineTo(W - M, H - 90); ctx.stroke()
@@ -868,6 +878,34 @@
     ctx.fillStyle = C.text; fitText(ctx, t('card.cta'), M, H - 44, 700, 26, W - M * 2 - urlW - 24, SANS)
     return canvas
   }
+  // ランキングに保存する、カードを描き直すための最小限のデータ
+  function cardData(snap, extra = {}) {
+    const d = snap.docs || {}
+    const h = hs => (hs || []).map(x => [x.age, Math.round(x.income)])
+    return {
+      v: 1, id: snap.id, name: snap.name, sex: snap.sex, from: snap.from, to: snap.to, n: snap.workYears, place: snap.place || snap.home || '',
+      honor: snap.honor || '', first: snap.firstJob, main: d.mainTitle || snap.firstJob, money: Math.round(snap.lifetime), rank: snap.peakRank,
+      rare: snap.firstRare || 0, end: snap.endAge, ep: snap.epitaph, top: extra.top || '', peer: extra.peer || 0,
+      h: h(snap.history), p: (snap.peers || []).map(q => h(q.history)),
+      sc: { isco: d.mainIsco || '', sp: !!d.spouse, k: (d.kids || []).length, dog: String(snap.id).charCodeAt(0) % 3 === 0 },
+    }
+  }
+  // 保存したデータからカードを描く（ランキングで人を押したとき）
+  async function drawCardFromData(canvas, c, name) {
+    const look = window.Pixel.lookFor(c.sc.isco)
+    const scene = window.Pixel.scene(document.createElement('canvas'), {
+      seed: c.id, place: look.place, home: c.sc.sp || c.sc.k > 0, dog: c.sc.dog,
+      people: window.Pixel.cast({ seed: c.id, sex: c.sex, outfit: look.outfit, spouse: c.sc.sp, kids: c.sc.k, country: CT.code }),
+    })
+    const hist = hs => hs.map(([age, income]) => ({ age, income }))
+    const snap = {
+      id: c.id, name, sex: c.sex, from: c.from, to: c.to, workYears: c.n, place: c.place, honor: c.honor, firstJob: c.first,
+      docs: { mainTitle: c.main }, lifetime: c.money, peakRank: c.rank, firstRare: c.rare, endAge: c.end, epitaph: c.ep,
+      history: hist(c.h), peers: c.p.map(x => ({ history: hist(x) })),
+    }
+    return drawShareCard(canvas, snap, { scene, top: c.top, peer: c.peer })
+  }
+
   // カードを画像つきで共有する。スマホは共有シートに画像と文章を渡す。
   // 共有シートが使えない（主にパソコン）ときは、画像を保存して、文章入りの X の投稿画面を開く
   async function shareCard(blob, text, url, fname) {
@@ -941,5 +979,5 @@
     try { await navigator.clipboard.writeText(`${s.title}\n\n${s.desc}`); $('shortCopy').textContent = t('short.copied') } catch {}
   })
 
-  window.Pass = { snapshot, open, isOwned, resume, drawShareCard, shareCard, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
+  window.Pass = { snapshot, open, isOwned, resume, drawShareCard, shareCard, cardData, drawCardFromData, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
 })()
