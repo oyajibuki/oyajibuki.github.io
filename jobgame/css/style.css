@@ -297,6 +297,7 @@ a { color: var(--accent); }
 .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 80; background: #222; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13px; max-width: calc(100vw - 32px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
 .rank-share-text { white-space: pre-line; font-size: 13px; color: var(--muted); margin: 6px 0 0; }
 .rank-home { margin: 40px 0 24px; }
+.rank-mode { margin: 10px 0 4px; }
 .rank-tabs { margin: 10px 0 8px; }
 .rank-list { list-style: none; padding: 0; margin: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
 .rank-list li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }

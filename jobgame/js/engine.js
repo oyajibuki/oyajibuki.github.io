@@ -338,8 +338,8 @@
     p.job = offer.job; p.size = offer.size; p.emp = offer.emp; p.rank = offer.rank || 0
     p.irr = offer.emp === 'irregular' ? (offer.irr || pickIrr()) : null
     // 夢を追っている途中、またはプロとして活動中に別の仕事に移ったら、夢・現役はそこで終わり
-    if (p.dreamCareer) { p.flags.dreamDone = p.dreamCareer; p.dreamCareer = null }
-    if (p.dream) { p.flags.dreamGaveUp = p.dream; p.dream = null }
+    if (p.dreamCareer) { p.flags.dreamDone = p.dreamCareer; p.dreamTo = p.age; p.dreamCareer = null }
+    if (p.dream) { p.flags.dreamGaveUp = p.dream; p.dreamTo = p.age; p.dream = null }
     p.flags.preManager = null; p.flags.leader = false; p.corp = false; p.netCareer = null
     p.variant = offer.variant !== undefined ? offer.variant : pickVariant(offer.job, p.meta)
     p.yearsInJob = 0; p.unemployed = false; p.rel = 45
@@ -755,7 +755,7 @@
       case 'dreamQuit':
         if (key === 'yes') {
           addLog(p, t('log.dreamQuit', { dream: t('dream.' + p.dream), n: p.dreamYears }), 'change')
-          p.flags.dreamGaveUp = p.dream; p.dream = null
+          p.flags.dreamGaveUp = p.dream; p.dreamTo = p.age; p.dream = null
           if (p.netKind && !p.netCareer) p.netKind = null
           p.focus = 'hunt' // 翌年から就職活動
         }
@@ -902,6 +902,8 @@
 
   // 人生をひとことで（メモリアル用）
   function epitaphKey(p) {
+    if (p.dreamCareer || p.flags.dreamDone) return 'dream'
+    if (p.flags.dreamGaveUp && p.dreamTo) return 'dreamChase'
     if (p.flags.senior && p.age >= 75) return 'senior'
     if (p.peakRank >= 3) return 'rank'
     if (p.titles.length >= 4) return 'many'
@@ -911,6 +913,18 @@
   function epitaph(p) {
     const main = mainJob(p)
     switch (epitaphKey(p)) {
+      case 'dream': {
+        const dk = p.dreamCareer || p.flags.dreamDone
+        const peak = t('dream.lv.' + dk + (p.peakDream || 0))
+        if (p.dreamCareer) return t('ep.dreamNow', { title: peak, n: p.age - (p.dreamFrom || p.age) })
+        const after = afterDream(p)
+        if (!after) return t('ep.dreamOnly', { title: peak, age: p.dreamTo })
+        return t(p.peakRank >= 2 ? 'ep.dreamAfterRank' : 'ep.dreamAfter', { title: peak, age: p.dreamTo, job: after.job, n: after.n, rank: window.RANKS[p.peakRank].name })
+      }
+      case 'dreamChase': {
+        const after = afterDream(p)
+        return t(after ? 'ep.dreamChase' : 'ep.dreamChaseOnly', { dream: t('dream.' + p.flags.dreamGaveUp), n: p.dreamYears, job: after ? after.job : '', m: after ? after.n : 0 })
+      }
       case 'senior': return t('ep.senior', { age: p.age })
       case 'rank': return t('ep.rank', { n: p.workYears, rank: window.RANKS[p.peakRank].name })
       case 'many': return t('ep.many', { n: p.titles.length })
@@ -930,7 +944,7 @@
       if ((p.netLv || 0) >= 2 && p.emp !== 'self') events.push({ type: 'netPro' })
     } else if (rnd() < d.chance * (0.7 + p.skill / 150)) {
       // チャンスをつかんだ
-      p.dreamCareer = p.dream; p.dreamLv = 0; p.dream = null
+      p.dreamCareer = p.dream; p.dreamLv = 0; p.dream = null; p.dreamFrom = p.age
       const j = JOBS[d.job]
       p.job = j.code; p.emp = 'self'; p.irr = null; p.flags.leader = false; p.yearsInJob = 0; p.selfYears = 0
       if (!p.jobsHeld.includes(j.code)) p.jobsHeld.push(j.code)
@@ -959,7 +973,7 @@
     const out = d.retire ? p.age >= p.retireAt : (p.dreamLv || 0) === 0 && rnd() < d.drop
     if (out) {
       addLog(p, t(d.retire ? 'log.dreamRetire' : 'log.dreamDrop', { title: p.variant }), 'change')
-      p.flags.dreamDone = p.dreamCareer
+      p.flags.dreamDone = p.dreamCareer; p.dreamTo = p.age
       p.dreamCareer = null; p.variant = null; p.unemployed = true
     }
   }
@@ -1009,7 +1023,7 @@
     if ((f.kids || []).length) c.push([f.kids.length >= 3 ? 58 : 40, 'honor.kids', { n: f.kids.length }])
     if (p.place !== p.home) c.push([45, 'honor.away', { home: p.home }])
     // 墓碑銘（epitaph）と同じことを言う称号は避ける
-    const same = { senior: ['honor.lifelong'], rank: ['honor.rank', 'honor.climb'], many: ['honor.wander'], self: ['honor.boss'], plain: ['honor.plain', 'honor.loyal'] }[epitaphKey(p)]
+    const same = { senior: ['honor.lifelong'], rank: ['honor.rank', 'honor.climb'], many: ['honor.wander'], self: ['honor.boss'], plain: ['honor.plain', 'honor.loyal'], dream: ['honor.dreamHit'], dreamChase: ['honor.dreamChase'] }[epitaphKey(p)]
     const cand = c.filter(x => !same.includes(x[1]))
     if (!cand.length) cand.push(p.titles.length <= 2 && !same.includes('honor.plain') ? [10, 'honor.plain', { job: mainJob(p) }] : [10, 'honor.steady', {}])
     const [, key, vars] = cand.sort((a, b) => b[0] - a[0])[0]
@@ -1055,6 +1069,24 @@
     addLog(p, line.replace(/%job%/g, title(p)), 'scene')
   }
 
+  // 夢のあとの仕事人生：いちばん長く就いた職業と年数
+  function afterDream(p) {
+    const cnt = {}
+    for (const h of p.history) if (h.age > (p.dreamTo || 0) && h.title && h.income > 0) cnt[h.title] = (cnt[h.title] || 0) + 1
+    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]
+    if (!top) return null
+    return { job: top[0], n: p.history.filter(h => h.age > (p.dreamTo || 0) && h.income > 0).length }
+  }
+  // 夢の中身（カードの「夢」の欄）
+  function dreamSummary(p) {
+    const dk = p.dreamCareer || p.flags.dreamDone
+    if (dk) return { hit: true, label: t('dream.lv.' + dk + (p.peakDream || 0)) }
+    if (p.netCareer && p.startDream === 'youtuber') return { hit: true, label: t('net.youtuber') }
+    if (p.flags.dreamGaveUp) return { hit: false, label: t('card.dreamNo', { dream: t('dream.' + p.flags.dreamGaveUp) }) }
+    if (p.startDream === 'founder') return { hit: true, label: t('dream.founder') }
+    return null
+  }
+
   // いちばん長く就いていた職業名
   function mainJob(p) {
     const cnt = {}
@@ -1062,5 +1094,5 @@
     return Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]?.[0] || p.titles[0]
   }
 
-  window.Engine = { DREAM_KEYS, title, vInfo, pickVariant, valid, isMgr, empName, rankName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
+  window.Engine = { DREAM_KEYS, dreamSummary, title, vInfo, pickVariant, valid, isMgr, empName, rankName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
 })()

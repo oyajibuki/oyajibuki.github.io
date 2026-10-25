@@ -52,7 +52,7 @@
       docs: docsData(p),
       firstJob: p.titles[0], titles: p.titles, edu: p.edu.name,
       home: p.home, place: p.place,
-      workYears: p.workYears, lifetime: p.lifetime, savings: Math.round(p.savings),
+      workYears: p.workYears, lifetime: p.lifetime, savings: Math.round(p.savings), dream: E.dreamSummary ? E.dreamSummary(p) : null,
       peakIncome: Math.max(0, ...p.history.map(h => h.income)), peakRank: R[p.peakRank].name,
       licenses: p.licenses.map(k => window.LICENSES[k].name),
       family: window.Life.summary(p),
@@ -850,7 +850,8 @@
     // 6つの数字（2列×3段）
     const d = snap.docs || {}
     const cells = [
-      [t('card.first'), snap.firstJob], [t('card.main'), d.mainTitle || snap.firstJob],
+      // 夢を追った人生は、最初の職業（夢を追うあいだのアルバイト）より、夢そのものを見せる
+      snap.dream ? [t('card.dream'), snap.dream.label] : [t('card.first'), snap.firstJob], [t('card.main'), d.mainTitle || snap.firstJob],
       [t('card.money'), man(snap.lifetime)], [t('card.rank'), snap.peakRank],
       [t('card.rare'), snap.firstRare ? t('e.hi.rareV', { n: snap.firstRare.toLocaleString() }) : '—'],
       wealthTier(snap.savings) ? [t('card.wealth'), t('wealth.' + wealthTier(snap.savings).key)] : [t('card.end'), t('card.endV', { age: snap.endAge })],
@@ -866,10 +867,10 @@
     // 大きな数字：同じ年に働きはじめた人の中の位置
     ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(M, y - 20); ctx.lineTo(W - M, y - 20); ctx.stroke()
     if (extra.top) {
-      ctx.fillStyle = C.accent; ctx.font = `700 104px ${SERIF}`; ctx.fillText(extra.top, M, y + 100)
+      ctx.fillStyle = C.accent; ctx.font = `700 100px ${SERIF}`; ctx.fillText(extra.top, M, y + 90)
       ctx.fillStyle = C.muted; ctx.font = `24px ${SANS}`
-      ctx.fillText(t('card.topCap'), M, y + 142)
-      if (extra.peer) ctx.fillText(t('card.peers', { n: extra.peer }), M, y + 176)
+      ctx.fillText(t('card.topCap'), M, y + 128)
+      if (extra.peer) ctx.fillText(t('card.peers', { n: extra.peer }), M, y + 158)
     }
     // 年収の推移（小さく）
     if (snap.history && snap.history.length > 1) {
@@ -883,11 +884,12 @@
       ctx.fillText(t('card.peak', { money: man(pk.income), age: pk.age }), gx + gw, y + 18); ctx.textAlign = 'left'
     }
     // 墓碑銘と呼びかけ
-    ctx.fillStyle = C.text; ctx.font = `500 30px ${SERIF}`; wrap(ctx, `“${snap.epitaph}”`, M, H - 120, W - M * 2, 40, 1)
-    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(M, H - 90); ctx.lineTo(W - M, H - 90); ctx.stroke()
-    ctx.fillStyle = C.accent; ctx.textAlign = 'right'; ctx.font = `700 26px ${SANS}`; ctx.fillText('oyajibuki.github.io/jobgame', W - M, H - 44); ctx.textAlign = 'left'
+    // ひとこと（夢の人生など長いものは2行まで）
+    ctx.fillStyle = C.text; ctx.font = `500 27px ${SERIF}`; wrap(ctx, `“${snap.epitaph}”`, M, H - 116, W - M * 2, 34, 2)
+    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(M, H - 70); ctx.lineTo(W - M, H - 70); ctx.stroke()
+    ctx.fillStyle = C.accent; ctx.textAlign = 'right'; ctx.font = `700 26px ${SANS}`; ctx.fillText('oyajibuki.github.io/jobgame', W - M, H - 30); ctx.textAlign = 'left'
     const urlW = ctx.measureText('oyajibuki.github.io/jobgame').width
-    ctx.fillStyle = C.text; fitText(ctx, t('card.cta'), M, H - 44, 700, 26, W - M * 2 - urlW - 24, SANS)
+    ctx.fillStyle = C.text; fitText(ctx, t('card.cta'), M, H - 30, 700, 26, W - M * 2 - urlW - 24, SANS)
     return canvas
   }
   // ランキングに保存する、カードを描き直すための最小限のデータ
@@ -897,7 +899,7 @@
     return {
       v: 1, id: snap.id, name: snap.name, sex: snap.sex, from: snap.from, to: snap.to, n: snap.workYears, place: snap.place || snap.home || '',
       honor: snap.honor || '', first: snap.firstJob, main: d.mainTitle || snap.firstJob, money: Math.round(snap.lifetime), rank: snap.peakRank,
-      rare: snap.firstRare || 0, end: snap.endAge, ep: snap.epitaph, top: extra.top || '', peer: extra.peer || 0, w: snap.savings,
+      rare: snap.firstRare || 0, end: snap.endAge, ep: snap.epitaph, top: extra.top || '', peer: extra.peer || 0, w: snap.savings, dr: snap.dream || null,
       h: h(snap.history), p: (snap.peers || []).map(q => h(q.history)),
       sc: { isco: d.mainIsco || '', sp: !!d.spouse, k: (d.kids || []).length, dog: String(snap.id).charCodeAt(0) % 3 === 0 },
     }
@@ -912,7 +914,7 @@
     const hist = hs => hs.map(([age, income]) => ({ age, income }))
     const snap = {
       id: c.id, name, sex: c.sex, from: c.from, to: c.to, workYears: c.n, place: c.place, honor: c.honor, firstJob: c.first,
-      docs: { mainTitle: c.main }, lifetime: c.money, peakRank: c.rank, firstRare: c.rare, endAge: c.end, epitaph: c.ep, savings: c.w,
+      docs: { mainTitle: c.main }, lifetime: c.money, peakRank: c.rank, firstRare: c.rare, endAge: c.end, epitaph: c.ep, savings: c.w, dream: c.dr || null,
       history: hist(c.h), peers: c.p.map(x => ({ history: hist(x) })),
     }
     return drawShareCard(canvas, snap, { scene, top: c.top, peer: c.peer })
