@@ -101,10 +101,10 @@
     $('cNo').textContent = `No. ${C.code.toUpperCase()}-${E.START_YEAR}-${p.id.toUpperCase()}`
     $('cName').textContent = p.name
     lifeScene($('cScene'), { id: p.id, sex: p.sex, isco: j.isco, home: false })
-    $('cLead').textContent = t('c.lead', { year: E.START_YEAR, age: p.age, place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: E.empName(p.emp), title: E.title(p) })
+    $('cLead').textContent = t('c.lead', { year: E.START_YEAR, age: p.age, place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: E.empName(p), title: E.title(p) })
     const kv = [
       ['kv.major', `${j.major} ${j.majorName}`], ['kv.mid', `${j.mid} ${j.midName}`], ['kv.job', `${j.code} ${j.name}`], ...(p.variant ? [['kv.variant', p.variant]] : []),
-      ['kv.sex', t('sex.' + p.sex)], ...traitRows(p), ['kv.edu', cap(p.edu.name)], ['kv.emp', E.empName(p.emp)],
+      ['kv.sex', t('sex.' + p.sex)], ...traitRows(p), ['kv.edu', cap(p.edu.name)], ['kv.emp', E.empName(p)],
       ['kv.size', p.size.name], ['kv.firstInc', money(p.income)], ['kv.peakInc', `${money(j.inc)}${j.incSrc === 'est' ? t('estParen') : ''}`],
       ['kv.ot', t('unit.hours', { n: j.ot })], ['kv.female', `${Math.round(j.female * 100)}%`], ['kv.ai', `${Math.round(j.ai * 100)}%`],
       ...(j.isco ? [['kv.isco', `${j.isco} ${(window.ISCO.subMajors[j.isco] || {})[C.lang] || ''}`]] : []),
@@ -113,7 +113,7 @@
     $('cRare').innerHTML = t('c.rare', { people: fmtPeople(j), n: Math.round(1 / j.share).toLocaleString() }) +
       (j.split ? `<br><span class="small muted">${t('c.rare.split')}</span>` : '') +
       (j.lic ? `<br>${esc(t('c.rare.lic', { lic: LIC[j.lic].name }))}` : '')
-    $('cPeers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}</span><span class="r">${esc([E.title(q), q.size.name, E.empName(q.emp)].join(' · '))}</span></div>`).join('')
+    $('cPeers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}</span><span class="r">${esc([E.title(q), q.size.name, E.empName(q)].join(' · '))}</span></div>`).join('')
     go('contract')
   }
   $('btnBegin').addEventListener('click', () => {
@@ -146,7 +146,7 @@
     $('idName').textContent = p.name
     const dl = [
       ['dl.job', E.title(p)], ...(p.variant && !E.isMgr(p.job) ? [['kv.job', j.name]] : []), ['dl.class', C.classLabel(j)], ['dl.size', p.unemployed ? '—' : p.size.name],
-      ['dl.emp', p.unemployed ? t('p.seeking') : p.leave > 0 ? t('p.onLeave', { emp: E.empName(p.emp) }) : E.empName(p.emp)], ['dl.rank', RANKS[p.rank].name], ['dl.edu', cap(p.edu.name)], ...traitRows(p),
+      ['dl.emp', p.unemployed ? t('p.seeking') : p.leave > 0 ? t('p.onLeave', { emp: E.empName(p) }) : E.empName(p)], ['dl.rank', E.rankName(p)], ['dl.edu', cap(p.edu.name)], ...traitRows(p),
     ]
     $('idDl').innerHTML = dl.map(([k, v]) => `<dt>${t(k)}</dt><dd>${esc(v)}</dd>`).join('')
     const st = [['st.health', p.health, 'var(--green)'], ['st.mental', p.mental, 'var(--yellow)'], ['st.skill', p.skill, 'var(--blue)'], ['st.meta', p.meta, 'var(--blue)'], ['st.rel', p.rel, 'var(--accent)'], ...(p.family.spouse ? [['st.bond', p.family.bond, 'var(--accent)']] : [])]
@@ -161,9 +161,9 @@
       if (!S.look || S.look.id !== p.id) { const c = window.Pixel.cast({ seed: p.id, sex: p.sex, outfit: 'casual', country: C.code })[0]; S.look = { id: p.id, skin: c.skin, hair: c.hair } }
       S.work.set(window.Pixel.lookFor(j.isco), { sex: p.sex, skin: S.look.skin, hair: S.look.hair, age: p.age >= 65 ? 'old' : 'adult' }, p.unemployed ? 'seek' : p.leave > 0 || p.ended ? 'rest' : null)
     }
-    $('sceneJob').textContent = p.unemployed ? t('p.seekingJob') : `${E.title(p)}${p.rank ? t('paren', { s: RANKS[p.rank].name }) : ''}`
-    $('sceneMeta').textContent = t('p.scene', { major: `${t('z.majorPrefix', { code: j.major })}${C.majorLabel(j.majorName)}`, mid: j.midName, where: p.unemployed ? t('p.seeking') : `${p.size.name} · ${E.empName(p.emp)}`, ot: Math.round(j.ot) })
-    $('peers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}${q.ended ? t('p.retired') : ''}</span><span class="r">${esc(E.title(q))}${q.rank ? t('sep') + RANKS[q.rank].name : ''}<br>${money(q.income)}</span></div>`).join('')
+    $('sceneJob').textContent = p.unemployed ? t('p.seekingJob') : `${E.title(p)}${p.rank || p.corp || p.flags.leader ? t('paren', { s: E.rankName(p) }) : ''}`
+    $('sceneMeta').textContent = t('p.scene', { major: `${t('z.majorPrefix', { code: j.major })}${C.majorLabel(j.majorName)}`, mid: j.midName, where: p.unemployed ? t('p.seeking') : `${p.corp ? p.corpName : p.size.name} · ${E.empName(p)}`, ot: Math.round(j.ot) })
+    $('peers').innerHTML = S.peers.map(q => `<div class="peer"><span>${esc(q.name)}${q.ended ? t('p.retired') : ''}</span><span class="r">${esc(E.title(q))}${q.rank || q.corp || q.flags.leader ? t('sep') + E.rankName(q) : ''}<br>${money(q.income)}</span></div>`).join('')
     const recent = p.log.slice(-60).reverse()
     $('log').innerHTML = recent.map(l => `<li class="${l.kind}"><span class="a">${age(l.age)}</span><span>${esc(l.text)}</span></li>`).join('')
     renderFocus()
@@ -340,6 +340,9 @@
       ['e.years', t('unit.years', { n: p.workYears })], ['e.lifetime', money(p.lifetime)], ['e.peak', money(Math.max(...p.history.map(h => h.income), 0))],
       ['e.rank', RANKS[p.peakRank].name], ['e.lics', t('unit.count', { n: p.licenses.length })], ['e.savings', money(p.savings)],
     ]
+    // 資産の階層（野村総研の区分。日本のみ）
+    const wt = window.Pass.wealthTier(Math.round(p.savings))
+    if (wt) kv.push(['e.wealth', window.Pass.wealthLabel(wt)])
     $('eKv').innerHTML = kv.map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
     chartExtras($('eChartLegend'), $('eChartNote'), p, drawChart($('eChart'), p, S.peers))
     $('eJobs').innerHTML = p.titles.map(x => `<span class="chip">${esc(x)}</span>`).join('') + (p.jobsHeld.some(c => E.isMgr(c)) ? `<span class="chip">${t('e.manager')}</span>` : '')

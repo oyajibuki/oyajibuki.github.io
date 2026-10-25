@@ -52,7 +52,7 @@
       docs: docsData(p),
       firstJob: p.titles[0], titles: p.titles, edu: p.edu.name,
       home: p.home, place: p.place,
-      workYears: p.workYears, lifetime: p.lifetime,
+      workYears: p.workYears, lifetime: p.lifetime, savings: Math.round(p.savings),
       peakIncome: Math.max(0, ...p.history.map(h => h.income)), peakRank: R[p.peakRank].name,
       licenses: p.licenses.map(k => window.LICENSES[k].name),
       family: window.Life.summary(p),
@@ -803,6 +803,17 @@
     } finally { btn.disabled = false }
   })
 
+  // ---------- 資産の階層（日本のみ） ----------
+  // 野村総合研究所の推計（2017年）にもとづく、純金融資産で見た世帯の5つの階層。top は全世帯の上位何%か
+  // 出典：野村総合研究所「日本の富裕層は127万世帯、純金融資産総額は299兆円と推計」（2018/12/18。厚生労働省 社会保障審議会 医療保険部会 資料にも掲載）
+  const WEALTH = [[50000, 'ultra', 0.16], [10000, 'rich', 2.4], [5000, 'semi', 8.3], [3000, 'upper', 21]]
+  function wealthTier(v) {
+    if (CT.code !== 'jp' || v == null) return null
+    const w = WEALTH.find(([min]) => v >= min)
+    return w ? { key: w[1], top: w[2] } : { key: 'mass', top: null }
+  }
+  const wealthLabel = w => w ? (w.top ? t('wealth.top', { tier: t('wealth.' + w.key), n: w.top }) : t('wealth.massV', { tier: t('wealth.mass') })) : ''
+
   // ---------- 0. 無料のシェア用カード（1080×1350） ----------
   // 引退画面・ランキングから、画像つきで投稿するためのカード。
   // 有料の SNS 用画像（年収グラフ・歩み入り）と差をつけて、結果の要点だけを載せる。
@@ -833,7 +844,7 @@
     if (extra.badge) { ctx.textAlign = 'right'; ctx.fillStyle = C.yellow; ctx.font = `700 30px ${SANS}`; ctx.fillText(extra.badge, W - M, y); ctx.textAlign = 'left' }
     ctx.fillStyle = C.text; fitText(ctx, snap.name, M, y + 82, 700, 76, W - M * 2)
     ctx.fillStyle = C.muted; ctx.font = `28px ${SANS}`
-    ctx.fillText(t('card.meta', { from: snap.from, to: snap.to, n: snap.workYears, place: snap.place || snap.home || '' }), M, y + 128)
+    ctx.fillText(t('card.meta', { from: snap.from, to: snap.to, n: snap.workYears, age: snap.endAge, place: snap.place || snap.home || '' }), M, y + 128)
     if (snap.honor) { ctx.fillStyle = C.accent; ctx.font = `700 32px ${SANS}`; wrap(ctx, t('honor.label', { s: snap.honor }), M, y + 176, W - M * 2, 40, 1) }
     y += 210
     // 6つの数字（2列×3段）
@@ -841,7 +852,8 @@
     const cells = [
       [t('card.first'), snap.firstJob], [t('card.main'), d.mainTitle || snap.firstJob],
       [t('card.money'), man(snap.lifetime)], [t('card.rank'), snap.peakRank],
-      [t('card.rare'), snap.firstRare ? t('e.hi.rareV', { n: snap.firstRare.toLocaleString() }) : '—'], [t('card.end'), t('card.endV', { age: snap.endAge })],
+      [t('card.rare'), snap.firstRare ? t('e.hi.rareV', { n: snap.firstRare.toLocaleString() }) : '—'],
+      wealthTier(snap.savings) ? [t('card.wealth'), t('wealth.' + wealthTier(snap.savings).key)] : [t('card.end'), t('card.endV', { age: snap.endAge })],
     ]
     const cw = (W - M * 2) / 2
     ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(M, y); ctx.lineTo(W - M, y); ctx.stroke()
@@ -885,7 +897,7 @@
     return {
       v: 1, id: snap.id, name: snap.name, sex: snap.sex, from: snap.from, to: snap.to, n: snap.workYears, place: snap.place || snap.home || '',
       honor: snap.honor || '', first: snap.firstJob, main: d.mainTitle || snap.firstJob, money: Math.round(snap.lifetime), rank: snap.peakRank,
-      rare: snap.firstRare || 0, end: snap.endAge, ep: snap.epitaph, top: extra.top || '', peer: extra.peer || 0,
+      rare: snap.firstRare || 0, end: snap.endAge, ep: snap.epitaph, top: extra.top || '', peer: extra.peer || 0, w: snap.savings,
       h: h(snap.history), p: (snap.peers || []).map(q => h(q.history)),
       sc: { isco: d.mainIsco || '', sp: !!d.spouse, k: (d.kids || []).length, dog: String(snap.id).charCodeAt(0) % 3 === 0 },
     }
@@ -900,7 +912,7 @@
     const hist = hs => hs.map(([age, income]) => ({ age, income }))
     const snap = {
       id: c.id, name, sex: c.sex, from: c.from, to: c.to, workYears: c.n, place: c.place, honor: c.honor, firstJob: c.first,
-      docs: { mainTitle: c.main }, lifetime: c.money, peakRank: c.rank, firstRare: c.rare, endAge: c.end, epitaph: c.ep,
+      docs: { mainTitle: c.main }, lifetime: c.money, peakRank: c.rank, firstRare: c.rare, endAge: c.end, epitaph: c.ep, savings: c.w,
       history: hist(c.h), peers: c.p.map(x => ({ history: hist(x) })),
     }
     return drawShareCard(canvas, snap, { scene, top: c.top, peer: c.peer })
@@ -979,5 +991,5 @@
     try { await navigator.clipboard.writeText(`${s.title}\n\n${s.desc}`); $('shortCopy').textContent = t('short.copied') } catch {}
   })
 
-  window.Pass = { snapshot, open, isOwned, resume, drawShareCard, shareCard, cardData, drawCardFromData, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
+  window.Pass = { snapshot, open, isOwned, resume, wealthTier, wealthLabel, drawShareCard, shareCard, cardData, drawCardFromData, drawImage, makeVideo, makeShort, drawShortThumb, shortText, shortBeats, drawJirei, drawAward, drawCard, drawFarewell }
 })()

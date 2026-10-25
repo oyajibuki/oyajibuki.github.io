@@ -109,7 +109,55 @@
     if (isMgr(p.job)) return JOBS[p.job].label
     return p.variant || JOBS[p.job].label
   }
-  const empName = e => t('emp.' + e)
+  // ---------- 働き方の細かい区分 ----------
+  // 非正規の内訳（総務省「労働力調査」2022年：パート48.6%＋アルバイト21.6%、派遣社員7.1%、契約社員・嘱託・その他が残り）
+  // pay は非正規の年収に掛ける倍率（ゲームの推定）
+  const IRR = [
+    { key: 'part', w: 70.2, pay: 0.92 },
+    { key: 'keiyaku', w: 22.7, pay: 1.12 },
+    { key: 'haken', w: 7.1, pay: 1.15 },
+  ]
+  const irrPay = p => (IRR.find(x => x.key === (p.irr || 'part')) || IRR[0]).pay
+  const pickIrr = () => weighted(IRR, x => x.w).key
+  // 働き方の名前。人（または求人）を渡すと、フリーター・派遣・社長などまで出し分ける
+  function empName(x, age) {
+    if (typeof x === 'string') return t('emp.' + x)
+    const a = age != null ? age : x.age
+    if (x.emp === 'irregular') {
+      const k = x.irr || 'part'
+      return t(k === 'part' && a <= 34 ? 'emp.freeter' : 'emp.' + k)
+    }
+    if (x.emp === 'self' && x.corp) return t('emp.corp')
+    if (x.emp === 'self' && x.netCareer) return t('emp.net')
+    return t('emp.' + x.emp)
+  }
+  // 役職の名前（バイトリーダー・社長も出す）
+  function rankName(p) {
+    if (p.emp === 'self' && p.corp) return t('rank.ceo')
+    if (p.emp === 'irregular' && p.flags && p.flags.leader) return t('rank.leader')
+    return window.RANKS[p.rank].name
+  }
+
+  // ---------- ネットの副業・ギグワーク ----------
+  // creator（YouTuber・ブロガー・アフィリエイター）は「レベル」が上下する。ほとんどの人は月数千円のまま、ごく一部だけが大きく稼ぐ
+  // （アフィリエイト市場調査では、収入が月1,000円未満の人が多数派）。gig（フードデリバリー）はやった分だけの安定した収入
+ const SAVE_RATE = C.saveRate ?? 0.045, SAVE_GROWTH = C.saveGrowth ?? 0.003, INVEST_GROWTH = C.investGrowth ?? 0.045, INVESTOR_SHARE = C.investorShare ?? 0.3
+ // FIRE を考えられる貯金の目安（ゲームの推定。質素に暮らす年間の生活費の約25年分）
+  const FIRE_SAVE = M(C.fireSave || 5500)
+  const NET_KINDS = [['youtuber', 3], ['blogger', 2], ['affiliate', 2], ['gig', 4]]
+  const NET_LV = [[0, 10], [10, 90], [100, 400], [800, 2500], [10000, 90000]] // [最低, 幅]（万円/年）。最上段はトップ層（年収1億円〜）
+  const netYear = p => {
+    if (p.netKind === 'gig') return M(30 + rnd() * 90)
+    const [lo, w] = NET_LV[p.netLv || 0]
+    return M(lo + rnd() * w)
+  }
+  function netLevelStep(p) {
+    if (p.netKind === 'gig') return
+    const lv = p.netLv || 0, boost = 0.5 + p.meta / 100
+    const up = [0.12, 0.05, 0.04, 0.05][lv] || 0
+    if (lv < 4 && rnd() < up * boost) { p.netLv = lv + 1; addLog(p, t('log.netUp' + (lv + 1), { kind: t('net.' + p.netKind) }), 'up') }
+    else if (lv > 0 && rnd() < 0.1) { p.netLv = lv - 1; addLog(p, t('log.netDown', { kind: t('net.' + p.netKind) }), 'bad') }
+  }
 
   // ---------- 誕生（入職） ----------
   function create(opts = {}) {
@@ -142,6 +190,8 @@
       ended: false, endReason: null, flags: {}, peakRank: 0, auto: !!opts.auto,
       sideJob: null, leave: 0, unemployed: false, selfYears: 0,
     }
+    if (p.emp === 'irregular') p.irr = pickIrr()
+    p.saveRate = SAVE_RATE * Math.exp(gauss() * 0.7 - 0.2); p.investor = rnd() < INVESTOR_SHARE
     p.trait = { mind: weighted(TRAITS.mind, x => x.w).key, body: weighted(TRAITS.body, x => x.w).key, work: weighted(TRAITS.work, x => x.w).key }
     p.mental = clamp(p.mental + traitFx(p, 'mind').start); p.health = clamp(p.health + traitFx(p, 'body').start)
     p.flags.familyBiz = (C.familyBiz && (job.code === C.familyBiz.job || rnd() < C.familyBiz.rate)) || false
@@ -149,7 +199,7 @@
     p.titles = [title(p)]
     window.Life.init(p)
     p.income = calcIncome(p)
-    addLog(p, t('log.firstJob', { place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: empName(p.emp), title: title(p) }))
+    addLog(p, t('log.firstJob', { place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: empName(p), title: title(p) }))
     return p
   }
 
@@ -169,9 +219,10 @@
     const j = JOBS[baseCode(p)]
     const skillF = 0.92 + p.skill / 500
     const vm = vInfo(p) ? vInfo(p).mult : 1
-    if (p.emp === 'self') return Math.round(selfIncome(p, j) * vm)
+    if (p.emp === 'self' && p.netCareer) return Math.round(netYear(p) * (p.corp ? 1.05 : 1))
+    if (p.emp === 'self') return Math.round(selfIncome(p, j) * vm * (p.corp ? 1.05 : 1))
     let base = vm * j.inc * p.size.mult * ageCurve(p.age, p.size.key, j.y0 ?? 0.65) * skillF * p.aiMult * (p.edu.wage ?? 1) * j.sexW[p.sex]
-    if (p.emp === 'irregular') base = vm * j.inc * 0.55 * (0.9 + Math.min(p.workYears, 15) / 100) * p.aiMult
+    if (p.emp === 'irregular') base = vm * j.inc * 0.55 * (0.9 + Math.min(p.workYears, 15) / 100) * p.aiMult * irrPay(p) * (p.flags && p.flags.leader ? 1.08 : 1)
     if (p.emp === 'rehired') base *= 0.6
     if (p.emp === 'senior') base = j.inc * 0.45 * (p.age < 70 ? 1 : 0.85)
     if (p.shortTime > 0) base *= 0.8 // 時短勤務
@@ -228,10 +279,11 @@
       if (offers.find(o => o.job === j.code)) continue
       const size = weighted(window.COMPANY_SIZES, s => s.w * (p.skill > 60 && s.key === 'xl' ? 2 : 1))
       const emp = rnd() < (p.age > 45 ? 0.45 : 0.2) ? 'irregular' : 'regular'
+      const irr = emp === 'irregular' ? pickIrr() : null
       const keepRank = j.major === cur.major && p.rank > 0 ? Math.max(0, p.rank - 1) : 0
       const variant = pickVariant(j.code, p.meta)
-      const trial = { ...p, job: j.code, variant, size, emp, rank: Math.min(keepRank, 3), skill: transferSkill(p, j), flags: {}, unemployed: false, leave: 0, shortTime: 0 }
-      offers.push({ job: j.code, variant, size, emp, rank: trial.rank, income: calcIncome(trial) })
+      const trial = { ...p, job: j.code, variant, size, emp, irr, corp: false, netCareer: null, rank: Math.min(keepRank, 3), skill: transferSkill(p, j), flags: {}, unemployed: false, leave: 0, shortTime: 0 }
+      offers.push({ job: j.code, variant, size, emp, irr, rank: trial.rank, income: calcIncome(trial) })
     }
     return offers
   }
@@ -261,13 +313,17 @@
     p.skill = transferSkill(p, j)
     if (j.mid !== cur.mid) p.yearsInMid = 0
     p.job = offer.job; p.size = offer.size; p.emp = offer.emp; p.rank = offer.rank || 0
-    p.flags.preManager = null
+    p.irr = offer.emp === 'irregular' ? (offer.irr || pickIrr()) : null
+    p.flags.preManager = null; p.flags.leader = false; p.corp = false; p.netCareer = null
     p.variant = offer.variant !== undefined ? offer.variant : pickVariant(offer.job, p.meta)
     p.yearsInJob = 0; p.unemployed = false; p.rel = 45
+    // 家を失ったところから、もう一度働きはじめた
+    if (p.flags.homeless && !p.flags.rebuilt) { p.flags.rebuilt = true; addLog(p, t('log.rebuilt'), 'up') }
+    p.unYears = 0
     if (!p.jobsHeld.includes(j.code)) p.jobsHeld.push(j.code)
     if (!p.titles.includes(title(p))) p.titles.push(title(p))
     p.income = calcIncome(p)
-    addLog(p, t('log.change', { why, title: title(p), size: offer.size.name, emp: empName(offer.emp), money: money(p.income) }), 'change')
+    addLog(p, t('log.change', { why, title: title(p), size: offer.size.name, emp: empName(p), money: money(p.income) }), 'change')
   }
 
   // ---------- 1年進める ----------
@@ -302,7 +358,16 @@
     }
     if (p.unemployed) {
       p.income = 0
-      p.mental = clamp(p.mental - (p.careQuit ? 1 : 4))
+      p.unYears = (p.unYears || 0) + 1
+      // 旅に出ている1年は、心は削られない
+      if (!(p.flags.traveler && p.unYears === 1)) p.mental = clamp(p.mental - (p.careQuit ? 1 : 4))
+      p.savings -= Math.round(M(120)) // 働いていなくても生活費はかかる
+      // 失業が何年も続き、貯金も尽きると、まれに住む家を失う
+      // （厚生労働省「ホームレスの実態に関する全国調査（概数調査）」2025年1月：全国2,591人。とてもまれ）
+      if (!p.flags.homeless && p.unYears >= 3 && p.savings < 0 && rnd() < 0.25) {
+        p.flags.homeless = true; p.mental = clamp(p.mental - 15); p.health = clamp(p.health - 10)
+        addLog(p, t('log.homeless'), 'bad')
+      }
       if (p.age >= C.seniorAge) events.push({ type: 'senior', idle: true })
       else if (!p.careQuit) events.push({ type: 'hunt', offers: makeOffers(p, 4), forced: true })
       window.Life.step(p, events, { idle: true })
@@ -331,7 +396,18 @@
     // 収入
     p.income = calcIncome(p)
     let side = 0
-    if (f === 'side') {
+    if (f === 'side' && !p.sideJob && !p.netKind && rnd() < 0.15) {
+      // 副業を始める人の一部（15%）はネットの副業かギグワークを選ぶ。始めたチャンネルやブログは、副業をしない年も残る
+      p.netKind = weighted(NET_KINDS, x => x[1])[0]; p.netLv = 0; p.netYears = 0
+      addLog(p, t('log.netStart', { kind: t('net.' + p.netKind) }), 'side')
+    }
+    if (f === 'side' && p.netKind) {
+      p.netYears++
+      netLevelStep(p)
+      side = Math.round(netYear(p))
+      // 2年続けて稼げる段階なら、本業にするかを聞く
+      if (p.netKind !== 'gig' && (p.netLv || 0) >= 2 && p.netYears >= 2 && p.emp !== 'self' && rnd() < 0.5) events.push({ type: 'netPro' })
+    } else if (f === 'side') {
       side = Math.round(M(20 + rnd() * 60 + p.meta * 0.5))
       if (!p.sideJob) {
         p.sideJob = weighted(ENTRY_JOBS.filter(x => !x.lic && x.route !== 'school' && x.major !== j.major), x => x.share).code
@@ -346,8 +422,39 @@
     } else if (p.sideJob && f !== 'side') {
       p.sideJob = null
     }
+    // ネットが本業の人は、毎年レベルが上下する
+    if (p.netCareer && p.emp === 'self') netLevelStep(p)
+    // 情報商材を売る側に回った人：数年は稼げるが、炎上して返金騒ぎになることが多い
+    if (p.flags.infoSeller) {
+      side += Math.round(M(50 + rnd() * 250))
+      if (rnd() < 0.3) {
+        p.flags.infoSeller = false; p.flags.burned = true
+        p.savings -= Math.round(M(100)); p.rel = clamp(p.rel - 15); p.mental = clamp(p.mental - 10)
+        addLog(p, t('log.infoBurn'), 'bad')
+      }
+    }
+    // バイトリーダー：同じ職場でアルバイトを続けると任される
+    if (p.emp === 'irregular' && (p.irr || 'part') === 'part' && !p.flags.leader && p.yearsInJob >= 2 && rnd() < 0.15) {
+      p.flags.leader = true; p.flags.everLeader = true
+      addLog(p, t('log.leader'), 'up')
+    }
+    // 法人化：個人で稼げるようになった自営業は、会社をつくって社長になる道がある
+    if (p.emp === 'self' && !p.corp && p.selfYears >= 3 && p.income >= M(700) && rnd() < 0.35) events.push({ type: 'corp' })
+    // 夢のある道（まれ）：旅人・会社の売却・FIRE
+    if (!p.unemployed && !p.flags.traveled && p.age >= 22 && p.age <= 35 && rnd() < 0.012) events.push({ type: 'travel' })
+    if (p.emp === 'self' && p.corp && !p.flags.exit && p.selfYears >= 4 && rnd() < 0.015 * (0.5 + p.skill / 100)) events.push({ type: 'exit' })
+    if (!p.flags.fireAsked && p.age >= 35 && p.age <= 55 && p.savings >= FIRE_SAVE) events.push({ type: 'fire' })
+    // ネットワークビジネス・情報商材の誘い（まれ）
+    if (!p.unemployed && p.age >= 22 && p.age <= 60) {
+      if (!p.flags.mlm && rnd() < 0.012) events.push({ type: 'mlm' })
+      else if (!p.flags.scheme && rnd() < 0.012) events.push({ type: 'scheme' })
+    }
     p.lifetime += p.income + side
-    p.savings += Math.round(p.income * 0.12 + side * 0.5 - (f === 'play' ? M(25) : 0))
+    // 貯金：収入の一部を貯め、たまった分は少しずつ増える（運用）。
+    // 率は、引退時の資産の分布が総務省「家計調査（貯蓄・負債編）」と野村総研の資産階層の推計に近くなるように合わせた値
+    // 貯める割合は人によって大きく違い、投資をする人の資産は増えやすい
+    p.savings += Math.round(p.income * (p.saveRate ?? SAVE_RATE) + side * 0.5 - (f === 'play' ? M(25) : 0))
+    if (p.savings > 0) p.savings = Math.round(p.savings * (1 + (p.investor ? INVEST_GROWTH : SAVE_GROWTH)))
 
     // 資格の勉強
     if (f === 'study' && p.study.target) {
@@ -479,7 +586,7 @@
         title: t(ev.forced ? 'ev.huntForced.t' : 'ev.hunt.t'),
         text: ev.offers.length ? t('ev.hunt', { n: ev.offers.length }) : t('ev.hunt.none'),
         choices: [
-          ...ev.offers.map((o, i) => ({ key: 'o' + i, label: o.variant || JOBS[o.job].label, sub: [o.variant ? JOBS[o.job].label : null, o.size.name, empName(o.emp), o.rank ? R[o.rank].name : null, t('ev.incomeSub', { money: money(o.income) })].filter(Boolean).join(t('sep')) })),
+          ...ev.offers.map((o, i) => ({ key: 'o' + i, label: o.variant || JOBS[o.job].label, sub: [o.variant ? JOBS[o.job].label : null, o.size.name, empName(o, p.age), o.rank ? R[o.rank].name : null, t('ev.incomeSub', { money: money(o.income) })].filter(Boolean).join(t('sep')) })),
           { key: 'no', label: t(ev.forced ? 'ev.hunt.more' : 'ev.hunt.stay') },
         ],
       }
@@ -487,6 +594,36 @@
         title: t('ev.side.t'),
         text: t('ev.side', { job: JOBS[ev.offer.job].label, money: money(ev.offer.income) }),
         choices: [{ key: 'yes', label: t('ev.side.yes') }, { key: 'no', label: t('ev.side.no') }],
+      }
+      case 'netPro': return {
+        title: t('ev.netPro.t'),
+        text: t('ev.netPro', { kind: t('net.' + p.netKind), n: p.netYears }),
+        choices: [{ key: 'yes', label: t('ev.netPro.yes') }, { key: 'no', label: t('ev.netPro.no') }],
+      }
+      case 'corp': return {
+        title: t('ev.corp.t'),
+        text: t('ev.corp', { n: p.selfYears, money: money(p.income) }),
+        choices: [{ key: 'yes', label: t('ev.corp.yes') }, { key: 'no', label: t('ev.corp.no') }],
+      }
+      case 'travel': return {
+        title: t('ev.travel.t'), text: t('ev.travel', { title: title(p) }),
+        choices: [{ key: 'yes', label: t('ev.travel.yes') }, { key: 'no', label: t('ev.travel.no') }],
+      }
+      case 'exit': return {
+        title: t('ev.exit.t'), text: t('ev.exit', { co: p.corpName || '' }),
+        choices: [{ key: 'yes', label: t('ev.exit.yes') }, { key: 'no', label: t('ev.exit.no') }],
+      }
+      case 'fire': return {
+        title: t('ev.fire.t'), text: t('ev.fire', { money: money(p.savings), age: p.age }),
+        choices: [{ key: 'yes', label: t('ev.fire.yes') }, { key: 'no', label: t('ev.fire.no') }],
+      }
+      case 'mlm': return {
+        title: t('ev.mlm.t'), text: t('ev.mlm'),
+        choices: [{ key: 'yes', label: t('ev.mlm.yes') }, { key: 'no', label: t('ev.mlm.no') }],
+      }
+      case 'scheme': return {
+        title: t('ev.scheme.t'), text: t('ev.scheme'),
+        choices: [{ key: 'yes', label: t('ev.scheme.yes') }, { key: 'no', label: t('ev.scheme.no') }],
       }
       case 'indep': return {
         title: t('ev.indep.t'),
@@ -564,6 +701,66 @@
       case 'sideOffer':
         if (key === 'yes') { changeJob(p, ev.offer, t('why.side')); p.sideJob = null; p.focus = 'rest' }
         break
+      case 'netPro':
+        if (key === 'yes') {
+          p.emp = 'self'; p.rank = 0; p.selfYears = 0; p.yearsInJob = 0; p.netCareer = p.netKind; p.corp = false; p.flags.leader = false
+          p.variant = t('net.' + p.netKind)
+          if (!p.titles.includes(p.variant)) p.titles.push(p.variant)
+          p.focus = 'rest'; p.income = calcIncome(p)
+          addLog(p, t('log.netPro', { kind: p.variant }), 'change')
+        }
+        break
+      case 'corp':
+        if (key === 'yes') {
+          p.corp = true
+          p.corpName = t('corp.name', { fam: String(p.name).split(' ')[0] })
+          p.savings -= Math.round(M(25)); p.income = calcIncome(p)
+          addLog(p, t('log.corp', { co: p.corpName }), 'up')
+        }
+        break
+      case 'travel':
+        p.flags.traveled = true
+        if (key === 'yes') {
+          p.flags.traveler = true
+          p.savings -= Math.round(M(150)); p.mental = clamp(p.mental + 30); p.health = clamp(p.health + 10)
+          p.unemployed = true
+          addLog(p, t('log.travel', { place: pick(t('travel.places').split('|')) }), 'life')
+        }
+        break
+      case 'exit':
+        p.flags.exit = true
+        if (key === 'yes') {
+          // 多くは数千万〜数億円。ごくまれに上場級（数十億〜百億円）
+          const r = rnd()
+          const gain = Math.round(M(r < 0.02 ? 200000 + rnd() * 800000 : r < 0.15 ? 20000 + rnd() * 180000 : 3000 + rnd() * 17000))
+          p.savings += gain; p.lifetime += gain; p.flags.exitGain = gain
+          addLog(p, t('log.exit', { co: p.corpName || '', money: money(gain) }), 'up')
+        } else addLog(p, t('log.exitNo'))
+        break
+      case 'fire':
+        p.flags.fireAsked = true
+        if (key === 'yes') { p.flags.fire = true; end(p, t('end.fire', { age: p.age })) }
+        break
+      case 'mlm':
+        p.flags.mlm = true
+        if (key === 'yes') {
+          if (rnd() < 0.05) { p.savings += Math.round(M(60)); addLog(p, t('log.mlmWin'), 'up') }
+          else {
+            const loss = Math.round(M(40 + rnd() * 120))
+            p.savings -= loss; p.rel = clamp(p.rel - 12); p.mental = clamp(p.mental - 5); p.flags.mlmLost = true
+            addLog(p, t('log.mlmLose', { money: money(loss) }), 'bad')
+          }
+        } else addLog(p, t('log.mlmNo'))
+        break
+      case 'scheme':
+        p.flags.scheme = true
+        if (key === 'yes') {
+          const loss = Math.round(M(20 + rnd() * 40))
+          p.savings -= loss
+          if (rnd() < 0.1) { p.flags.infoSeller = true; addLog(p, t('log.schemeSell', { money: money(loss) }), 'side') }
+          else addLog(p, t('log.schemeLose', { money: money(loss) }), 'bad')
+        } else addLog(p, t('log.schemeNo'))
+        break
       case 'indep':
         if (key === 'yes') {
           p.emp = 'self'; p.rank = 0; p.selfYears = 0; p.flags.expStart = p.yearsInMid >= 5
@@ -606,6 +803,14 @@
       }
       case 'sideOffer': return ev.offer.income > p.income ? 'yes' : 'no'
       case 'indep': return p.yearsInMid >= 5 && rnd() < 0.4 ? 'yes' : 'no'
+      case 'netPro': return rnd() < 0.5 ? 'yes' : 'no'
+      case 'travel': return rnd() < 0.3 ? 'yes' : 'no'
+      case 'exit': return rnd() < 0.7 ? 'yes' : 'no'
+      case 'fire': return rnd() < 0.5 ? 'yes' : 'no'
+      case 'corp': return rnd() < 0.6 ? 'yes' : 'no'
+      // 誘いに乗る人は少数（ゲームの推定）
+      case 'mlm': return rnd() < 0.2 ? 'yes' : 'no'
+      case 'scheme': return rnd() < 0.15 ? 'yes' : 'no'
       case 'burnout': return 'leave'
       case 'retire60': return rnd() < 0.75 ? 'stay' : 'retire'
       case 'end': return 'ok'
@@ -615,6 +820,10 @@
     if (window.Life.TYPES.includes(ev.type)) return window.Life.valid(p, ev)
     if (ev.type === 'promo') return (p.emp === 'regular' || p.emp === 'public') && !p.unemployed && p.rank < ev.to
     if (ev.type === 'hunt' || ev.type === 'indep' || ev.type === 'sideOffer') return !p.ended && !(ev.type !== 'hunt' && p.unemployed)
+    if (ev.type === 'netPro') return !p.ended && !p.unemployed && !!p.netKind && p.emp !== 'self'
+    if (ev.type === 'corp') return !p.ended && p.emp === 'self' && !p.corp
+    if (ev.type === 'travel' || ev.type === 'fire') return !p.ended && !p.unemployed
+    if (ev.type === 'exit') return !p.ended && p.corp
     return true
   }
   function resolveAuto(p, events) {
@@ -680,6 +889,17 @@
     const leaves = p.log.some(l => l.kind === 'leave')
     if ((p.trait || {}).mind === 'steel' && !leaves && p.workYears >= 30) c.push([56, 'honor.steel', {}])
     if ((p.trait || {}).body === 'frail' && p.workYears >= 35) c.push([57, 'honor.frail', { n: p.workYears }])
+    if (p.flags.rebuilt) c.push([90, 'honor.rebuilt', {}])
+    else if (p.flags.homeless) c.push([70, 'honor.street', {}])
+    if (p.netCareer && (p.netLv || 0) >= 4) c.push([96, 'honor.netTop', { kind: t('net.' + p.netCareer) }])
+    if (p.flags.exitGain) c.push([92, 'honor.exit', { money: money(p.flags.exitGain) }])
+    if (p.flags.fire) c.push([86, 'honor.fire', { age: p.age }])
+    if (p.flags.traveler) c.push([42, 'honor.travel', {}])
+    if (p.netCareer && p.workYears >= 10) c.push([68, 'honor.net', { kind: t('net.' + p.netCareer) }])
+    if (p.corp) c.push([64, 'honor.corp', {}])
+    if (p.flags.everLeader) c.push([46, 'honor.leader', {}])
+    if (p.flags.burned) c.push([44, 'honor.burned', {}])
+    else if (p.flags.mlmLost) c.push([34, 'honor.mlm', {}])
     const wk = (p.trait || {}).work
     if (wk === 'lax' && !leaves && p.workYears >= 30) c.push([50, 'honor.lax', {}])
     if (wk === 'diligent' && p.peakRank >= 2) c.push([48, 'honor.diligent', {}])
@@ -723,6 +943,11 @@
       if (p.mental < 35) pools.push('epi.low')
       if (p.skill >= 80) pools.push('epi.skill')
       if ((p.trait || {}).work === 'diligent') pools.push('epi.diligent')
+      if (p.emp === 'irregular' && (p.irr || 'part') === 'part' && p.age <= 34) pools.push('epi.freeter')
+      if (p.flags.leader && p.emp === 'irregular') pools.push('epi.leader')
+      if (p.netKind && p.netKind !== 'gig') pools.push('epi.net')
+      if (p.netKind === 'gig') pools.push('epi.gig')
+      if (p.corp) pools.push('epi.corp')
       if ((p.trait || {}).work === 'lax') pools.push('epi.lax')
     }
     const used = (p.flags.epi ||= [])
@@ -740,5 +965,5 @@
     return Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]?.[0] || p.titles[0]
   }
 
-  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
+  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, rankName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
 })()
