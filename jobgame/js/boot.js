@@ -2,7 +2,7 @@
 // ?lang=en → アメリカ。選んだ言語はこのブラウザに覚えておく。
 (function () {
   // ファイルを更新したらここを変える（ブラウザのキャッシュで古いスクリプトが混ざらないように）
-  const VERSION = '0.7.6'
+  const VERSION = '0.8.2'
   const q = new URLSearchParams(location.search)
   let lang = q.get('lang')
   try { lang = lang || localStorage.getItem('jg_lang') } catch {}

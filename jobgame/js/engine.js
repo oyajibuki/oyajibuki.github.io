@@ -141,6 +141,21 @@
   // ---------- ネットの副業・ギグワーク ----------
   // creator（YouTuber・ブロガー・アフィリエイター）は「レベル」が上下する。ほとんどの人は月数千円のまま、ごく一部だけが大きく稼ぐ
   // （アフィリエイト市場調査では、収入が月1,000円未満の人が多数派）。gig（フードデリバリー）はやった分だけの安定した収入
+  // ---------- 夢の仕事（職業を選んで働くモード） ----------
+  // 役者・歌手・プロスポーツ選手は、アルバイトをしながら挑戦し、まれにチャンスをつかむ。
+  // 「それで食べている人」の数は国勢調査（俳優・音楽家・職業スポーツ従事者）。かなう確率と年収の段階はゲームの推定
+  const DREAMS = {
+    actor: { job: '233', until: 35, chance: 0.006, lv: [[50, 150], [300, 300], [800, 1200], [5000, 25000]], up: [0.08, 0.04, 0.015], drop: 0.07 },
+    singer: { job: '231', until: 35, chance: 0.005, lv: [[50, 150], [300, 300], [800, 1200], [5000, 25000]], up: [0.08, 0.04, 0.015], drop: 0.07 },
+    // サッカー：J3 → J2 → J1 → 海外・日本代表。多くは20代で引退する
+    athlete: { job: '245', until: 24, chance: 0.015, lv: [[200, 200], [400, 500], [1000, 3000], [5000, 25000]], up: [0.15, 0.1, 0.03], drop: 0, retire: [24, 34] },
+    youtuber: { net: true, until: 40 },
+    founder: { self: true },
+  }
+  const DREAM_KEYS = Object.keys(DREAMS)
+  const dreamIncome = p => { const d = DREAMS[p.dreamCareer], [lo, w] = d.lv[p.dreamLv || 0]; return M(lo + rnd() * w) }
+  // 夢を追うあいだのアルバイト先（学歴を問わず、非正規の多い仕事から）
+  const BASE_JOBS = () => ENTRY_JOBS.filter(j => !j.lic && !(j.edu > 0) && j.route !== 'school' && (j.irr ? (j.irr.m + j.irr.f) / 2 : 0) >= 0.4)
  const SAVE_RATE = C.saveRate ?? 0.045, SAVE_GROWTH = C.saveGrowth ?? 0.003, INVEST_GROWTH = C.investGrowth ?? 0.045, INVESTOR_SHARE = C.investorShare ?? 0.3
  // FIRE を考えられる貯金の目安（ゲームの推定。質素に暮らす年間の生活費の約25年分）
   const FIRE_SAVE = M(C.fireSave || 5500)
@@ -163,6 +178,8 @@
   function create(opts = {}) {
     // 性別を選んだときは、その性別で働く人の数に比例して職業を引く。選ばないときは職業を引いてから、その職業の女性比率で性別を決める
     const pickSex = opts.sex === 'm' || opts.sex === 'f' ? opts.sex : null
+    const dream = DREAMS[opts.dream] ? opts.dream : null
+    if (dream && !DREAMS[dream].self) opts = { ...opts, job: weighted(BASE_JOBS(), j => j.share).code }
     const job = opts.job ? JOBS[opts.job] : weighted(ENTRY_JOBS, j => j.share * (pickSex ? (pickSex === 'f' ? j.female : 1 - j.female) : 1))
     const sex = pickSex || (rnd() < job.female ? 'f' : 'm')
     let edu
@@ -171,9 +188,9 @@
     else edu = weighted(window.EDUCATION.filter(e => e.lv >= job.edu), e => e.w)
     const isPublic = C.isPublic(job)
     // 自営率・非正規率は職業×性別の実数。高齢者を含む数字なので、入職時は少し割り引く
-    const isSelf = !isPublic && rnd() < job.self * 0.4
+    const isSelf = dream ? !!DREAMS[dream].self : !isPublic && rnd() < job.self * 0.4
     const irrRate = job.irr ? job.irr[sex] : C.irrDefault[sex]
-    const irregular = !isPublic && !isSelf && rnd() < irrRate * (edu.lv >= 2 ? 0.6 : 0.9)
+    const irregular = dream ? !DREAMS[dream].self : !isPublic && !isSelf && rnd() < irrRate * (edu.lv >= 2 ? 0.6 : 0.9)
     const size = isPublic ? C.publicSize : weighted(window.COMPANY_SIZES, s => s.w)
     const p = {
       id: Math.random().toString(36).slice(2, 8),
@@ -190,7 +207,9 @@
       ended: false, endReason: null, flags: {}, peakRank: 0, auto: !!opts.auto,
       sideJob: null, leave: 0, unemployed: false, selfYears: 0,
     }
-    if (p.emp === 'irregular') p.irr = pickIrr()
+    if (p.emp === 'irregular') p.irr = dream ? 'part' : pickIrr()
+    if (dream) { p.dream = dream; p.dreamYears = 0; p.chosen = true; if (DREAMS[dream].net) { p.netKind = 'youtuber'; p.netLv = 0; p.netYears = 0 } }
+    p.startDream = dream
     p.saveRate = SAVE_RATE * Math.exp(gauss() * 0.7 - 0.2); p.investor = rnd() < INVESTOR_SHARE
     p.trait = { mind: weighted(TRAITS.mind, x => x.w).key, body: weighted(TRAITS.body, x => x.w).key, work: weighted(TRAITS.work, x => x.w).key }
     p.mental = clamp(p.mental + traitFx(p, 'mind').start); p.health = clamp(p.health + traitFx(p, 'body').start)
@@ -200,6 +219,7 @@
     window.Life.init(p)
     p.income = calcIncome(p)
     addLog(p, t('log.firstJob', { place: p.place, edu: p.edu.name, size: p.size.name, ni: t(p.emp === 'self' ? 'c.de' : 'c.ni'), emp: empName(p), title: title(p) }))
+    if (p.startDream) addLog(p, t(p.startDream === 'founder' ? 'log.founderStart' : 'log.dreamStart', { dream: t('dream.' + p.startDream) }), 'life')
     return p
   }
 
@@ -219,6 +239,7 @@
     const j = JOBS[baseCode(p)]
     const skillF = 0.92 + p.skill / 500
     const vm = vInfo(p) ? vInfo(p).mult : 1
+    if (p.dreamCareer) return Math.round(dreamIncome(p))
     if (p.emp === 'self' && p.netCareer) return Math.round(netYear(p) * (p.corp ? 1.05 : 1))
     if (p.emp === 'self') return Math.round(selfIncome(p, j) * vm * (p.corp ? 1.05 : 1))
     let base = vm * j.inc * p.size.mult * ageCurve(p.age, p.size.key, j.y0 ?? 0.65) * skillF * p.aiMult * (p.edu.wage ?? 1) * j.sexW[p.sex]
@@ -278,7 +299,9 @@
       const j = weighted(pool, x => x.share * (x.mid === cur.mid ? 25 : x.major === cur.major ? 5 : 1) * (x.lic && p.licenses.includes(x.lic) ? 30 : 1))
       if (offers.find(o => o.job === j.code)) continue
       const size = weighted(window.COMPANY_SIZES, s => s.w * (p.skill > 60 && s.key === 'xl' ? 2 : 1))
-      const emp = rnd() < (p.age > 45 ? 0.45 : 0.2) ? 'irregular' : 'regular'
+      // 夢をあきらめて27歳以降に就職する人は、アルバイトの経験しかないので正社員の求人が少ない（ゲームの推定）
+      const late = p.flags.dreamGaveUp && p.age >= 27 ? 0.35 : 0
+      const emp = rnd() < (p.age > 45 ? 0.45 : 0.2) + late ? 'irregular' : 'regular'
       const irr = emp === 'irregular' ? pickIrr() : null
       const keepRank = j.major === cur.major && p.rank > 0 ? Math.max(0, p.rank - 1) : 0
       const variant = pickVariant(j.code, p.meta)
@@ -440,6 +463,9 @@
     }
     // 法人化：個人で稼げるようになった自営業は、会社をつくって社長になる道がある
     if (p.emp === 'self' && !p.corp && p.selfYears >= 3 && p.income >= M(700) && rnd() < 0.35) events.push({ type: 'corp' })
+    // 夢の仕事を追う
+    if (p.dream && !p.dreamCareer) dreamStep(p, events)
+    else if (p.dreamCareer) dreamCareerStep(p)
     // 夢のある道（まれ）：旅人・会社の売却・FIRE
     if (!p.unemployed && !p.flags.traveled && p.age >= 22 && p.age <= 35 && rnd() < 0.012) events.push({ type: 'travel' })
     if (p.emp === 'self' && p.corp && !p.flags.exit && p.selfYears >= 4 && rnd() < 0.015 * (0.5 + p.skill / 100)) events.push({ type: 'exit' })
@@ -605,6 +631,10 @@
         text: t('ev.corp', { n: p.selfYears, money: money(p.income) }),
         choices: [{ key: 'yes', label: t('ev.corp.yes') }, { key: 'no', label: t('ev.corp.no') }],
       }
+      case 'dreamQuit': return {
+        title: t('ev.dreamQuit.t'), text: t(ev.forced ? 'ev.dreamQuit.forced' : 'ev.dreamQuit', { dream: t('dream.' + p.dream), n: p.dreamYears, age: p.age }),
+        choices: ev.forced ? [{ key: 'yes', label: t('ev.dreamQuit.yes') }] : [{ key: 'yes', label: t('ev.dreamQuit.yes') }, { key: 'no', label: t('ev.dreamQuit.no') }],
+      }
       case 'travel': return {
         title: t('ev.travel.t'), text: t('ev.travel', { title: title(p) }),
         choices: [{ key: 'yes', label: t('ev.travel.yes') }, { key: 'no', label: t('ev.travel.no') }],
@@ -704,6 +734,7 @@
       case 'netPro':
         if (key === 'yes') {
           p.emp = 'self'; p.rank = 0; p.selfYears = 0; p.yearsInJob = 0; p.netCareer = p.netKind; p.corp = false; p.flags.leader = false
+          if (p.dream === 'youtuber') { p.dreamCareerNet = true; p.dream = null }
           p.variant = t('net.' + p.netKind)
           if (!p.titles.includes(p.variant)) p.titles.push(p.variant)
           p.focus = 'rest'; p.income = calcIncome(p)
@@ -716,6 +747,14 @@
           p.corpName = t('corp.name', { fam: String(p.name).split(' ')[0] })
           p.savings -= Math.round(M(25)); p.income = calcIncome(p)
           addLog(p, t('log.corp', { co: p.corpName }), 'up')
+        }
+        break
+      case 'dreamQuit':
+        if (key === 'yes') {
+          addLog(p, t('log.dreamQuit', { dream: t('dream.' + p.dream), n: p.dreamYears }), 'change')
+          p.flags.dreamGaveUp = p.dream; p.dream = null
+          if (p.netKind && !p.netCareer) p.netKind = null
+          p.focus = 'hunt' // 翌年から就職活動
         }
         break
       case 'travel':
@@ -805,6 +844,7 @@
       case 'indep': return p.yearsInMid >= 5 && rnd() < 0.4 ? 'yes' : 'no'
       case 'netPro': return rnd() < 0.5 ? 'yes' : 'no'
       case 'travel': return rnd() < 0.3 ? 'yes' : 'no'
+      case 'dreamQuit': return ev.forced || rnd() < 0.35 ? 'yes' : 'no'
       case 'exit': return rnd() < 0.7 ? 'yes' : 'no'
       case 'fire': return rnd() < 0.5 ? 'yes' : 'no'
       case 'corp': return rnd() < 0.6 ? 'yes' : 'no'
@@ -823,6 +863,7 @@
     if (ev.type === 'netPro') return !p.ended && !p.unemployed && !!p.netKind && p.emp !== 'self'
     if (ev.type === 'corp') return !p.ended && p.emp === 'self' && !p.corp
     if (ev.type === 'travel' || ev.type === 'fire') return !p.ended && !p.unemployed
+    if (ev.type === 'dreamQuit') return !p.ended && !!p.dream
     if (ev.type === 'exit') return !p.ended && p.corp
     return true
   }
@@ -872,6 +913,52 @@
       default: return t('ep.plain', { job: main, n: p.workYears })
     }
   }
+  // ---------- 夢を追う1年 ----------
+  function dreamStep(p, events) {
+    const d = DREAMS[p.dream]
+    p.dreamYears++
+    if (d.self) { p.dream = null; return } // 起業家は独立したところから。あとは自営業の仕組みどおり
+    if (d.net) {
+      // YouTuber：本業のかたわら、毎年本気で動画をつくる
+      p.netYears++
+      netLevelStep(p); netLevelStep(p)
+      if ((p.netLv || 0) >= 2 && p.emp !== 'self') events.push({ type: 'netPro' })
+    } else if (rnd() < d.chance * (0.7 + p.skill / 150)) {
+      // チャンスをつかんだ
+      p.dreamCareer = p.dream; p.dreamLv = 0; p.dream = null
+      const j = JOBS[d.job]
+      p.job = j.code; p.emp = 'self'; p.irr = null; p.flags.leader = false; p.yearsInJob = 0; p.selfYears = 0
+      if (!p.jobsHeld.includes(j.code)) p.jobsHeld.push(j.code)
+      p.variant = t('dream.lv.' + p.dreamCareer + '0')
+      if (!p.titles.includes(p.variant)) p.titles.push(p.variant)
+      p.retireAt = d.retire ? d.retire[0] + Math.round(rnd() * (d.retire[1] - d.retire[0])) : null
+      p.income = calcIncome(p)
+      addLog(p, t('log.dreamHit.' + p.dreamCareer, { n: p.dreamYears }), 'up')
+      return
+    }
+    // 年齢の壁、または3年ごとの「あきらめる？」
+    if (p.dream && (p.age > d.until || p.dreamYears % 3 === 0)) events.push({ type: 'dreamQuit', forced: p.age > d.until })
+  }
+  function dreamCareerStep(p) {
+    const d = DREAMS[p.dreamCareer], lv = p.dreamLv || 0
+    if (lv < 3 && rnd() < d.up[lv] * (0.7 + p.skill / 150)) {
+      p.dreamLv = lv + 1; p.variant = t('dream.lv.' + p.dreamCareer + p.dreamLv)
+      if (!p.titles.includes(p.variant)) p.titles.push(p.variant)
+      addLog(p, t('log.dreamUp.' + p.dreamCareer + p.dreamLv), 'up')
+    } else if (lv > 0 && rnd() < 0.08) {
+      p.dreamLv = lv - 1; p.variant = t('dream.lv.' + p.dreamCareer + p.dreamLv)
+      addLog(p, t('log.dreamDown.' + p.dreamCareer), 'bad')
+    }
+    p.peakDream = Math.max(p.peakDream || 0, p.dreamLv || 0)
+    // スポーツは引退の年齢が来たら、役者・歌手は売れないまま仕事が途切れたら、セカンドキャリアへ
+    const out = d.retire ? p.age >= p.retireAt : (p.dreamLv || 0) === 0 && rnd() < d.drop
+    if (out) {
+      addLog(p, t(d.retire ? 'log.dreamRetire' : 'log.dreamDrop', { title: p.variant }), 'change')
+      p.flags.dreamDone = p.dreamCareer
+      p.dreamCareer = null; p.variant = null; p.unemployed = true
+    }
+  }
+
   // 人生の称号：その人生でいちばん珍しかったことを一言にする（top は同じ年に働きはじめた人の中の上位%）
   function honor(p, top) {
     const R = window.RANKS, f = p.family || { kids: [], history: [] }
@@ -889,6 +976,11 @@
     const leaves = p.log.some(l => l.kind === 'leave')
     if ((p.trait || {}).mind === 'steel' && !leaves && p.workYears >= 30) c.push([56, 'honor.steel', {}])
     if ((p.trait || {}).body === 'frail' && p.workYears >= 35) c.push([57, 'honor.frail', { n: p.workYears }])
+    // 夢の仕事
+    const dk = p.dreamCareer || p.flags.dreamDone
+    if (dk && (p.peakDream || 0) >= 3) c.push([97, 'honor.dreamTop', { title: t('dream.lv.' + dk + '3') }])
+    else if (dk) c.push([72, 'honor.dreamHit', { title: t('dream.lv.' + dk + (p.peakDream || 0)) }])
+    else if (p.flags.dreamGaveUp) c.push([76, 'honor.dreamChase', { dream: t('dream.' + p.flags.dreamGaveUp) }])
     if (p.flags.rebuilt) c.push([90, 'honor.rebuilt', {}])
     else if (p.flags.homeless) c.push([70, 'honor.street', {}])
     if (p.netCareer && (p.netLv || 0) >= 4) c.push([96, 'honor.netTop', { kind: t('net.' + p.netCareer) }])
@@ -965,5 +1057,5 @@
     return Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]?.[0] || p.titles[0]
   }
 
-  window.Engine = { title, vInfo, pickVariant, valid, isMgr, empName, rankName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
+  window.Engine = { DREAM_KEYS, title, vInfo, pickVariant, valid, isMgr, empName, rankName, money, M, util: { rnd, clamp, pick, weighted, addLog }, JOBS, JOB_LIST, ENTRY_JOBS, create, step, options, choose, autoChoice, autoFocus, end, epitaph, honor, traitFx, calcIncome, eligible, START_YEAR, AI_YEAR }
 })()

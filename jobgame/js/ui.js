@@ -92,9 +92,12 @@
   })
 
   // ---------- 雇用契約書 ----------
-  $('btnStart').addEventListener('click', newLife)
-  function newLife() {
-    S.p = E.create({ sex: S.sex, name: S.name })
+  $('btnStart').addEventListener('click', () => newLife())
+  // job を渡すと、その職業で働きはじめる（職業を選んで働くモード。ランキングには載せない）
+  function newLife(job, dream) {
+    if (typeof job !== 'string') job = null
+    S.p = E.create({ sex: S.sex, name: S.name, job: job || undefined, dream: dream || undefined })
+    S.p.chosen = !!(job || dream)
     S.ref = null
     S.peers = Array.from({ length: 4 }, () => E.create({ auto: true }))
     const p = S.p, j = JOBS[p.job]
@@ -362,7 +365,10 @@
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
     S.snap = window.Pass.snapshot(p, S.peers, { honor })
     // ランキングに載せられるよう、この人生の数字を渡す（名前は、この人生を過ごした名前）
-    if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor, card: JSON.stringify(window.Pass.cardData(S.snap, { top, peer: rank })) }, badge => S.cardOf(badge))
+    // 職業を選んだ人生はランキングに載せない（好きな職業を選べると公平でなくなるため）
+    $('eChosen').classList.toggle('hidden', !p.chosen)
+    if (p.chosen) $('eRank').classList.add('hidden')
+    else if (window.Rank) window.Rank.offer({ id: p.id, country: C.code, name: p.name, lifetime: Math.round(p.lifetime), moves: p.titles.length - 1, rare: Math.max(1, Math.round(1 / first.share)), job: p.titles[0], honor, card: JSON.stringify(window.Pass.cardData(S.snap, { top, peer: rank })) }, badge => S.cardOf(badge))
     snapScene($('eScene'), S.snap)
     // シェア用のカード画像は先につくっておく（スマホの共有シートは、ボタンを押した直後に呼ばないと開けない）
     S.card = null
@@ -401,6 +407,123 @@
   $('btnSave').addEventListener('click', () => { saveLife(); newLife() })
   $('btnSaveHome').addEventListener('click', () => { saveLife(); go('home') })
 
+  // ---------- 職業を選んで働く ----------
+  const ENTRY = new Set(E.ENTRY_JOBS.map(j => j.code))
+  $('btnPickMode').addEventListener('click', () => { go('zukan'); $('zSearch').focus() })
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.pick-job'); if (!b) return
+    e.preventDefault(); e.stopPropagation()
+    openJob(b.dataset.job)
+  })
+  let pickCode = null, pickDream = null
+  // 夢の仕事（国勢調査の職業と結びつくものは、その人数を見せる）
+  const DREAM_JOB = { actor: '233', singer: '231', athlete: '245' }
+  $('dreamRow').innerHTML = E.DREAM_KEYS.map(k => `<button class="btn" data-dream="${k}">${esc(t('dream.' + k))}</button>`).join('')
+  $('dreamRow').addEventListener('click', e => { const b = e.target.closest('[data-dream]'); if (b) openDream(b.dataset.dream) })
+  function simulateDream(key, n = 200) {
+    const life = [], hitLife = [], last = {}
+    let hit = 0, top = 0, gaveUp = 0, endIrr = 0
+    const bizFail = t('log.bizFail')
+    for (let i = 0; i < n; i++) {
+      const q = E.create({ auto: true, dream: key })
+      let g = 0
+      while (!q.ended && g++ < 90) E.step(q)
+      life.push(q.lifetime)
+      const made = key === 'founder' ? !q.log.some(l => l.text === bizFail) : !!(q.dreamCareer || q.flags.dreamDone || q.netCareer)
+      const best = key === 'founder' ? !!q.flags.exitGain : key === 'youtuber' ? (q.netLv || 0) >= 4 : (q.peakDream || 0) >= 3
+      if (made) { hit++; hitLife.push(q.lifetime) }
+      if (best) top++
+      if (q.flags.dreamGaveUp) gaveUp++
+      if (q.emp === 'irregular') endIrr++
+      const lt = E.title(q); last[lt] = (last[lt] || 0) + 1
+    }
+    life.sort((a, b) => a - b); hitLife.sort((a, b) => a - b)
+    const pct = v => `${(v / n * 100).toFixed(v / n < 0.1 ? 1 : 0)}%`
+    const med = a => a.length ? money(a[a.length >> 1]) : '—'
+    const lastTop = Object.entries(last).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k)
+    return [
+      [key === 'founder' ? 'pick.s.survive' : 'pick.s.hit', pct(hit)],
+      [key === 'founder' ? 'pick.s.exit' : 'pick.s.top', pct(top)],
+      ['pick.s.life', med(life)],
+      ['pick.s.hitLife', med(hitLife)],
+      ...(key === 'founder' ? [] : [['pick.s.gaveUp', pct(gaveUp)], ['pick.s.endIrr', pct(endIrr)]]),
+      ['pick.s.last', lastTop.join(t('list.sep'))],
+    ]
+  }
+  function openDream(key) {
+    pickCode = null; pickDream = key
+    const j = DREAM_JOB[key] ? JOBS[DREAM_JOB[key]] : null
+    $('jmTitle').textContent = t('dream.' + key)
+    $('jmLead').textContent = t('dream.d.' + key, { people: j ? fmtPeople(j) : '' })
+    $('jmKv').innerHTML = j ? [['pick.f.people', `${fmtPeople(j)}${j.share ? t('pick.f.rare', { n: Math.round(1 / j.share).toLocaleString() }) : ''}`], ['kv.peakInc', money(j.inc)]]
+      .map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('') : ''
+    $('jmSim').innerHTML = `<p class="small muted">${t('pick.simLoading')}</p>`
+    $('jobModal').classList.remove('hidden')
+    setTimeout(() => {
+      $('jmSim').innerHTML = simulateDream(key).map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
+    }, 30)
+  }
+  function eduNeed(j) {
+    if (C.longSchool && C.longSchool.match(j)) return C.longSchool.edu.name
+    const e = window.EDUCATION.find(x => x.lv >= (j.edu || 0))
+    return e ? (j.edu ? t('pick.f.eduMin', { edu: e.name }) : t('pick.f.eduAny')) : '—'
+  }
+  // 同じ職業から、統計どおりに200回働いてみる
+  function simulate(code, n = 200) {
+    const life = [], first = [], dest = {}
+    let change = 0, moves = 0, mgr = 0, leave = 0, self = 0, irr = 0, stay = 0
+    for (let i = 0; i < n; i++) {
+      const q = E.create({ auto: true, job: code })
+      if (q.emp === 'irregular') irr++
+      let g = 0
+      while (!q.ended && g++ < 90) { E.step(q); if (q.workYears === 1) first.push(q.income) }
+      life.push(q.lifetime)
+      if (q.titles.length > 1) change++
+      moves += q.titles.length - 1
+      if (q.peakRank >= 3) mgr++
+      if (q.log.some(l => l.kind === 'leave')) leave++
+      if (q.selfYears > 0) self++
+      if (q.jobsHeld.length === 1) stay++
+      if (q.jobsHeld[1]) dest[q.jobsHeld[1]] = (dest[q.jobsHeld[1]] || 0) + 1
+    }
+    life.sort((a, b) => a - b); first.sort((a, b) => a - b)
+    const pct = v => `${Math.round(v / n * 100)}%`
+    const q = (a, p) => a[Math.min(a.length - 1, Math.floor(a.length * p))]
+    const top = Object.entries(dest).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([c]) => JOBS[c].label)
+    return [
+      ['pick.s.life', money(q(life, 0.5)), t('pick.s.lifeRange', { lo: money(q(life, 0.1)), hi: money(q(life, 0.9)) })],
+      ['pick.s.first', first.length ? money(q(first, 0.5)) : '—'],
+      ['pick.s.irr', pct(irr)],
+      ['pick.s.change', pct(change), t('pick.s.moves', { n: (moves / n).toFixed(1) })],
+      ['pick.s.stay', pct(stay)],
+      ['pick.s.mgr', pct(mgr)],
+      ['pick.s.self', pct(self)],
+      ['pick.s.leave', pct(leave)],
+      ['pick.s.dest', top.length ? top.join(t('list.sep')) : '—'],
+    ]
+  }
+  function openJob(code) {
+    const j = JOBS[code]; pickCode = code; pickDream = null
+    $('jmTitle').textContent = j.name
+    $('jmLead').textContent = t('pick.lead', { major: C.majorLabel(j.majorName), mid: j.midName })
+    const kv = [
+      ['pick.f.edu', eduNeed(j)], ['pick.f.lic', j.lic ? LIC[j.lic].name : t('pick.f.noLic')],
+      ['pick.f.people', `${fmtPeople(j)}${j.share ? t('pick.f.rare', { n: Math.round(1 / j.share).toLocaleString() }) : ''}`],
+      ['kv.peakInc', `${money(j.inc)}${j.incSrc === 'est' ? t('estParen') : ''}`], ['kv.ot', t('unit.hours', { n: j.ot })],
+      ['kv.female', `${Math.round(j.female * 100)}%`], ['kv.ai', `${Math.round(j.ai * 100)}%`],
+    ]
+    $('jmKv').innerHTML = kv.map(([k, v]) => `<div><span>${t(k)}</span><b>${esc(v)}</b></div>`).join('')
+    $('jmSim').innerHTML = `<p class="small muted">${t('pick.simLoading')}</p>`
+    $('jobModal').classList.remove('hidden')
+    // 計算に少し時間がかかるので、画面を出してから
+    setTimeout(() => {
+      $('jmSim').innerHTML = simulate(code).map(([k, v, sub]) => `<div><span>${t(k)}</span><b>${esc(v)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</div>`).join('')
+    }, 30)
+  }
+  $('jmClose').addEventListener('click', () => $('jobModal').classList.add('hidden'))
+  $('jobModal').addEventListener('click', e => { if (e.target.id === 'jobModal') $('jobModal').classList.add('hidden') })
+  $('jmStart').addEventListener('click', () => { $('jobModal').classList.add('hidden'); pickDream ? newLife(null, pickDream) : newLife(pickCode) })
+
   // ---------- 職業図鑑 ----------
   $('zSearch').addEventListener('input', renderZukan)
   function renderZukan() {
@@ -413,7 +536,7 @@
       const mids = Mj.mids.map(c => J.mids[c]).map(mid => {
         const jobs = mid.jobs.map(x => JOBS[x.code]).filter(j => !q || j.name.toLowerCase().includes(q) || mid.name.toLowerCase().includes(q) || (j.variants || []).some(v => v.name.toLowerCase().includes(q)))
         if (!jobs.length) return ''
-        const rows = jobs.map(j => `<div class="jobrow ${seen.has(j.code) ? 'seen' : ''}"><span class="mono">${j.code}</span><span>${esc(j.name)}${j.lic ? `<br><span class="lic">${esc(t('z.req', { lic: LIC[j.lic].name }))}</span>` : ''}${j.gate === 'rank' ? `<br><span class="lic">${t('z.rank')}</span>` : ''}${j.variants ? `<div class="vars">${j.variants.map(v => `<span class="var" title="${esc(v.note || '')}">${esc(v.name)}<small>×${v.mult}・AI ${Math.round(v.ai * 100)}%</small></span>`).join('')}</div>` : ''}</span><span>${fmtPeople(j)}</span><span>${j.inc ? money(j.inc) : '—'}${j.incSrc === 'est' ? `<br><span class="lic">${t('est')}</span>` : ''}</span><span class="hide-sm">${Math.round(j.female * 100)}%</span><span class="hide-sm">${j.ot}h</span><span class="hide-sm">${Math.round(j.ai * 100)}%</span></div>`).join('')
+        const rows = jobs.map(j => `<div class="jobrow ${seen.has(j.code) ? 'seen' : ''}"><span class="mono">${j.code}</span><span>${esc(j.name)}${ENTRY.has(j.code) ? ` <button class="btn sm pick-job" data-job="${j.code}">${t('pick.btn')}</button>` : ''}${j.lic ? `<br><span class="lic">${esc(t('z.req', { lic: LIC[j.lic].name }))}</span>` : ''}${j.gate === 'rank' ? `<br><span class="lic">${t('z.rank')}</span>` : ''}${j.variants ? `<div class="vars">${j.variants.map(v => `<span class="var" title="${esc(v.note || '')}">${esc(v.name)}<small>×${v.mult}・AI ${Math.round(v.ai * 100)}%</small></span>`).join('')}</div>` : ''}</span><span>${fmtPeople(j)}</span><span>${j.inc ? money(j.inc) : '—'}${j.incSrc === 'est' ? `<br><span class="lic">${t('est')}</span>` : ''}</span><span class="hide-sm">${Math.round(j.female * 100)}%</span><span class="hide-sm">${j.ot}h</span><span class="hide-sm">${Math.round(j.ai * 100)}%</span></div>`).join('')
         const seenN = mid.jobs.filter(x => seen.has(x.code)).length
         const iso = JOBS[mid.jobs[0].code].isco
         return `<details class="mid" ${q ? 'open' : ''}><summary><span>${mid.code} ${esc(mid.name)}</span><span class="muted small">${iso ? `<span class="isco" title="${esc((window.ISCO.subMajors[iso] || {})[C.lang] || '')}">ISCO ${iso}</span> ` : ''}${seenN}/${mid.jobs.length}</span></summary>${head}${rows}</details>`

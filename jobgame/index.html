@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Klee+One:wght@600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=0.7.6">
+<link rel="stylesheet" href="css/style.css?v=0.8.2">
 </head>
 <body>
 
@@ -86,6 +86,7 @@
       </div>
       <div class="muted small" style="text-align:center;margin-top:8px" data-i18n="home.startSub"></div>
       <div class="cta-row center">
+        <button class="btn primary" id="btnPickMode" data-i18n="pick.home"></button>
         <button class="btn" data-go="zukan" data-i18n="home.zukan"></button>
         <button class="btn" data-go="memorial" data-i18n="home.memorial"></button>
       </div>
@@ -242,6 +243,7 @@
         <p id="eSummary" class="lead2"></p>
         <p id="eFamily" class="lead2 muted"></p>
         <div class="hi" id="eHi"></div>
+        <p class="small muted hidden" id="eChosen" data-i18n="pick.noRank"></p>
         <div class="share-row">
           <button class="btn primary" id="btnShareImg" data-i18n="e.share.img"></button>
           <button class="btn share-x" data-share="x" data-i18n="e.share.x"></button>
@@ -363,6 +365,12 @@
     </div>
     <p class="small muted" data-i18n-html="z.desc"></p>
     <p class="small muted" data-i18n-html="z.src"></p>
+    <div class="dream-box">
+      <div class="card-h" data-i18n="pick.dreams"></div>
+      <p class="small muted" data-i18n="pick.dreamsSub"></p>
+      <div class="dream-row" id="dreamRow"></div>
+    </div>
+    <p class="pick-hint small" data-i18n="pick.hint"></p>
     <input id="zSearch" class="input" data-i18n-ph="z.search">
     <div id="zTree"></div>
   </div>
@@ -403,6 +411,23 @@
   </div>
 </div>
 
+<!-- 職業を選んで働く：職業の中身と、統計どおりに200回働いた結果 -->
+<div id="jobModal" class="modal hidden">
+  <div class="modal-box job-box">
+    <div class="modal-k" data-i18n="pick.k"></div>
+    <h3 id="jmTitle"></h3>
+    <p class="small muted" id="jmLead"></p>
+    <div class="kv" id="jmKv"></div>
+    <div class="card-h" style="margin-top:14px" data-i18n="pick.sim.h"></div>
+    <div class="jm-sim" id="jmSim"></div>
+    <p class="small muted" data-i18n="pick.note"></p>
+    <div class="choices">
+      <button id="jmStart"><b data-i18n="pick.start"></b></button>
+      <button id="jmClose" data-i18n="close"></button>
+    </div>
+  </div>
+</div>
+
 <!-- ランキングで人を押したときのカード画像 -->
 <div id="cardModal" class="modal hidden">
   <div class="modal-box card-box">
@@ -431,7 +456,7 @@
 if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job&ref=" + encodeURIComponent(document.referrer))
   .catch(() => {});
 </script>
-<script src="js/i18n.js?v=0.7.6"></script>
-<script src="js/boot.js?v=0.7.6"></script>
+<script src="js/i18n.js?v=0.8.2"></script>
+<script src="js/boot.js?v=0.8.2"></script>
 </body>
 </html>
