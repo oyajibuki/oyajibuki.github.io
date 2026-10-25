@@ -4,7 +4,7 @@ name: jobgame-threads
 
 on:
   schedule:
-    - cron: '0 3 * * *' # 毎日 12:00（日本時間）。GitHub の混み具合で数十分遅れることがある
+    - cron: '50 10 * * *' # 毎日 19:50（日本時間）に動いて 20:00 ごろに投稿。0分ちょうどは混んで遅れやすいのでずらしている
   workflow_dispatch:
     inputs:
       dry_run:

@@ -1,6 +1,6 @@
 # 7千万分の1 — Threads 毎日自動投稿
 
-毎日 12:00（日本時間）に GitHub Actions が「7千万分の1」をおまかせで1回遊び、ゲーム内と同じシェア用カード（1080×1350）と結果の文章を Threads に投稿する。
+毎日 20:00 ごろ（日本時間）に GitHub Actions が「7千万分の1」をおまかせで1回遊び、ゲーム内と同じシェア用カード（1080×1350）と結果の文章を Threads に投稿する。
 
 ```
 GitHub Actions（.github/workflows/jobgame-threads.yml）
