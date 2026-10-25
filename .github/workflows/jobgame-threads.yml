@@ -1,0 +1,86 @@
+# 「7千万分の1」を毎日1回おまかせで遊んで、結果カードつきで Threads に投稿する。
+# 手順と必要な Secrets は tools/jobgame-threads/README.md
+name: jobgame-threads
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # 毎日 12:00（日本時間）。GitHub の混み具合で数十分遅れることがある
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '投稿せずに、カードと文章をつくるだけ'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write # カード画像を jobgame-threads ブランチに置くため
+
+concurrency: jobgame-threads
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HAS_TOKEN: ${{ secrets.THREADS_TOKEN != '' }} # Secret を入れるまでは、毎日の実行はカードをつくるだけ
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Playwright と日本語フォントを入れる
+        working-directory: tools/jobgame-threads
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: おまかせで1回遊ぶ
+        run: node tools/jobgame-threads/play.mjs
+
+      - name: カードと文章を保存（Actions の実行結果から見られる）
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobgame-card
+          path: tools/jobgame-threads/out/
+
+      # Threads は画像を URL から取りに来るので、公開リポジトリの専用ブランチに置く（毎回その日の1枚だけに上書き）
+      - name: カード画像を公開URLに置く
+        id: img
+        if: env.HAS_TOKEN == 'true' && (github.event_name == 'schedule' || !inputs.dry_run)
+        run: |
+          name="$(TZ=Asia/Tokyo date +%Y-%m-%d)-${GITHUB_RUN_ID}.png"
+          dir="$(mktemp -d)"
+          cp tools/jobgame-threads/out/card.png "$dir/$name"
+          cd "$dir"
+          git init -q -b jobgame-threads
+          git add "$name"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -qm "jobgame card $name"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" jobgame-threads
+          url="https://raw.githubusercontent.com/${{ github.repository }}/jobgame-threads/$name"
+          for i in $(seq 1 30); do curl -sfI "$url" > /dev/null && break; sleep 5; done
+          curl -sfI "$url" > /dev/null
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Threads に投稿
+        if: steps.img.outputs.url
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          IMAGE_URL: ${{ steps.img.outputs.url }}
+        run: node tools/jobgame-threads/post.mjs
+
+      # アクセストークンは60日で切れるので、投稿のたびに延長して Secret を上書きする
+      # （SECRETS_PAT が無ければ延長しない。そのときは60日ごとに手で入れ直す）
+      - name: アクセストークンを延長
+        if: steps.img.outputs.url
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          GH_TOKEN: ${{ secrets.SECRETS_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "::warning::SECRETS_PAT が無いので、トークンを延長しません"; exit 0; fi
+          new="$(curl -sf "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_TOKEN}" | jq -r .access_token)"
+          if [ -z "$new" ] || [ "$new" = null ]; then echo "::warning::トークンの延長に失敗しました"; exit 0; fi
+          echo "::add-mask::$new"
+          gh secret set THREADS_TOKEN --repo "${{ github.repository }}" --body "$new"

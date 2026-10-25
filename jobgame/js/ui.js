@@ -376,6 +376,7 @@
       .then(cv => new Promise(r => cv.toBlob(r, 'image/png')))
     S.cardOf = cardOf
     cardOf().then(b => { S.card = b })
+    if (S.bot) { const done = S.bot; S.bot = null; cardOf().then(done) }
     $('eWord').value = ''
     go('ending')
   }
@@ -632,6 +633,23 @@
   renderHomeMem()
   if (window.Rank) window.Rank.renderHome()
   initLive()
+  // 毎日の自動投稿（?bot=1）：くじで引いた一生をおまかせで早送りし、シェア用カードと文章を返す
+  // 使い方: await window.JGBot.run() → { png: dataURL, text, summary, epitaph, name }
+  if (new URLSearchParams(location.search).has('bot')) {
+    window.JGBot = {
+      run: () => new Promise(res => {
+        S.bot = blob => {
+          const r = new FileReader()
+          r.onload = () => res({ png: r.result, text: S.shareText, summary: $('eSummary').textContent, epitaph: E.epitaph(S.p), name: S.p.name })
+          r.readAsDataURL(blob)
+        }
+        S.sex = ''; S.name = ''
+        newLife()
+        $('btnBegin').click()
+        S.p.auto = true; S.secPerYear = 0; updateCtrls()
+      }),
+    }
+  }
   // Stripe から戻ってきたら、その人生をメモリアルに納めて（まだなら）作品を開く
   const paidSnap = window.Pass.resume()
   if (paidSnap) {
