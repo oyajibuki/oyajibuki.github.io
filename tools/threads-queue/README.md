@@ -15,6 +15,7 @@ Actions: .github/workflows/threads-queue.yml（30分おき）
 node tools/threads-queue/add.mjs "<動画.mp4>"            # 中身を見るだけ
 node tools/threads-queue/add.mjs "<動画.mp4>" --yes      # 次の枠に予約
 node tools/threads-queue/add.mjs "<動画.mp4>" --at "2026-10-27 19:00" --yes
+node tools/threads-queue/add.mjs "<EP01.mp4>" "<EP02.mp4>" … --at "2026-10-26 19:00" --yes   # まとめて（2本目からは次の枠に続く）
 node tools/threads-queue/add.mjs --list                  # 予約の一覧
 node tools/threads-queue/add.mjs --remove <ID>           # 取り消し
 ```

@@ -6,6 +6,7 @@
  *   node tools/threads-queue/add.mjs <動画.mp4> --yes                 # 次の枠に積む
  *   node tools/threads-queue/add.mjs <動画.mp4> --at "2026-10-27 19:00" --yes
  *   node tools/threads-queue/add.mjs <動画.mp4> --text 本文.txt --yes  # 本文を自分で書いたものにする
+ *   node tools/threads-queue/add.mjs <EP01.mp4> <EP02.mp4> … --at "2026-10-26 19:00" --yes  # まとめて。2本目からは次の枠に続けて入る
  *   node tools/threads-queue/add.mjs --list                           # 予約の一覧
  *   node tools/threads-queue/add.mjs --remove <ID>                    # 予約を取り消す
  *
@@ -60,43 +61,57 @@ if (has('--list') || has('--remove')) {
   process.exit(0);
 }
 
-const video = args.find(a => a.endsWith('.mp4') || a.endsWith('.mov'));
-if (!video || !fs.existsSync(video)) throw new Error('動画ファイルを指定してください');
-const abs = path.resolve(video);
-const app = appOf(abs);
-if (!app) throw new Error('断酒クエストかジオアラームのフォルダの動画ではありません');
-const size = fs.statSync(abs).size;
-if (size > 95 * 1024 * 1024) throw new Error(`動画が大きすぎます（${Math.round(size / 1048576)}MB。GitHub に置ける上限は100MB）`);
+// 動画は複数まとめて渡せる。--at は1本目の日時で、2本目からは前の回の次の枠に入る
+const videos = args.filter(a => /\.(mp4|mov)$/i.test(a));
+if (!videos.length) throw new Error('動画ファイルを指定してください');
+if (opt('--text') && videos.length > 1) throw new Error('--text は動画1本のときだけ使えます');
 
-let text;
-if (opt('--text')) text = fs.readFileSync(opt('--text'), 'utf8').trim();
-else {
-  const md = fs.readdirSync(path.dirname(abs)).find(f => f.endsWith('_投稿文.md'));
-  if (!md) throw new Error('同じフォルダに *_投稿文.md がありません（--text で本文を渡すこともできます）');
-  const cap = igCaption(fs.readFileSync(path.join(path.dirname(abs), md), 'utf8'));
-  if (!cap) throw new Error(`${md} に Instagram のキャプションが見つかりません`);
-  text = toThreads(cap, app);
+// 投稿文：同じフォルダの *_投稿文.md のうち、Instagram のキャプションがあるもの（動画のファイル名が書いてあるものを優先）
+function textOf(abs, app) {
+  if (opt('--text')) return fs.readFileSync(opt('--text'), 'utf8').trim();
+  const folder = path.dirname(abs);
+  const mds = fs.readdirSync(folder).filter(f => f.endsWith('_投稿文.md')).map(f => fs.readFileSync(path.join(folder, f), 'utf8'))
+    .sort((a, b) => b.includes(path.basename(abs)) - a.includes(path.basename(abs)));
+  const cap = mds.map(igCaption).find(Boolean);
+  if (!cap) throw new Error(`${path.basename(abs)}: 同じフォルダの *_投稿文.md に Instagram のキャプションがありません（--text で本文を渡せます）`);
+  return toThreads(cap, app);
 }
-if (text.length > 500) throw new Error(`本文が500文字を超えています（${text.length}文字）。--text で短くしたものを渡してください`);
 
 const dir = checkout();
 const list = items(dir);
-const source = path.relative(path.resolve(abs, '../../../..'), abs); // 例 11.GEOAlame/shortmovie/G02/G02_….mp4
-if (list.some(x => x.source === source) && !has('--force')) throw new Error(`この動画はもう予約に入っています（${source}）。もう一度積むなら --force`);
-const last = list.filter(x => x.app === app).map(x => new Date(x.at)).sort((a, b) => b - a)[0];
-const at = opt('--at') ? parseJst(opt('--at')) : nextSlot(app, last && last > new Date() ? last : new Date());
-if (Number.isNaN(at.getTime())) throw new Error('--at は "2026-10-27 19:00" の形で');
-const slug = (path.basename(abs).match(/^[A-Za-z]+\d+/) || ['video'])[0];
-const id = `${fmtJst(at).replace(/[-: ]/g, '').slice(0, 12)}-${slug}`;
+const lastOf = app => list.filter(x => x.app === app).map(x => new Date(x.at)).sort((a, b) => b - a)[0];
+const plan = [];
+for (const [k, video] of videos.entries()) {
+  if (!fs.existsSync(video)) throw new Error(`ありません: ${video}`);
+  const abs = path.resolve(video);
+  const app = appOf(abs);
+  if (!app) throw new Error(`${video}: 断酒クエストかジオアラームのフォルダの動画ではありません`);
+  const size = fs.statSync(abs).size;
+  if (size > 95 * 1024 * 1024) throw new Error(`${video}: 大きすぎます（${Math.round(size / 1048576)}MB。GitHub に置ける上限は100MB）`);
+  const text = textOf(abs, app);
+  if (text.length > 500) throw new Error(`${video}: 本文が500文字を超えています（${text.length}文字）。--text で短くしたものを渡してください`);
+  const source = path.relative(path.resolve(abs, '../../../..'), abs); // 例 11.GEOAlame/shortmovie/G02/G02_….mp4
+  if ((list.some(x => x.source === source) || plan.some(x => x.source === source)) && !has('--force')) throw new Error(`この動画はもう予約に入っています（${source}）。もう一度積むなら --force`);
+  const prev = [...plan].reverse().find(x => x.app === app)?.at || lastOf(app);
+  const at = k === 0 && opt('--at') ? parseJst(opt('--at')) : nextSlot(app, prev && prev > new Date() ? prev : new Date());
+  if (Number.isNaN(at.getTime())) throw new Error('--at は "2026-10-27 19:00" の形で');
+  const slug = (path.basename(abs).match(/^[A-Za-z]+\d+/) || ['video'])[0];
+  const id = `${fmtJst(at).replace(/[-: ]/g, '').slice(0, 12)}-${slug}`;
+  plan.push({ id, app, at, text, source, abs, size });
+}
 
-console.log(`${APPS[app].name}  ${fmtJst(at)}（日本時間）に投稿  ID: ${id}`);
-console.log(`動画: ${source}（${(size / 1048576).toFixed(1)}MB）`);
-console.log(`---\n${text}\n---（${text.length}文字）`);
-if (!has('--yes')) { console.log('\nこの内容で予約するなら --yes を付けてもう一度実行'); process.exit(0); }
+for (const x of plan) {
+  console.log(`${APPS[x.app].name}  ${fmtJst(x.at)}（日本時間）に投稿  ID: ${x.id}`);
+  console.log(`動画: ${x.source}（${(x.size / 1048576).toFixed(1)}MB）`);
+  console.log(`---\n${x.text}\n---（${x.text.length}文字）\n`);
+}
+if (!has('--yes')) { console.log('この内容で予約するなら --yes を付けてもう一度実行'); process.exit(0); }
 
-const d = path.join(dir, 'queue', id);
-fs.mkdirSync(d, { recursive: true });
-fs.copyFileSync(abs, path.join(d, 'video.mp4'));
-fs.writeFileSync(path.join(d, 'post.json'), JSON.stringify({ id, app, at: at.toISOString(), text, source }, null, 2) + '\n');
-push(dir, `add ${id}`);
-console.log('予約しました');
+for (const x of plan) {
+  const d = path.join(dir, 'queue', x.id);
+  fs.mkdirSync(d, { recursive: true });
+  fs.copyFileSync(x.abs, path.join(d, 'video.mp4'));
+  fs.writeFileSync(path.join(d, 'post.json'), JSON.stringify({ id: x.id, app: x.app, at: x.at.toISOString(), text: x.text, source: x.source }, null, 2) + '\n');
+}
+push(dir, `add ${plan.map(x => x.id).join(' ')}`);
+console.log(`予約しました（${plan.length}本）`);
