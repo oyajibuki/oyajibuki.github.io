@@ -1,0 +1,80 @@
+# 断酒クエスト・ジオアラームのショート動画を、予約した時間に Threads へ投稿する。
+# 予約は Mac から tools/threads-queue/add.mjs で threads-queue ブランチに積む。手順は tools/threads-queue/README.md
+name: threads-queue
+
+on:
+  schedule:
+    - cron: '25,55 * * * *' # 30分おき。予約の15分前から出すので、19:00 の回は 18:55 の実行で 19:00 前後に出る
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '動画の取り込みまで試して、公開はしない'
+        type: boolean
+        default: true
+      only:
+        description: '時間に関係なく、この予約IDだけを扱う（空なら時間が来たもの）'
+        type: string
+        default: ''
+
+permissions:
+  contents: write # 投稿した予約を threads-queue ブランチから消すため
+
+concurrency: threads-queue
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 予約ブランチがあるか
+        id: q
+        run: |
+          if git ls-remote --exit-code --heads origin threads-queue > /dev/null; then echo "exists=true" >> "$GITHUB_OUTPUT"; fi
+
+      - uses: actions/checkout@v4
+        if: steps.q.outputs.exists
+        with:
+          ref: threads-queue
+          path: q
+
+      - uses: actions/setup-node@v4
+        if: steps.q.outputs.exists
+        with:
+          node-version: 22
+
+      - name: 時間が来た予約を投稿
+        id: run
+        if: steps.q.outputs.exists
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          REPO: ${{ github.repository }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '' }}
+          ONLY: ${{ inputs.only }}
+        run: SHA="$(git -C q rev-parse HEAD)" node tools/threads-queue/run.mjs q
+
+      # 投稿した動画は消して、ブランチを1コミットに作り直す（動画が履歴にたまってリポジトリが重くならないように）
+      # 途中で失敗しても、それまでに出した分は必ず記録する（二重投稿を防ぐ）
+      - name: 予約ブランチを更新
+        if: always() && steps.q.outputs.exists
+        working-directory: q
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then exit 0; fi
+          old="$(git rev-parse HEAD)"
+          git checkout -q --orphan rebuilt
+          git add -A
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -qm "threads-queue $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')"
+          git push -q --force-with-lease="threads-queue:$old" origin HEAD:threads-queue
+
+      - name: アクセストークンを延長
+        if: steps.run.outputs.posted == 'true'
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          GH_TOKEN: ${{ secrets.SECRETS_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "::warning::SECRETS_PAT が無いので、トークンを延長しません"; exit 0; fi
+          new="$(curl -sf "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_TOKEN}" | jq -r .access_token)"
+          if [ -z "$new" ] || [ "$new" = null ]; then echo "::warning::トークンの延長に失敗しました"; exit 0; fi
+          echo "::add-mask::$new"
+          gh secret set THREADS_TOKEN --repo "${{ github.repository }}" --body "$new"
