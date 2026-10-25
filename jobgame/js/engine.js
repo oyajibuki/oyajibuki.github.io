@@ -337,6 +337,9 @@
     if (j.mid !== cur.mid) p.yearsInMid = 0
     p.job = offer.job; p.size = offer.size; p.emp = offer.emp; p.rank = offer.rank || 0
     p.irr = offer.emp === 'irregular' ? (offer.irr || pickIrr()) : null
+    // 夢を追っている途中、またはプロとして活動中に別の仕事に移ったら、夢・現役はそこで終わり
+    if (p.dreamCareer) { p.flags.dreamDone = p.dreamCareer; p.dreamCareer = null }
+    if (p.dream) { p.flags.dreamGaveUp = p.dream; p.dream = null }
     p.flags.preManager = null; p.flags.leader = false; p.corp = false; p.netCareer = null
     p.variant = offer.variant !== undefined ? offer.variant : pickVariant(offer.job, p.meta)
     p.yearsInJob = 0; p.unemployed = false; p.rel = 45
@@ -880,6 +883,8 @@
     else {
       const r = rnd()
       p.focus = r < 0.3 ? 'rest' : r < 0.45 ? 'play' : r < 0.6 ? 'work' : r < 0.7 ? 'side' : r < 0.8 ? 'meta' : r < 0.88 ? 'hunt' : 'rest'
+      // 夢を追っている人・プロとして活動中の人は、自分から転職活動はしない
+      if (p.focus === 'hunt' && (p.dream || p.dreamCareer)) p.focus = 'work'
       if (p.focus === 'rest' && rnd() < 0.03) {
         const cand = Object.keys(LIC).filter(k => LIC[k].kind === 'study' && !p.licenses.includes(k) && (!LIC[k].maxAge || p.age < LIC[k].maxAge - 2))
         if (cand.length) { p.study.target = pick(cand); p.focus = 'study' }
@@ -979,7 +984,7 @@
     // 夢の仕事
     const dk = p.dreamCareer || p.flags.dreamDone
     if (dk && (p.peakDream || 0) >= 3) c.push([97, 'honor.dreamTop', { title: t('dream.lv.' + dk + '3') }])
-    else if (dk) c.push([72, 'honor.dreamHit', { title: t('dream.lv.' + dk + (p.peakDream || 0)) }])
+    else if (dk) c.push([88, 'honor.dreamHit', { title: t('dream.lv.' + dk + (p.peakDream || 0)) }])
     else if (p.flags.dreamGaveUp) c.push([76, 'honor.dreamChase', { dream: t('dream.' + p.flags.dreamGaveUp) }])
     if (p.flags.rebuilt) c.push([90, 'honor.rebuilt', {}])
     else if (p.flags.homeless) c.push([70, 'honor.street', {}])
