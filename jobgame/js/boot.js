@@ -3,7 +3,7 @@
 // 古いリンクの ?lang=en や、言語タブで選んで覚えた言語が今のページと違えば、その言語のページへ移る。
 (function () {
   // ファイルを更新したらここを変える（ブラウザのキャッシュで古いスクリプトが混ざらないように）
-  const VERSION = '0.8.8'
+  const VERSION = '0.8.9'
   const q = new URLSearchParams(location.search)
   const page = document.documentElement.dataset.page || 'ja'
   let lang = q.get('lang')

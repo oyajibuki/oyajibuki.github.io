@@ -363,6 +363,8 @@
     const honor = E.honor(p, above)
     $('eHonor').textContent = honor
     S.shareText = t('e.share.text', { job: p.titles[0], money: money(p.lifetime), rank, top, ep: E.epitaph(p), honor })
+    // 自動投稿（?bot=1）の問いかけに使う数字
+    S.facts = { job: p.titles[0], money: money(p.lifetime), rank, top, rare, honor, startAge: p.startAge, endAge: p.age, changes: nChanges }
     S.snap = window.Pass.snapshot(p, S.peers, { honor })
     // ランキングに載せられるよう、この人生の数字を渡す（名前は、この人生を過ごした名前）
     // 職業を選んだ人生は、くじで引いた人生とは別の「挑戦ランキング」に載せる（好きな職業を選べると公平でなくなるため）
@@ -634,13 +636,13 @@
   if (window.Rank) window.Rank.renderHome()
   initLive()
   // 毎日の自動投稿（?bot=1）：くじで引いた一生をおまかせで早送りし、シェア用カードと文章を返す
-  // 使い方: await window.JGBot.run() → { png: dataURL, text, summary, epitaph, name }
+  // 使い方: await window.JGBot.run() → { png: dataURL, text, summary, epitaph, name, facts }
   if (new URLSearchParams(location.search).has('bot')) {
     window.JGBot = {
       run: () => new Promise(res => {
         S.bot = blob => {
           const r = new FileReader()
-          r.onload = () => res({ png: r.result, text: S.shareText, summary: $('eSummary').textContent, epitaph: E.epitaph(S.p), name: S.p.name })
+          r.onload = () => res({ png: r.result, text: S.shareText, summary: $('eSummary').textContent, epitaph: E.epitaph(S.p), name: S.p.name, facts: S.facts })
           r.readAsDataURL(blob)
         }
         S.sex = ''; S.name = ''
