@@ -25,6 +25,10 @@ node tools/threads-queue/add.mjs --remove <ID>           # 取り消し
   - ハッシュタグの行を消して、トピックタグを1つだけ付ける（断酒クエスト `#断酒`、ジオアラーム `#寝過ごし`）
   - 「プロフィールのリンクから」を、本文の App Store リンク（Threads 用の計測リンク `ct=threads` / `ct=threads_geo`）に置き換える
   - 別の本文にしたいときは `--text 本文.txt`（500文字まで）
+- **冒頭の問いかけ**：コメントしてもらいやすいように、本文の頭に問いを1行付ける（`--no-question` で付けない）
+  - その回の固定コメントの問い（投稿文.md の Instagram → YouTube → TikTok、断酒は `固定コメント一覧_YouTube.md` も）。「今日で何日目？」のように毎回同じになる問いは使わない
+  - 同じアプリの直前7回と同じ問いは避ける。使える問いが無いときは `apps.mjs` の `POOL` から日ごとに順番に
+  - 問いの無い古い予約に付けるとき：`node tools/threads-queue/add.mjs --requestion --yes`
 - 予約の15分前から投稿してよいことにしている（Actions は30分おきで、遅れることがあるため）。12時間以上過ぎた予約は出さずに `done.json` に `missed` で残す
 
 ## 試す

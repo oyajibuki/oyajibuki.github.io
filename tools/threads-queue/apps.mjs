@@ -21,7 +21,54 @@ export const APPS = {
   },
 };
 
-export const appOf = file => Object.entries(APPS).find(([, a]) => a.match.test(file))?.[0];
+// 冒頭の問いかけ（コメントしてもらいやすいように）。その回の固定コメントの問いを使い、無いときだけここから日ごとに順番に使う
+export const POOL = {
+  danshu: [
+    'お酒をやめて、いちばん変わったことは何ですか？',
+    '「一杯だけ」と言われたとき、どう断っていますか？',
+    '断酒中、いちばん飲みたくなるのはどんなときですか？',
+    'お酒の代わりに、何を飲んでいますか？',
+    'お酒で一番後悔している夜、ありますか？',
+  ],
+  geo: [
+    '電車で寝過ごして、いちばん遠くまで行ったのはどこですか？',
+    '通勤電車で寝る派？ 起きてる派？',
+    '乗り過ごして、いちばん困った日はいつでしたか？',
+    '電車で寝過ごしたこと、何回ありますか？',
+  ],
+};
+// 毎回同じになる問い（断酒の「今日で何日目？」）とリンクの行は使わない
+const GENERIC = /今日で.*何日目|http|^▼|^（|^\s*$/;
+
+// 投稿文.md の「## 見出し」の中の「**固定コメント**」のコードブロック
+function pinned(md, heading) {
+  const sec = md.split(/^## /m).find(s => s.startsWith(heading));
+  const m = sec && sec.match(/\*\*固定コメント\*\*[^\n]*\n```\n([\s\S]*?)\n```/);
+  return m ? m[1] : null;
+}
+const lines = text => (text || '').split(/\n|<br>/).map(s => s.trim()).filter(s => !GENERIC.test(s));
+// その回の問い。mds: 同じフォルダの投稿文.md の中身 / listMd: 断酒の「固定コメント一覧_YouTube.md」/ ep: 話の番号
+// avoid: 直前の回に使った問い（同じ問いが続くと bot っぽいので避ける）
+// 固定コメント（Instagram → YouTube → TikTok → 一覧）の行のうち、「？」「か。」で終わる問いを優先し、無ければ「〜ください」
+export function questionFor(app, { mds = [], listMd = '', ep = 0, day = 0, avoid = [] }) {
+  const cands = [];
+  for (const md of mds) for (const h of ['Instagram', 'YouTube', 'TikTok']) cands.push(...lines(pinned(md, h)));
+  const row = listMd.split('\n').find(l => l.startsWith(`| ${ep} |`));
+  if (row) cands.push(...lines(row.split('|')[4]));
+  const ok = cands.filter(s => !avoid.includes(s));
+  const q = ok.find(s => /[？?]$|か。?$/.test(s)) || ok.find(s => /教えてください。?$/.test(s));
+  if (q) return q;
+  const pool = POOL[app];
+  for (let k = 0; k < pool.length; k++) if (!avoid.includes(pool[(day + k) % pool.length])) return pool[(day + k) % pool.length];
+  return pool[day % pool.length];
+}
+// 本文の頭に問いを付ける（本文に同じ問いがあれば、そちらは消す）
+export function withQuestion(text, q) {
+  const norm = s => s.replace(/[？?。、\s]/g, '');
+  return `${q}\n\n${text.split('\n').filter(l => !l.trim() || norm(l) !== norm(q)).join('\n')}`.replace(/\n{3,}/g, '\n\n');
+}
+
+export const appOf =file => Object.entries(APPS).find(([, a]) => a.match.test(file))?.[0];
 
 // 投稿文.md の「## Instagram」の最初のコードブロック（キャプション）を取り出す
 export function igCaption(md) {
