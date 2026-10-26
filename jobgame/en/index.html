@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en" data-page="en">
+<head>
+<meta charset="utf-8">
+<!-- 自動生成: tools/build_en.mjs が index.html から作る。直接は編集しない -->
+<base href="../">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 in 170 million — a career simulation</title>
+<meta name="description" content="1 in 170 million — you don't get to choose your first job. Based on official US statistics (BLS), you are dealt one of 830 occupations at random and live a single working life: hiring, job changes, promotions, marriage, caregiving and life after retirement. A free browser game, a career-edition homage to &quot;1 in 8 billion&quot;.">
+<link rel="canonical" href="https://oyajibuki.github.io/jobgame/en/">
+<link rel="alternate" hreflang="ja" href="https://oyajibuki.github.io/jobgame/">
+<link rel="alternate" hreflang="en" href="https://oyajibuki.github.io/jobgame/en/">
+<link rel="alternate" hreflang="x-default" href="https://oyajibuki.github.io/jobgame/">
+<meta name="theme-color" content="#12171a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="1 in 170 million">
+<meta property="og:title" content="1 in 170 million — You don't get to choose your first job.">
+<meta property="og:description" content="Based on official US job statistics, one of 830 occupations is yours. Live a single working life to the end (free).">
+<meta property="og:url" content="https://oyajibuki.github.io/jobgame/en/">
+<meta property="og:image" content="https://oyajibuki.github.io/jobgame/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="1 in 170 million — You don't get to choose your first job.">
+<meta name="twitter:description" content="Based on official US job statistics, one of 830 occupations is yours. Live a single working life to the end (free).">
+<meta name="twitter:image" content="https://oyajibuki.github.io/jobgame/img/og.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"1 in 170 million","alternateName":["1 in 170M","7千万分の1","Job Game"],"url":"https://oyajibuki.github.io/jobgame/en/","image":"https://oyajibuki.github.io/jobgame/img/og.png","description":"1 in 170 million — you don't get to choose your first job. Based on official US statistics (BLS), you are dealt one of 830 occupations at random and live a single working life: hiring, job changes, promotions, marriage, caregiving and life after retirement. A free browser game, a career-edition homage to \"1 in 8 billion\".","genre":["Simulation","Life simulation"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","inLanguage":"en","isAccessibleForFree":true,"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Play"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","name":"Career Pass"}],"author":{"@type":"Person","name":"Asagiri"}}</script>
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Klee+One:wght@600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=0.8.6">
+</head>
+<body>
+
+<!-- ===== ホーム ===== -->
+<section id="home" class="screen active">
+  <div class="wrap">
+    <div class="hero hero-k">
+      <div class="hero-l">
+        <span class="topline" data-i18n="home.topline">v0.2 POC · career edition · 830 SOC occupations · based on official statistics</span>
+        <h1 class="title" data-i18n-html="home.title"><span class="tl"><span class="accent">1</span> in </span><span class="tl">170 million</span></h1>
+        <p class="lead" data-i18n="home.lead">The US economy has about 170 million jobs. Take one of them and live a single working life to the end. You do not get to choose your first job — just as you didn't.</p>
+        <div class="live">
+          <div class="live-col"><b id="liveHire" class="live-n">0</b><span data-i18n="home.live.hire">People in the US who started a new job since you opened this page (est.)</span><em id="liveHireNext"></em></div>
+          <div class="live-col"><b id="liveSep" class="live-n">0</b><span data-i18n="home.live.sep">People in the US who left a job since you opened this page (incl. retirement, est.)</span><em id="liveSepNext"></em></div>
+        </div>
+        <p class="live-now"><i class="dot"></i><span><span id="liveNow"></span><br><small id="liveRate"></small></span></p>
+      </div>
+      <div class="hero-r">
+        <nav class="langs" id="langTabs"></nav>
+        <canvas id="heroScene" class="pix hero-scene" aria-hidden="true"></canvas>
+        <div class="card">
+          <div class="card-h" data-i18n="home.dist">If you started working today</div>
+          <div class="muted small" data-i18n="home.distNote">BLS Employment Projections 2025 · 170 million jobs by major group</div>
+          <div id="majorBars"></div>
+          <div class="muted small" style="margin-top:8px" data-i18n="home.distFoot">Top executive and most management jobs are reached only by promotion.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="setup-card card">
+      <div class="setup">
+        <div class="setting">
+          <span class="muted" data-i18n="home.name">Name</span>
+          <input class="input name-input" id="nameIn" maxlength="20" autocomplete="off" data-i18n-ph="home.name.ph">
+        </div>
+        <div class="setting">
+          <span class="muted" data-i18n="home.sex">Gender</span>
+          <div class="seg" id="sexSeg">
+            <button data-sex="" class="on" data-i18n="home.sex.any">Random (by the stats)</button>
+            <button data-sex="f" data-i18n="home.sex.f">Woman</button>
+            <button data-sex="m" data-i18n="home.sex.m">Man</button>
+          </div>
+        </div>
+        <div class="setting">
+          <span class="muted" data-i18n="home.len">Length of one working life</span>
+          <div class="seg" id="lenSeg">
+            <button data-sec="3" data-i18n="home.len.short">~2 min</button>
+            <button data-sec="6" class="on" data-i18n="home.len.mid">~5 min</button>
+            <button data-sec="14" data-i18n="home.len.long">~10 min</button>
+          </div>
+        </div>
+      </div>
+      <div class="muted small" style="text-align:center;margin-top:8px" data-i18n="home.startSub">Your job is drawn by lottery, weighted by real statistics.</div>
+      <div class="cta-row center">
+        <button class="btn primary" id="btnPickMode" data-i18n="pick.home">Pick a job and work it</button>
+        <button class="btn" data-go="zukan" data-i18n="home.zukan">Job encyclopedia</button>
+        <button class="btn" data-go="memorial" data-i18n="home.memorial">Memorial</button>
+      </div>
+    </div>
+
+    <!-- 本家と同じく、画面の下にいつも出ている「働きはじめる」 -->
+    <div class="start-dock"><button class="btn-start" id="btnStart"><span data-i18n="home.start">Start working</span></button></div>
+
+    <section class="mem-home">
+      <h2 class="h2 serif" data-i18n="home.mem.h">Memorial</h2>
+      <p class="muted small" data-i18n="home.mem.d">A place to keep working lives that have ended — the ones you saved, and the people who started out the same spring.</p>
+      <div class="mrow" id="homeMem"></div>
+      <div class="cta-row">
+        <button class="btn" data-go="memorial" data-i18n="home.mem.all">Open memorial</button>
+        <button class="btn" id="btnMoreLives" data-i18n="home.mem.more">Meet other lives</button>
+      </div>
+    </section>
+
+    <section class="rank-home hidden" id="ranking">
+      <h2 class="h2 serif" data-i18n="rank.h">Rankings</h2>
+      <p class="muted small" data-i18n="rank.d">Only lives whose players chose &quot;Add to rankings&quot; on the retirement screen appear here. Tap a name to see that life's card.</p>
+      <div class="seg rank-mode" id="rankMode">
+        <button data-m="draw" class="on" data-i18n="rank.mode.draw">Drawn lives</button><button data-m="pick" data-i18n="rank.mode.pick">Chosen lives</button>
+      </div>
+      <p class="muted small" id="rankModeNote"></p>
+      <div class="seg rank-tabs" id="rankTabs"></div>
+      <ol class="rank-list" id="rankList"></ol>
+      <details class="rank-more hidden" id="rankMoreBox"><summary id="rankMoreSum"></summary><ol class="rank-list" id="rankMore"></ol></details>
+      <p class="muted small" id="rankNote"></p>
+    </section>
+
+    <div class="grid3">
+      <div class="card"><div class="card-h" data-i18n="home.c1.h">This year's focus</div><p class="small" data-i18n="home.c1">Each year you decide what to do with your time outside work: rest, have fun, study for a license, reskill, take on a side gig, or look for a new job. Overtime eats into all of it.</p></div>
+      <div class="card"><div class="card-h" data-i18n="home.c2.h">Moments of decision</div><p class="small" data-i18n="home.c2">Promotions, exams, job offers, going solo, marriage, a new baby, caring for a parent, relocation, burnout, and how to work after 65. Your choices change your life, but escaping the statistics of your first job is not easy.</p></div>
+      <div class="card"><div class="card-h" data-i18n="home.c3.h">What the data is based on</div><p class="small" data-i18n-html="home.c3">Real data: job counts, pay percentiles and education by occupation (BLS OEWS and Employment Projections), and women's share by occupation (CPS). Company-size pay gaps, promotion odds, license pass rates, burnout and business survival are game estimates informed by published research. Details in the <a href="docs/research.html" target="_blank">research notes</a> (in Japanese).</p></div>
+    </div>
+    <p class="muted small" style="text-align:center;margin-top:28px" data-i18n-html="foot.price">Free to play. Only the Career Pass — turning a finished life into an image, PDF, videos and a paperwork set — costs US$3.99 per life.</p>
+    <p class="muted small" style="text-align:center;margin-top:4px" data-i18n-html="foot.legal"><a href="updates.html?lang=en">Updates</a> · <a href="https://oyajibuki.github.io/form/?lang=en&app=7%E5%8D%83%E4%B8%87%E5%88%86%E3%81%AE1" target="_blank" rel="noopener">Contact</a> · <a href="legal.html?lang=en">Seller info</a> · <a href="legal.html?lang=en#en-terms">Terms</a> · <a href="legal.html?lang=en#en-privacy">Privacy</a> · © Asagiri</p>
+  </div>
+</section>
+
+<noscript><div class="wrap narrow"><p>1 in 170 million — you don't get to choose your first job. Based on official US statistics (BLS), you are dealt one of 830 occupations at random and live a single working life: hiring, job changes, promotions, marriage, caregiving and life after retirement. A free browser game, a career-edition homage to &quot;1 in 8 billion&quot;. Please enable JavaScript to play.</p></div></noscript>
+
+<!-- ===== 入職届 ===== -->
+<section id="contract" class="screen">
+  <div class="wrap narrow">
+    <div class="doc">
+      <div class="doc-h"><span data-i18n="c.doc">Employment Agreement</span><span class="mono" id="cNo"></span></div>
+      <div class="doc-b">
+        <canvas id="cScene" class="pix doc-scene" aria-hidden="true"></canvas>
+        <div class="muted small" data-i18n="c.name">Name</div>
+        <h2 class="doc-name" id="cName"></h2>
+        <p id="cLead" class="lead2"></p>
+        <div class="kv" id="cKv"></div>
+        <div class="rare" id="cRare"></div>
+        <div class="card-h" style="margin-top:20px" data-i18n="c.peers">Others who started work the same spring</div>
+        <div id="cPeers" class="peers"></div>
+        <div class="muted small" data-i18n="c.peersNote">They follow the same statistics and work alongside you throughout your career.</div>
+        <div class="cta-row end">
+          <button class="btn" data-go="home" data-i18n="cancel">Cancel</button>
+          <button class="btn primary" id="btnBegin" data-i18n="c.begin">Begin this working life</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== プレイ ===== -->
+<section id="play" class="screen">
+  <header class="bar">
+    <div class="bar-l">
+      <span class="logo" data-i18n-html="brandHtml"><span class="accent">1</span> in 170M</span>
+      <span class="age"><b id="pAge"></b></span>
+      <span class="muted small" id="pSub"></span>
+      <span class="vitals" id="pVitals"></span>
+    </div>
+    <div class="progress"><div id="pProg"></div></div>
+    <div class="ctrls">
+      <button class="btn sm" id="btnPause"></button>
+      <span class="seg sm" id="spdSeg">
+        <button data-x="1" class="on">1×</button><button data-x="2">2×</button><button data-x="4">4×</button><button data-x="8">8×</button>
+      </span>
+      <button class="btn sm" id="btnAuto" data-i18n="p.auto">Autopilot</button>
+      <button class="btn sm" id="btnQuit" data-i18n="p.quit">Quit</button>
+    </div>
+  </header>
+  <div class="wrap work-wrap"><canvas id="workScene" class="pix work-scene" aria-hidden="true"></canvas></div>
+  <div class="wrap play">
+    <aside>
+      <div class="id-card">
+        <div class="id-h"><span data-i18n="p.record">Work record</span><span id="idYear"></span></div>
+        <div class="id-b">
+          <div class="avatar" id="idAvatar"></div>
+          <div>
+            <div class="id-name" id="idName"></div>
+            <dl class="dl" id="idDl"></dl>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span data-i18n="p.stats">Condition</span> <span class="muted small">0–100</span></div>
+        <div id="stats"></div>
+        <div class="money" id="money"></div>
+        <div class="card-h" style="margin-top:14px" data-i18n="p.lics">Licenses</div>
+        <div id="lics" class="chips"></div>
+      </div>
+      <div class="card">
+        <div class="card-h" data-i18n="p.family">Family &amp; home</div>
+        <dl class="dl fam" id="family"></dl>
+      </div>
+      <div class="card">
+        <div class="card-h" data-i18n="p.peers">Same-year starters</div>
+        <div id="peers" class="peers"></div>
+      </div>
+    </aside>
+    <main>
+      <div class="scene" id="scene">
+        <div class="scene-icon" id="sceneIcon"></div>
+        <div>
+          <div class="scene-job" id="sceneJob"></div>
+          <div class="muted small" id="sceneMeta"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span data-i18n="p.focus">This year's focus</span> <span class="muted small" id="focusHint"></span></div>
+        <div class="focus" id="focus"></div>
+        <div id="studyBox" class="study hidden">
+          <label class="small muted" data-i18n="p.studyTarget">Target license</label>
+          <select id="studySel"></select>
+          <div class="meter"><div id="studyMeter"></div></div>
+          <div class="small muted" id="studyText"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span data-i18n="p.chart">Pay over time</span> <span class="muted small" id="chartUnit"></span></div>
+        <svg id="chart" viewBox="0 0 600 170"></svg>
+        <div class="chart-legend" id="chartLegend"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span data-i18n="p.log">Career log</span> <span class="muted small" data-i18n="p.logNew">newest first</span></div>
+        <ol class="log" id="log"></ol>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ===== エンディング ===== -->
+<section id="ending" class="screen">
+  <div class="wrap narrow">
+    <div class="doc">
+      <div class="doc-h"><span data-i18n="e.doc">Certificate of Employment</span><span class="mono" id="eNo"></span></div>
+      <div class="doc-b">
+        <canvas id="eScene" class="pix doc-scene" aria-hidden="true"></canvas>
+        <div class="muted small" data-i18n="c.name">Name</div>
+        <h2 class="doc-name" id="eName"></h2>
+        <div class="honor" id="eHonor"></div>
+        <p class="epitaph" id="eEpitaph"></p>
+        <p id="eSummary" class="lead2"></p>
+        <p id="eFamily" class="lead2 muted"></p>
+        <div class="hi" id="eHi"></div>
+        <p class="small muted hidden" id="eChosen" data-i18n="pick.toChallenge">You picked this job, so this life can go on the separate challenge ranking.</p>
+        <div class="share-row">
+          <button class="btn primary" id="btnShareImg" data-i18n="e.share.img">Share with image</button>
+          <button class="btn share-x" data-share="x" data-i18n="e.share.x">Share on 𝕏</button>
+          <button class="btn share-line" data-share="line">LINE</button>
+          <button class="btn share-fb" data-share="fb">Facebook</button>
+          <button class="btn share-th" data-share="threads">Threads</button>
+          <button class="btn hidden" id="btnShareMore" data-i18n="e.share.more">Share…</button>
+        </div>
+        <div class="rankbox hidden" id="eRank">
+          <div class="card-h" data-i18n="rank.e.h">Try the rankings</div>
+          <div class="hi rank-mine" id="rankMine"></div>
+          <div id="rankForm">
+            <label class="small muted" for="rankName" data-i18n="rank.e.name">Name to show (the name this life was lived under; up to 12 characters)</label>
+            <div class="rank-form">
+              <input id="rankName" class="input" maxlength="12" data-i18n-ph="rank.e.namePh">
+              <button class="btn primary" id="rankSend" data-i18n="rank.e.send">Add to rankings</button>
+            </div>
+            <label class="small rank-anon"><input type="checkbox" id="rankAnon"> <span data-i18n="rank.e.anon">Post anonymously</span></label>
+            <div class="small muted" id="rankStatus"></div>
+            <p class="small muted" data-i18n="rank.e.note">Only the name, lifetime earnings, number of job changes, first job and title are shared.</p>
+          </div>
+          <div id="rankResult" class="hidden">
+            <div class="hi rank-ranks"></div>
+            <p class="rank-share-text" id="rankShareText"></p>
+            <div class="share-row">
+              <button class="btn primary" data-rshare="img" data-i18n="e.share.img">Share with image</button>
+              <button class="btn share-x" data-rshare="x" data-i18n="e.share.x">Share on 𝕏</button>
+              <button class="btn share-line" data-rshare="line">LINE</button>
+              <button class="btn share-fb" data-rshare="fb">Facebook</button>
+              <button class="btn share-th" data-rshare="threads">Threads</button>
+              <button class="btn" data-rshare="more" data-i18n="e.share.more">Share…</button>
+            </div>
+            <a class="small" href="en/#ranking" data-go="home" data-i18n="rank.e.see">See the rankings on the home screen</a>
+          </div>
+        </div>
+        <div class="kv" id="eKv"></div>
+        <svg id="eChart" viewBox="0 0 600 170"></svg>
+        <div class="chart-legend" id="eChartLegend"></div>
+        <div class="chart-note" id="eChartNote"></div>
+        <div class="card-h" style="margin-top:16px" data-i18n="e.jobs">Jobs held</div>
+        <div id="eJobs" class="chips"></div>
+        <div class="card-h" style="margin-top:16px" data-i18n="e.peers">What became of the others</div>
+        <div id="ePeers" class="peers"></div>
+        <div class="passbox">
+          <div>
+            <div class="card-h" data-i18n="e.pass.h">Keep this working life</div>
+            <p class="small muted" data-i18n="e.pass.d">With a Career Pass you can make a social image, a résumé PDF, videos for social media, and a paperwork set (appointment letter, award, business card, farewell card). The life itself does not change.</p>
+          </div>
+          <button class="btn primary" id="btnPass" data-i18n="e.pass.btn">Career Pass</button>
+        </div>
+        <label class="small muted" for="eWord" style="display:block;margin-top:16px" data-i18n="e.word">Leave a few words for them</label>
+        <input id="eWord" class="input" maxlength="60" data-i18n-ph="e.wordPh">
+        <div class="cta-row end">
+          <button class="btn" data-go="zukan" data-i18n="e.toZukan">Job encyclopedia</button>
+          <button class="btn primary" id="btnSave" data-i18n="e.save">Save to the memorial and live another life</button>
+          <button class="btn" id="btnSaveHome" data-i18n="e.saveHome">Save to the memorial and go home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 職歴証明書パスの作品 ===== -->
+<section id="pass" class="screen">
+  <div class="wrap narrow">
+    <div class="row-h">
+      <h2 class="h2" id="passTitle"></h2>
+      <button class="btn" id="passBack" data-go="ending" data-i18n="back">Back</button>
+    </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="pass.img">Social image</span> <span class="muted small">1080×1350</span></div>
+      <canvas id="passCanvas" class="pass-canvas"></canvas>
+      <div class="cta-row"><button class="btn primary" id="dlImage" data-i18n="pass.imgSave">Save image</button>
+        <button class="btn share-ig" data-imgshare="ig">Instagram</button><button class="btn share-x" data-imgshare="x">𝕏</button><button class="btn share-line" data-imgshare="line">LINE</button><button class="btn share-fb" data-imgshare="fb">Facebook</button></div>
+      <div class="share-note" data-i18n="share.imgNote">On a phone, pick Instagram, LINE and more from the share sheet. On a computer, the image is saved and the posting page opens (the caption is copied).</div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="pass.pdf">Résumé PDF</span> <span class="muted small">A4</span></div>
+      <p class="small muted" data-i18n="pass.pdfNote">The print dialog opens. Choose &quot;Save as PDF&quot;.</p>
+      <div class="cta-row"><button class="btn primary" id="dlPdf" data-i18n="pass.pdfMake">Make résumé</button></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="pass.video">Vertical video</span> <span class="muted small">1080×1920 · 20s</span></div>
+      <p class="small muted" data-i18n="pass.videoNote">Keep this screen open for about 20 seconds.</p>
+      <div class="cta-row"><button class="btn primary" id="mkVideo" data-i18n="pass.videoMake">Make video</button></div>
+      <div class="small muted" id="videoStatus"></div>
+      <div id="videoOut" class="video-out"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="docs.h">Career paperwork set</span> <span class="muted small">PNG × 4</span></div>
+      <p class="small muted" data-i18n="docs.note">An appointment letter, an award certificate, a business card and a farewell card from this life. Company and coworker names are fictional.</p>
+      <div class="docs-grid" id="docsGrid"></div>
+      <div class="cta-row"><button class="btn primary" id="docsAll" data-i18n="docs.saveAll">Save all 4</button></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span data-i18n="short.h">Short video (story)</span> <span class="muted small">1080×1920 · YouTube Shorts / TikTok</span></div>
+      <p class="small muted" data-i18n="short.note">A story-style vertical video for YouTube Shorts or TikTok, opening with &quot;Age 22. The job I drew was—&quot;. Includes music and sound effects. Keep this screen open for 20–30 seconds (sound will play).</p>
+      <div class="cta-row">
+        <button class="btn primary" id="mkShort" data-i18n="short.make">Make short video</button>
+        <button class="btn" id="dlThumb" data-i18n="short.thumb">Save thumbnail</button>
+      </div>
+      <div class="small muted" id="shortStatus"></div>
+      <div id="shortOut" class="video-out"></div>
+      <label class="small muted" for="shortTitle" style="display:block;margin-top:12px" data-i18n="short.titleL">Title (ready to use)</label>
+      <input id="shortTitle" class="input" readonly>
+      <label class="small muted" for="shortDesc" style="display:block" data-i18n="short.descL">Description</label>
+      <textarea id="shortDesc" class="input" rows="6" readonly></textarea>
+      <div class="cta-row"><button class="btn" id="shortCopy" data-i18n="short.copy">Copy title and description</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 職業図鑑 ===== -->
+<section id="zukan" class="screen">
+  <div class="wrap">
+    <div class="row-h">
+      <h2 class="h2"><span data-i18n="z.title">Job encyclopedia</span> <span class="muted small" id="zCount"></span></h2>
+      <button class="btn" data-go="home" data-i18n="back">Back</button>
+    </div>
+    <p class="small muted" data-i18n-html="z.desc">The full Standard Occupational Classification (SOC 2018): 22 major groups, 94 minor groups and 830 detailed occupations. Highlighted jobs are ones you have held. The code to the right of each minor group is its ISCO-08 equivalent.</p>
+    <p class="small muted" data-i18n-html="z.src">Job counts from <a href="https://www.bls.gov/emp/tables.htm" target="_blank" rel="noopener">BLS Employment Projections</a> (2025, including self-employment; a person with two jobs counts twice). Pay from <a href="https://www.bls.gov/oes/tables.htm" target="_blank" rel="noopener">OEWS May 2025</a>: because OEWS has no breakdown by age, "prime-age pay" is the median × 1.15 (the CPS ratio of median weekly earnings at ages 45–54 to all ages). Women's share from <a href="https://www.bls.gov/cps/cpsaat11.htm" target="_blank" rel="noopener">CPS 2025</a>, matched by occupation title (otherwise the minor-group average) and scaled so the total matches the CPS figure of 47.1%. Overtime and AI exposure are game estimates by ISCO group. Tags under an occupation are common job titles; their pay multipliers are game estimates.</p>
+    <div class="dream-box">
+      <div class="card-h" data-i18n="pick.dreams">Chase a dream job</div>
+      <p class="small muted" data-i18n="pick.dreamsSub">Very few make it. Work part-time while you chase it and see how hard it really is.</p>
+      <div class="dream-row" id="dreamRow"></div>
+    </div>
+    <p class="pick-hint small" data-i18n="pick.hint">Tap &quot;Work this job&quot; to see what the job is like and what happens over 200 simulated lives.</p>
+    <input id="zSearch" class="input" data-i18n-ph="z.search">
+    <div id="zTree"></div>
+  </div>
+</section>
+
+<!-- ===== メモリアル ===== -->
+<section id="memorial" class="screen">
+  <div class="wrap">
+    <div class="row-h">
+      <h2 class="h2" data-i18n="mem.title">Memorial</h2>
+      <button class="btn" data-go="home" data-i18n="back">Back</button>
+    </div>
+    <p class="small muted" data-i18n="mem.note">Completed working lives are kept here (in this browser only).</p>
+    <div id="mList" class="mlist"></div>
+  </div>
+</section>
+
+<!-- ===== 職歴証明書パスの購入 ===== -->
+<div id="buyModal" class="modal hidden">
+  <div class="modal-box buy-box">
+    <div class="modal-k" data-i18n="pass.buy.k">Career Pass</div>
+    <h3 id="buyTitle"></h3>
+    <div class="small muted" data-i18n="pass.prev.h">What you get for this life (samples, scroll sideways)</div>
+    <div class="buy-preview" id="buyPreview" aria-hidden="true"></div>
+    <ul class="small buy-list">
+      <li data-i18n="pass.buy.i1">Social image (1080×1350)</li>
+      <li data-i18n="pass.buy.i2">Résumé PDF (Letter/A4)</li>
+      <li data-i18n="pass.buy.i3">Vertical video (~20 s)</li>
+      <li data-i18n="pass.buy.i4">Paperwork set: appointment letter, award, business card, farewell card</li>
+      <li data-i18n="pass.buy.i5">Short video for YouTube Shorts / TikTok</li>
+    </ul>
+    <p class="small muted" data-i18n="pass.buy.n1">One pass per life. Remake as often as you like. The simulated life itself does not change.</p>
+    <p class="small muted" data-i18n-html="pass.buy.n2">Payment is handled by Stripe. Your purchase is saved in this browser only. <a href="legal.html?lang=en#en-refund" target="_blank">Refunds &amp; seller info</a></p>
+    <div class="choices">
+      <button id="buyGo"><span data-i18n="pass.buy.go">Buy</span> <b id="buyPrice"></b></button>
+      <button id="buyClose" data-i18n="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- 職業を選んで働く：職業の中身と、統計どおりに200回働いた結果 -->
+<div id="jobModal" class="modal hidden">
+  <div class="modal-box job-box">
+    <div class="modal-k" data-i18n="pick.k">Pick a job</div>
+    <h3 id="jmTitle"></h3>
+    <p class="small muted" id="jmLead"></p>
+    <div class="kv" id="jmKv"></div>
+    <div class="card-h" style="margin-top:14px" data-i18n="pick.sim.h">200 lives starting in this job, by the stats</div>
+    <div class="jm-sim" id="jmSim"></div>
+    <p class="small muted" data-i18n="pick.note">The numbers below come from 200 simulated lives in this game (they change a little each time). The figures above (workers, pay, overtime) are official statistics.</p>
+    <div class="choices">
+      <button id="jmStart"><b data-i18n="pick.start">Start working this job</b></button>
+      <button id="jmClose" data-i18n="close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ランキングで人を押したときのカード画像 -->
+<div id="cardModal" class="modal hidden">
+  <div class="modal-box card-box">
+    <div class="card-view"><img id="cardImg" alt=""><p class="small muted" id="cardStatus"></p></div>
+    <div class="choices"><button id="cardClose" data-i18n="close">Close</button></div>
+  </div>
+</div>
+
+<!-- 職歴書PDF用（印刷時だけ表示） -->
+<div id="printArea"></div>
+
+<!-- ===== モーダル ===== -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-k" id="mKind"></div>
+    <h3 id="mTitle"></h3>
+    <p id="mText"></p>
+    <div id="mData" class="m-data hidden"></div>
+    <textarea id="mInput" class="input hidden" rows="2" maxlength="80" data-i18n-ph="ask.note"></textarea>
+    <div id="mChoices" class="choices"></div>
+  </div>
+</div>
+
+<script>
+// アクセスカウンター（ページ表示時に1回だけ送信。参照元も添える）。手元（localhost）での確認は数えない
+if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) fetch("https://script.google.com/macros/s/AKfycbznxYkj5ixnK_pHkGR8LUYhEYdvSYpaiF3x4LaZy964wlu068oak1X1uuIiyqCEtGWF/exec?page=job&ref=" + encodeURIComponent(document.referrer))
+  .catch(() => {});
+</script>
+<script src="js/i18n.js?v=0.8.8"></script>
+<script src="js/boot.js?v=0.8.8"></script>
+</body>
+</html>

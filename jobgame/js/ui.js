@@ -40,7 +40,7 @@
     document.title = `${t('brand')} — ${t('title.suffix')}`
     $('chartUnit').textContent = C.money.unit
     // 言語タブ
-    $('langTabs').innerHTML = window.LANGS.map(l => `<a href="?lang=${l.lang}" class="${l.lang === C.lang ? 'on' : ''}" data-lang="${l.lang}">${esc(l.label)}</a>`).join('')
+    $('langTabs').innerHTML = window.LANGS.map(l => `<a href="${l.path || './'}" class="${l.lang === C.lang ? 'on' : ''}" data-lang="${l.lang}">${esc(l.label)}</a>`).join('')
   }
   $('langTabs').addEventListener('click', e => {
     const a = e.target.closest('[data-lang]'); if (!a) return
@@ -382,7 +382,7 @@
   }
   $('btnPass').addEventListener('click', () => window.Pass.open(S.snap, 'ending'))
   // 結果をシェア（URL は公開版に固定。英語は英語版へ）
-  const SHARE_URL = 'https://oyajibuki.github.io/jobgame/' + (C.lang === 'ja' ? '' : `?lang=${C.lang}`)
+  const SHARE_URL = window.pageUrl(C.lang)
   // SNS ごとの共有画面（Instagram・TikTok・YouTube は文章とURLだけの共有ができないので、作品画面の画像・動画から共有する）
   const cardFile = () => `${t('brand')}_${S.p.name.replace(/\s+/g, '_')}.png`
   $('btnShareImg').addEventListener('click', async () => {

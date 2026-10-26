@@ -535,7 +535,7 @@
     const vars = { age: snap.startAge, end: snap.endAge, job: snap.firstJob, money: man(snap.lifetime), rank, rare: snap.firstRare ? snap.firstRare.toLocaleString() : '', ep: snap.epitaph, name: snap.name, honor: snap.honor || snap.epitaph }
     return {
       title: t('short.ytTitle', vars),
-      desc: t('short.ytDesc', vars) + '\n' + 'https://oyajibuki.github.io/jobgame/' + (CT.lang === 'ja' ? '' : `?lang=${CT.lang}`) + '\n\n' + t('short.tags'),
+      desc: t('short.ytDesc', vars) + '\n' + window.pageUrl(CT.lang) + '\n\n' + t('short.tags'),
     }
   }
   // サムネイル（ショートの1フレーム目と同じ構図）
@@ -939,7 +939,7 @@
   const UPLOAD = { yt: 'https://www.youtube.com/upload', ig: 'https://www.instagram.com/', tt: 'https://www.tiktok.com/upload', x: 'https://x.com/compose/post', line: 'https://line.me/R/', fb: 'https://www.facebook.com/' }
   async function shareFile(blob, fname, where) {
     const st = shortText(cur)
-    const text = `${st.title}\n${'https://oyajibuki.github.io/jobgame/' + (CT.lang === 'ja' ? '' : `?lang=${CT.lang}`)}\n${t('short.tags')}`
+    const text = `${st.title}\n${window.pageUrl(CT.lang)}\n${t('short.tags')}`
     const file = new File([blob], fname, { type: blob.type })
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try { await navigator.share({ files: [file], text, title: st.title }); return } catch (e) { if (e && e.name === 'AbortError') return }

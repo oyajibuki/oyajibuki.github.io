@@ -37,7 +37,7 @@ window.Share = (function () {
   const boardsOf = country => /c$/.test(country) ? ['money', 'moves'] : ALL_BOARDS
   const boardName = (b, country) => t((/c$/.test(country) ? 'rank.bc.' : 'rank.b.') + b)
   let BOARDS = ALL_BOARDS
-  const SHARE_URL = 'https://oyajibuki.github.io/jobgame/' + (C.lang === 'ja' ? '' : `?lang=${C.lang}`)
+  const SHARE_URL = window.pageUrl(C.lang)
   const KEY = `jg_${C.code}_ranked`
   const mine = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {} } catch { return {} } }
   const remember = (id, r) => { try { const m = mine(); m[id] = r; localStorage.setItem(KEY, JSON.stringify(m)) } catch {} }

@@ -582,11 +582,13 @@ window.I18N = {
   },
 }
 
-// 言語と国の組み合わせ（言語タブ）
+// 言語と国の組み合わせ（言語タブ）。path は /jobgame/ からのページの場所（英語版は en/index.html。tools/build_en.mjs で作る）
 window.LANGS = [
-  { lang: 'ja', country: 'jp', label: '日本語' },
-  { lang: 'en', country: 'us', label: 'English' },
+  { lang: 'ja', country: 'jp', label: '日本語', path: '' },
+  { lang: 'en', country: 'us', label: 'English', path: 'en/' },
 ]
+// その言語のページの公開URL（シェア用）
+window.pageUrl = lang => 'https://oyajibuki.github.io/jobgame/' + ((window.LANGS.find(l => l.lang === lang) || {}).path || '')
 
 // 英語の冠詞（a / an）
 // 文の途中では先頭を小文字に（"AI ..." や "HR ..." のような略語は残す）

@@ -2,13 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://oyajibuki.github.io/jobgame/</loc>
-    <lastmod>2026-10-19</lastmod>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://oyajibuki.github.io/jobgame/?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://oyajibuki.github.io/jobgame/?lang=en"/>
+    <lastmod>2026-10-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://oyajibuki.github.io/jobgame/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oyajibuki.github.io/jobgame/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://oyajibuki.github.io/jobgame/"/>
   </url>
   <url>
-    <loc>https://oyajibuki.github.io/jobgame/?lang=en</loc>
-    <lastmod>2026-10-18</lastmod>
+    <loc>https://oyajibuki.github.io/jobgame/en/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://oyajibuki.github.io/jobgame/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oyajibuki.github.io/jobgame/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://oyajibuki.github.io/jobgame/"/>
   </url>
   <url>
     <loc>https://oyajibuki.github.io/jobgame/updates.html</loc>
