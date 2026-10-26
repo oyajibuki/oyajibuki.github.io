@@ -4,7 +4,10 @@ name: jobgame-threads
 
 on:
   schedule:
-    - cron: '50 10 * * *' # 毎日 19:50（日本時間）に動いて 20:00 ごろに投稿。0分ちょうどは混んで遅れやすいのでずらしている
+    # 毎日 19:50（日本時間）に動いて 20:00 ごろに投稿。0分ちょうどは混んで遅れやすいのでずらしている
+    # GitHub の予定実行は遅れたり飛ばされたりする（2026-10-26 は 19:50 の回が動かず出なかった）ので、
+    # 23:50 まで1時間おきにもう一度動かす。もう出した日は「今日もう出したか」で止まる
+    - cron: '50 10-14 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -30,7 +33,16 @@ jobs:
         with:
           node-version: 22
 
+      - name: 今日もう出したか
+        id: check
+        if: env.HAS_TOKEN == 'true' && (github.event_name == 'schedule' || !inputs.dry_run)
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          CHECK_ONLY: '1'
+        run: node tools/jobgame-threads/post.mjs
+
       - name: Playwright と日本語フォントを入れる
+        if: steps.check.outputs.done != 'true'
         working-directory: tools/jobgame-threads
         run: |
           npm install --no-audit --no-fund
@@ -38,9 +50,11 @@ jobs:
           sudo apt-get install -y fonts-noto-cjk
 
       - name: おまかせで1回遊ぶ
+        if: steps.check.outputs.done != 'true'
         run: node tools/jobgame-threads/play.mjs
 
       - name: カードと文章を保存（Actions の実行結果から見られる）
+        if: steps.check.outputs.done != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: jobgame-card
@@ -49,7 +63,7 @@ jobs:
       # Threads は画像を URL から取りに来るので、公開リポジトリの専用ブランチに置く（毎回その日の1枚だけに上書き）
       - name: カード画像を公開URLに置く
         id: img
-        if: env.HAS_TOKEN == 'true' && (github.event_name == 'schedule' || !inputs.dry_run)
+        if: steps.check.outputs.done == 'false'
         run: |
           name="$(TZ=Asia/Tokyo date +%Y-%m-%d)-${GITHUB_RUN_ID}.png"
           dir="$(mktemp -d)"
