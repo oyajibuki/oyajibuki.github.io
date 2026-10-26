@@ -1,0 +1,7 @@
+name = "threads-cron"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# 時刻は UTC（日本時間 - 9時間）。中身は src/index.js の JOBS と同じにする
+[triggers]
+crons = ["55 * * * *", "55 10 * * *"]
