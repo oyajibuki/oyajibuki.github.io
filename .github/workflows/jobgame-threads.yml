@@ -33,13 +33,20 @@ jobs:
         with:
           node-version: 22
 
+      # 予定実行は遅れて日付をまたぐことがある（10/26 23:50 の回が 10/27 2:40 に動いた）。夜中に「今日の分」を出さないよう、
+      # 予定実行は 19〜23 時（日本時間）に動いたときだけ投稿する。頼まれた実行（Cloudflare・手動）は時間に関係なく動く
       - name: 今日もう出したか
         id: check
         if: env.HAS_TOKEN == 'true' && (github.event_name == 'schedule' || !inputs.dry_run)
         env:
           THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
           CHECK_ONLY: '1'
-        run: node tools/jobgame-threads/post.mjs
+        run: |
+          h=$(TZ=Asia/Tokyo date +%-H)
+          if [ "${{ github.event_name }}" = schedule ] && { [ "$h" -lt 19 ] || [ "$h" -gt 23 ]; }; then
+            echo "予定実行が ${h} 時に動いたので、投稿しません"; echo "done=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          node tools/jobgame-threads/post.mjs
 
       - name: Playwright と日本語フォントを入れる
         if: steps.check.outputs.done != 'true'

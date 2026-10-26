@@ -70,14 +70,4 @@ jobs:
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -qm "threads-queue $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')"
           git push -q --force-with-lease="threads-queue:$old" origin HEAD:threads-queue
 
-      - name: アクセストークンを延長
-        if: steps.run.outputs.posted == 'true'
-        env:
-          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
-          GH_TOKEN: ${{ secrets.SECRETS_PAT }}
-        run: |
-          if [ -z "$GH_TOKEN" ]; then echo "::warning::SECRETS_PAT が無いので、トークンを延長しません"; exit 0; fi
-          new="$(curl -sf "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_TOKEN}" | jq -r .access_token)"
-          if [ -z "$new" ] || [ "$new" = null ]; then echo "::warning::トークンの延長に失敗しました"; exit 0; fi
-          echo "::add-mask::$new"
-          gh secret set THREADS_TOKEN --repo "${{ github.repository }}" --body "$new"
+      # アクセストークンの延長は jobgame-threads（1日1回）でやる。同じ時間に2か所から延長すると Meta に怪しまれるおそれがあるので、ここではしない
