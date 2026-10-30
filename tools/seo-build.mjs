@@ -116,6 +116,16 @@ for (const a of released) {
   urls.push({ loc: canon, lastmod: a.date, pri: '0.8' });
 }
 
+// 審査・申請中のアプリも、紹介ページがあれば sitemap にだけ載せる（審査前に規約ページを公開するため）。
+// ページの head は手書きのまま触らない
+for (const a of APPS.filter(a => a.status === 'review')) {
+  const l = intro(a);
+  if (!l) continue;
+  const file = path.join(ROOT, l.u.replace(/^\//, ''), l.u.endsWith('.html') ? '' : 'index.html');
+  if (!fs.existsSync(file)) { changes.push([file, '【スキップ】ファイル無し']); continue; }
+  urls.push({ loc: urlOf(l.u), lastmod: a.date, pri: '0.8' });
+}
+
 /* ---------- index.html ---------- */
 {
   const bare = stripBlock(indexHtml);
