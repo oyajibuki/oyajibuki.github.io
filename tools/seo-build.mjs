@@ -81,7 +81,7 @@ const urls = [];
 for (const a of released) {
   const l = intro(a);
   if (!l) continue;
-  const file = path.join(ROOT, l.u.replace(/^\//, ''), 'index.html');
+  const file = path.join(ROOT, l.u.replace(/^\//, ''), l.u.endsWith('.html') ? '' : 'index.html');
   if (!fs.existsSync(file)) { changes.push([file, '【スキップ】ファイル無し']); continue; }
   const prev = fs.readFileSync(file, 'utf8');
   // 自分のブロックを除いた状態で既存タグの有無を判定する

@@ -2,12 +2,57 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://oyajibuki.github.io/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/danshuquest/about.html</loc>
+    <lastmod>2026-04-30</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/undoquest/about.html</loc>
+    <lastmod>2026-05-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/benkyoquest/about.html</loc>
+    <lastmod>2026-05-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/hold/about.html</loc>
+    <lastmod>2026-06-08</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/devkeep/about.html</loc>
+    <lastmod>2026-06-10</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://oyajibuki.github.io/geoalame/</loc>
     <lastmod>2026-06-23</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/appguard/about.html</loc>
+    <lastmod>2026-07-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/trustgps/about.html</loc>
+    <lastmod>2026-07-14</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/Subsc/about.html</loc>
+    <lastmod>2026-07-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/simpleunzip/about.html</loc>
+    <lastmod>2026-07-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -58,6 +103,11 @@
   <url>
     <loc>https://oyajibuki.github.io/meigengacha/</loc>
     <lastmod>2026-09-20</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/nekobase/about.html</loc>
+    <lastmod>2026-09-21</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -112,6 +162,11 @@
   </url>
   <url>
     <loc>https://oyajibuki.github.io/koibana/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oyajibuki.github.io/knowledgemap/</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
