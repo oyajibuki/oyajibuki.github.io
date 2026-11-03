@@ -183,5 +183,6 @@ window.Share = (function () {
     window.Share.open(k, shareText, SHARE_URL + '#ranking')
   })
 
-  window.Rank = { enabled: !!RANK_URL, offer, renderHome }
+  // url は無料コードの使用記録（pass.js の redeem）も同じウェブアプリに送るため
+  window.Rank = { enabled: !!RANK_URL, url: RANK_URL, offer, renderHome }
 })()

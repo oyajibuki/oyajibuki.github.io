@@ -179,6 +179,12 @@ a { color: var(--accent); }
 .buy-preview canvas { display: block; height: 150px; width: auto; border-radius: 6px; border: 1px solid var(--line); pointer-events: none; background: var(--bg2); min-width: 90px; }
 .buy-preview figcaption { font-size: 11px; color: var(--muted); margin-top: 4px; }
 .choices button b { float: right; color: var(--accent); }
+/* 無料コードの入力 */
+.buy-code { margin-top: 14px; }
+.buy-code summary { cursor: pointer; color: var(--muted); }
+.buy-code-row { display: flex; gap: 8px; align-items: center; }
+.buy-code-row .input { flex: 1; min-width: 0; letter-spacing: .05em; }
+.buy-code-row .btn { flex: none; }
 #printArea { display: none; }
 @media print {
   @page { size: A4; margin: 16mm; }

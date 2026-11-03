@@ -412,6 +412,15 @@
       <button id="buyGo"><span data-i18n="pass.buy.go"></span> <b id="buyPrice"></b></button>
       <button id="buyClose" data-i18n="cancel"></button>
     </div>
+    <!-- 無料コード（キャンペーンで配ったもの）で1パス開ける -->
+    <details class="buy-code">
+      <summary class="small" data-i18n="pass.code.open"></summary>
+      <div class="buy-code-row">
+        <input id="codeIn" class="input" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
+        <button id="codeGo" class="btn" data-i18n="pass.code.go"></button>
+      </div>
+      <p class="small muted" id="codeMsg" data-i18n="pass.code.note"></p>
+    </details>
   </div>
 </div>
 

@@ -414,6 +414,15 @@
       <button id="buyGo"><span data-i18n="pass.buy.go">Buy</span> <b id="buyPrice"></b></button>
       <button id="buyClose" data-i18n="cancel">Cancel</button>
     </div>
+    <!-- 無料コード（キャンペーンで配ったもの）で1パス開ける -->
+    <details class="buy-code">
+      <summary class="small" data-i18n="pass.code.open">Have a free code?</summary>
+      <div class="buy-code-row">
+        <input id="codeIn" class="input" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
+        <button id="codeGo" class="btn" data-i18n="pass.code.go">Redeem</button>
+      </div>
+      <p class="small muted" id="codeMsg" data-i18n="pass.code.note">One code unlocks one pass for this life. A code can only be used once.</p>
+    </details>
   </div>
 </div>
 

@@ -787,6 +787,39 @@
     $('buyModal').classList.add('hidden')
     showWorks(cur)
   })
+
+  // ---------- 無料コード（キャンペーンで配る・1コード＝1パス・使い切り） ----------
+  // ページにはコードのハッシュだけを置く（data/pass_codes.js。発行は tools/gen_pass_codes.mjs）。
+  // 使い切りの判定はランキングと同じ GAS（codes シート）。手元（localhost）では GAS に送らず、そのまま開く
+  const codeHash = async raw => {
+    const norm = String(raw).toUpperCase().replace(/[^0-9A-Z]/g, '')
+    if (norm.length !== 16) return null
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('jg-pass:' + norm))
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 32)
+  }
+  async function redeem() {
+    const msg = $('codeMsg'), btn = $('codeGo'), snap = cur
+    const say = k => { msg.textContent = t(k); msg.classList.toggle('muted', k === 'pass.code.checking') }
+    const hash = await codeHash($('codeIn').value)
+    if (!hash || !(window.PASS_CODES || []).includes(hash)) return say('pass.code.bad')
+    if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+      btn.disabled = true; say('pass.code.checking')
+      let res = null
+      try {
+        const r = await fetch(window.Rank.url, { method: 'POST', body: JSON.stringify({ action: 'redeem', hash, life: snap.id, country: CT.code }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+        res = (await r.json()).redeem
+      } catch {}
+      btn.disabled = false
+      if (res === 'used') return say('pass.code.used')
+      if (res !== 'ok') return say('pass.code.err')
+    }
+    grant(snap.id)
+    $('codeIn').value = ''; say('pass.code.note')
+    $('buyModal').classList.add('hidden')
+    showWorks(snap)
+  }
+  $('codeGo').addEventListener('click', redeem)
+  $('codeIn').addEventListener('keydown', e => { if (e.key === 'Enter') redeem() })
   $('dlImage').addEventListener('click', () => download($('passCanvas').toDataURL('image/png'), `${t('pass.file', { name: cur.name.replace(/\s+/g, '_') })}.png`))
   $('dlPdf').addEventListener('click', () => printDoc(cur))
   $('mkVideo').addEventListener('click', async () => {
