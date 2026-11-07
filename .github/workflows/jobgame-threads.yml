@@ -22,7 +22,7 @@ concurrency: jobgame-threads
 
 jobs:
   post:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       HAS_TOKEN: ${{ secrets.THREADS_TOKEN != '' }} # Secret を入れるまでは、毎日の実行はカードをつくるだけ
