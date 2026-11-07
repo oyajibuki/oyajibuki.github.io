@@ -16,8 +16,8 @@ export const APPS = {
     match: /GEOAlame/,
     link: 'https://apps.apple.com/app/apple-store/id6781700974?pt=128842925&ct=threads_geo&mt=8',
     tag: '#寝過ごし',
-    // 月・水・金の 7:00（日本時間）
-    slot: { hour: 7, minute: 0, days: [1, 3, 5] },
+    // 毎日 7:00（日本時間）
+    slot: { hour: 7, minute: 0, days: [0, 1, 2, 3, 4, 5, 6] },
   },
 };
 
