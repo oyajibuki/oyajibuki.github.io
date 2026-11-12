@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>あしたの時間割 — サポート</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    .app-icon img { width:100%; height:100%; border-radius:14px; }
+    .sub-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+    .sub-links a { background:#f0f0f0; color:#333 !important; padding:9px 18px; border-radius:10px; font-size:0.85rem; font-weight:600; text-decoration:none; }
+    .sub-links a:hover { background:#e0e0e0; }
+    .contact-box { background:#f7f7f8; border-radius:12px; padding:18px; margin-top:8px; }
+    .contact-link { display:inline-block; background:#3a80e5; color:#fff !important; padding:11px 22px; border-radius:10px; font-weight:600; text-decoration:none; }
+    .reply-note { font-size:0.85rem; color:#666; margin-top:12px; }
+    .mailto { font-size:0.85rem; color:#666; margin-top:4px; }
+    .faq-item { padding:16px 0; border-bottom:1px solid #eee; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-item h3 { font-size:0.98rem; margin:0 0 6px; }
+    .faq-item p { font-size:0.9rem; color:#555; margin:0; }
+  </style>
+</head>
+<body>
+  <div class="back">← <a href="/ashitajikanwari/">あしたの時間割に戻る</a></div>
+  <div class="app-header">
+    <div class="app-icon"><img src="/ashitajikanwari/icon.png" alt="あしたの時間割"></div>
+    <div>
+      <h1>あしたの時間割 サポート</h1>
+      <p class="app-tagline">前日に決める、1日の時間割</p>
+    </div>
+  </div>
+
+  <h2>お問い合わせ</h2>
+  <div class="contact-box">
+    <p style="margin:0 0 14px; font-size:0.9rem;">不具合のご報告、ご要望などはこちらからご連絡ください。</p>
+    <a class="contact-link" href="/form/" target="_blank">お問い合わせフォーム</a>
+    <p class="reply-note">通常 <strong>1〜3営業日</strong> 以内にご返信いたします。</p>
+    <p class="mailto">フォームが開けない場合は <a href="mailto:oyajibuki@gmail.com?subject=%E3%81%82%E3%81%97%E3%81%9F%E3%81%AE%E6%99%82%E9%96%93%E5%89%B2%20%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">oyajibuki@gmail.com</a> まで直接どうぞ。</p>
+  </div>
+
+  <h2>よくある質問</h2>
+
+  <div class="faq-item"><h3>使い方をもう一度見たいです</h3><p>設定画面の「使い方ガイド」から、最初の案内をいつでも見直せます。</p></div>
+  <div class="faq-item"><h3>予定を追加・変更するには？</h3><p>計画タブで、空いている時間を押すと予定を追加できます。予定を押すと編集、長押ししてそのまま動かすと時刻の移動、下の ≡ を上下に引くと長さの変更、横にはらうと削除です。</p></div>
+  <div class="faq-item"><h3>まちがえて予定を消してしまいました</h3><p>横にはらって消した直後は、画面の下に「元に戻す」が5秒ほど出ます。それを過ぎた場合は、もう一度追加してください。</p></div>
+  <div class="faq-item"><h3>ほかの予定と重なる時刻に置けません</h3><p>予定どうしは重ねられません。先にもう一方の予定を動かすか、長さを短くしてください。</p></div>
+  <div class="faq-item"><h3>明日の計画に、最初から予定が入っています</h3><p>曜日に割り当てたテンプレートが入ります。設定 › テンプレート で中身と曜日を変えられます。先に自分で入れてあった日は、テンプレートで上書きされません。</p></div>
+  <div class="faq-item"><h3>今日と同じ時間割を明日にも使いたいです</h3><p>計画タブの「今日をコピー」を押してください。すでに予定がある日は、置き換える前に確認が出ます。</p></div>
+  <div class="faq-item"><h3>成長時間とは何ですか？</h3><p>「成長にカウントする」をオンにしたカテゴリ（最初は仕事・学習・運動）の予定で、「できた」は予定の時間の100%、「一部できた」は50%を足し上げたものです。カテゴリは設定画面で変えられ、過去の分も計算し直されます。</p></div>
+  <div class="faq-item"><h3>過去の結果を付け直せますか？</h3><p>履歴タブのカレンダーで日付を押すと、何日前でも結果を付け直せます。</p></div>
+  <div class="faq-item"><h3>AIに時間割を作ってもらうには？</h3><p>設定 › AI・読み込み で「文章をコピー」を押し、お使いのAIに貼り付けて送ります。AIの答えをまるごとコピーして、同じ画面の「ペースト」を押すと、内容の確認のあと時間割に入ります。アプリ自身はAIと通信しません。</p></div>
+  <div class="faq-item"><h3>AIの答えを読み込めません</h3><p>答えの中に「date,start,end,title,category」の形の行（例：2026-11-13,07:00,07:30,朝食,食事）が入っているかご確認ください。日付は 年-月-日、時刻は24時間表記です。</p></div>
+  <div class="faq-item"><h3>ほかの人に時間割を渡したいです</h3><p>共有ボタンから、画像・テキスト・「相手が読み込める形」を選べます。受け取った人は、設定 › AI・読み込み で貼り付けると自分の時間割に入れられます。</p></div>
+  <div class="faq-item"><h3>ウィジェットを置きたいです</h3><p>ホーム画面を長押し › 左上の「編集」› ウィジェットを追加 ›「あしたの時間割」を選ぶと置けます。ロック画面にも置けます。表示されるのは今日と明日の予定です。</p></div>
+  <div class="faq-item"><h3>通知を止めたい・時刻を変えたいです</h3><p>設定画面の「通知」で、計画リマインダーのオン・オフと時刻、予定の開始の通知を変えられます。</p></div>
+  <div class="faq-item"><h3>無料版では何ができますか？</h3><p>今日・明日の計画と実行、振り返り、履歴、テンプレート、共有、ウィジェット、AIへの依頼文と読み込みが使えます。プレミアムでは「未来の計画」と「AIに分析してもらう」が開きます。</p></div>
+  <div class="faq-item"><h3>機種変更したら記録は引き継げますか？</h3><p>記録は端末の中だけに保存しているため、引き継ぎはできません。プレミアムの購入状態は、新しい端末で「購入を復元する」を押すと戻ります。</p></div>
+  <div class="faq-item"><h3>購入したのに解放されません</h3><p>設定 › プレミアム の「購入を復元する」をお試しください。端末が購入時と同じApple Accountでサインインしている必要があります。</p></div>
+  <div class="faq-item"><h3>サブスクリプションを解約したいです</h3><p>iPhoneの「設定」アプリ › 自分の名前（Apple Account） › サブスクリプション から解約できます。期間終了の24時間前までに解約すると、次の更新は行われません。期間の残りはそのままご利用いただけます。</p></div>
+  <div class="faq-item"><h3>返金してほしいです</h3><p>App内課金の返金はAppleが受け付けています。<a href="https://reportaproblem.apple.com/" target="_blank" rel="noopener">reportaproblem.apple.com</a> からお申し込みください。</p></div>
+
+  <div class="sub-links">
+    <a href="/ashitajikanwari/">紹介ページ</a>
+    <a href="/ashitajikanwari/support.html">サポート</a>
+    <a href="/ashitajikanwari/privacy.html">プライバシーポリシー</a>
+    <a href="/ashitajikanwari/terms.html">利用規約</a>
+  </div>
+</body>
+</html>
