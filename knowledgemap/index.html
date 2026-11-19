@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>知識マップ — ITパスポートを宇宙の地図で攻略</title>
+  <title>ITパスポート さかのぼり診断 — 間違えた原因を前提の知識までさかのぼる</title>
   <link rel="stylesheet" href="/common.css">
   <link rel="canonical" href="https://oyajibuki.github.io/knowledgemap/">
-  <meta name="description" content="ITパスポートの31の知識を宇宙の地図に並べ、つながりをたどって理解していく問題集アプリ。377問（うち201問はIPA公開問題）・参考書・弱点と学習記録のカレンダー・本番と同じ100問120分の模試。オフライン・アカウント不要。">
-  <meta property="og:title" content="知識マップ — ITパスポートを宇宙の地図で攻略">
-  <meta property="og:description" content="ITパスポートの31の知識を宇宙の地図に並べ、つながりをたどって理解していく問題集アプリ。377問・参考書・弱点と学習記録・模試（練習／テスト）。">
+  <meta name="description" content="ITパスポートの範囲を34の知識に分けて前提関係でつなぎ、間違えた原因を地図の上でさかのぼって学び直せるアプリ。無料の診断18問、合格までのルート、377問（うち201問はIPA公開問題）、参考書・弱点の記録・模試。オフライン・アカウント不要。">
+  <meta property="og:title" content="ITパスポート さかのぼり診断">
+  <meta property="og:description" content="間違えた原因を、前提の知識までさかのぼる。無料の診断・合格までのルート・377問・模試（練習／テスト）。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://oyajibuki.github.io/knowledgemap/">
   <meta property="og:image" content="https://oyajibuki.github.io/knowledgemap/icon.png">
@@ -28,7 +28,8 @@
     .price-table td { padding:10px 4px; border-bottom:1px solid #eee; font-size:0.9rem; vertical-align:top; }
     .price-table td:last-child { text-align:right; font-weight:600; }
     .lede { background:#f0eefc; border:1px solid #d6cff5; border-radius:12px; padding:14px 16px; margin-top:16px; font-size:0.9rem; }
-    .soon { display:inline-block; background:#f0f0f0; color:#666; padding:10px 20px; border-radius:10px; font-size:0.9rem; font-weight:600; }
+    .store-btn { display:inline-block; background:#000; color:#fff !important; padding:12px 24px; border-radius:12px; font-size:0.95rem; font-weight:700; text-decoration:none; }
+    .store-btn:hover { opacity:0.85; }
     .note { font-size:0.8rem; color:#888; margin-top:24px; }
   </style>
 </head>
@@ -36,25 +37,28 @@
   <div class="back">← <a href="/">アプリ一覧に戻る</a></div>
 
   <div class="app-header">
-    <div class="app-icon"><img src="/knowledgemap/icon.png" alt="知識マップ"></div>
+    <div class="app-icon"><img src="/knowledgemap/icon.png" alt="ITパスポート さかのぼり診断"></div>
     <div>
-      <h1>知識マップ</h1>
-      <p class="app-tagline">ITパスポートを、宇宙の地図で攻略する</p>
+      <h1>ITパスポート さかのぼり診断</h1>
+      <p class="app-tagline">間違えた原因を、前提の知識までさかのぼる</p>
     </div>
   </div>
 
   <p style="margin-top:20px;">
-    ITパスポートの範囲を<strong>31の知識</strong>に分け、宇宙の地図に並べました。
-    「2進数」から始めて、解説を読んで問題を解き、理解できた知識から矢印の先へ地図が開いていきます。
-    バラバラに暗記するのではなく、知識どうしのつながりをたどりながら覚える問題集アプリです。
+    ITパスポートの勉強で、同じような問題を何度も間違えていませんか。
+    原因は、その問題ではなく、前の段階の知識にあるかもしれません。
+  </p>
+  <p>
+    このアプリは、試験の範囲を<strong>34の知識</strong>に分けて前提関係でつなぎ、問題ごとに「解くのに必要な知識」を設定しました。
+    間違えた原因を地図の上でさかのぼり、そこから学び直せます。
   </p>
 
   <div class="lede">
-    🪐 <strong>今どこまで分かっていて、どこが弱いのか、地図を見ればひと目で分かります。</strong>
-    理解済みの知識は星に、直近で間違えた知識には赤い輪が付きます。
+    🔎 <strong>たとえば攻撃の問題を間違えたら、通信の仕組み → IPアドレス → 2進数 と順に確かめて、つまずいている知識を見つけます。</strong>
+    前提に問題がなければ、その知識そのものを覚え直すよう案内します。
   </div>
 
-  <p style="margin-top:20px;"><span class="soon">App Store 近日公開</span></p>
+  <p style="margin-top:20px;"><a class="store-btn" href="https://apps.apple.com/jp/app/it%E3%83%91%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%88-%E3%81%95%E3%81%8B%E3%81%AE%E3%81%BC%E3%82%8A%E8%A8%BA%E6%96%AD/id6829345970" target="_blank" rel="noopener">App Store でダウンロード</a></p>
 
   <div class="sub-links">
     <a href="/knowledgemap/">紹介ページ</a>
@@ -67,30 +71,29 @@
 
   <h2>主な機能</h2>
   <ul class="feature-list">
-    <li><span class="feature-emoji">🗺</span><div><b>知識の地図</b><span>31の知識を、前提と関連の線でつないだ地図。ピンチや＋／−で拡大・縮小できます。</span></div></li>
-    <li><span class="feature-emoji">📖</span><div><b>解説から問題へ</b><span>知識をタップすると要点の解説が開き、そのまま問題に挑戦できます。答えるとすぐに正誤と解説が出ます。</span></div></li>
-    <li><span class="feature-emoji">⭐</span><div><b>80%で理解済み、次の知識が開く</b><span>知識ごとの問題を80%以上正解すると「理解済み」になり、矢印の先の知識が解けるようになります。</span></div></li>
-    <li><span class="feature-emoji">📚</span><div><b>参考書</b><span>知識ごとの要点と、問題で問われるポイントを章ごとに通して読めます。</span></div></li>
-    <li><span class="feature-emoji">🔥</span><div><b>弱点と学習記録</b><span>間違えた問題を、いつ・どこで（知識の問題、模試の練習、模試のテストなど）間違えたかと一緒に一覧。「今日間違えた問題だけ」も解き直せます。カレンダーで毎日の勉強時間と解いた問題数、試験日までの残り日数が分かります。</span></div></li>
-    <li><span class="feature-emoji">📝</span><div><b>模試（練習／テスト）</b><span>練習モードは1問ずつ解説付きで、全問にも挑戦できます。テストモードは本番と同じ100問・120分で、残り時間を見ながら解き、最後にまとめて採点。どちらも終わったら間違えた問題だけ解き直せます。</span></div></li>
-    <li><span class="feature-emoji">🔒</span><div><b>オフライン・アカウント不要</b><span>問題はすべてアプリに入っています。記録は端末の中だけに保存します。</span></div></li>
+    <li><span class="feature-emoji">🧭</span><div><b>無料の診断で、今の位置を調べる</b><span>3分野から18問。答えに合わせて次の問題が変わります。分かっている所と穴が地図に出て、今の点数の目安と、足切りが危ない分野が分かります。</span></div></li>
+    <li><span class="feature-emoji">↩️</span><div><b>間違えたら、原因までさかのぼる</b><span>「なぜ間違えた？」を押すと、前提の知識を確認問題でたどり、つまずいている知識を見つけます。</span></div></li>
+    <li><span class="feature-emoji">🗺</span><div><b>合格までのルート</b><span>見つかった原因、足切りの危ない分野、配点、前提の順番から、次に学ぶ知識を計算します。試験日を決めると今日学ぶ量が分かり、学ぶたびにルートは組み替わります。</span></div></li>
+    <li><span class="feature-emoji">✍️</span><div><b>377問。うち201問は IPA の公開問題</b><span>令和7年度・令和8年度の公開問題をもとにした問題を収録し、問題文の下に出典を表記。答えるとすぐに正誤と解説が出ます。</span></div></li>
+    <li><span class="feature-emoji">📚</span><div><b>参考書・弱点と学習記録</b><span>読むだけの参考書モード（34章）。いつ・どこで間違えたかが分かる弱点の一覧と、学習カレンダー。</span></div></li>
+    <li><span class="feature-emoji">📝</span><div><b>模試（練習／テスト）</b><span>解説つきの練習モードと、本番と同じ100問・120分のテストモード。点数は正答率などから推定した目安です（本番は IRT 方式で採点されるため一致しません）。</span></div></li>
+    <li><span class="feature-emoji">🔒</span><div><b>オフライン・アカウント不要</b><span>問題はすべてアプリに入っています。開発者のサーバーはなく、学習の記録は端末の中だけに保存します。</span></div></li>
   </ul>
 
   <hr>
 
   <h2>料金</h2>
   <table class="price-table">
-    <tr><td>無料</td><td>地図の閲覧・最初の3つの知識（23問）</td></tr>
-    <tr><td>合格パス（買い切り）</td><td>¥2,980</td></tr>
+    <tr><td>無料</td><td>診断・さかのぼりの確認問題・ルートの表示、最初の3つの知識（24問）、参考書の最初の3章</td></tr>
+    <tr><td>ITパスポート 合格パス（買い切り）</td><td>¥2,980</td></tr>
   </table>
   <p style="font-size:0.85rem; color:#666; margin-top:12px;">
-    合格パスでは、全31の知識・377問、参考書の全章、弱点の解き直し、模試（練習・テスト）のすべてが使えます。
-    模試の説明、弱点と学習記録の画面は無料版でも見られます。
+    合格パスでは、全34の知識・377問、参考書の全34章、弱点の解き直し、模試（練習モード・テストモード）のすべてが使えます。
     一度買えば追加の料金はかかりません。
   </p>
 
   <p class="note">
-    377問のうち201問は、IPA（独立行政法人 情報処理推進機構）が公開している ITパスポート試験の公開問題（令和7年度・令和8年度）をもとにしており、該当する問題には出典を表記しています。
+    377問のうち201問は、IPA（独立行政法人 情報処理推進機構）が公開している ITパスポート試験の公開問題（令和7年度・令和8年度）を、IPA の定める方法に従って出典を明記して利用しています。
     本アプリは IPA とは関係ありません。
   </p>
 
