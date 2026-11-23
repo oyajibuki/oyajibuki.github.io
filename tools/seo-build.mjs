@@ -141,7 +141,7 @@ for (const a of APPS.filter(a => a.status === 'review')) {
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'oyajibuki — iOSアプリ 100本チャレンジ', url: ORIGIN + '/', inLanguage: 'ja' },
     { '@context': 'https://schema.org', '@type': 'Person', name: 'Asagiri', alternateName: 'oyajibuki', url: ORIGIN + '/',
       jobTitle: 'iOS App Developer',
-      sameAs: ['https://x.com/Oyajibuki', 'https://apps.apple.com/jp/developer/motoki-seki/id1895850085'] },
+      sameAs: ['https://x.com/Oyajibuki'] },
     { '@context': 'https://schema.org', '@type': 'ItemList', name: '公開中のiOSアプリ', numberOfItems: n,
       itemListElement: released.map((a, i) => ({
         '@type': 'ListItem', position: i + 1,
